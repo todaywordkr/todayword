@@ -329,6 +329,12 @@ async function refresh(){
 // address derived from the private username; no real email is requested or sent.
 const usernameEmail=name=>`${name.toLowerCase()}@pynscyjkjiwjmaanbeie.supabase.co`;
 const normalizeUsername=value=>value.trim().toLowerCase();
+// Server-side nickname moderation: check before Auth signup to avoid opaque DB errors.
+async function checkNicknameModeration(nickname){
+ const {data,error}=await client.rpc('nickname_is_blocked',{p_text:nickname});
+ if(error)throw error;
+ return data===true;
+}
 const authError=e=>{
  const msg=friendly(e);
  if(/duplicate|unique|already registered|already exists|already been registered/i.test(msg))return '이미 사용 중인 아이디 또는 닉네임입니다.';
@@ -343,10 +349,15 @@ $('signup').onclick=async()=>{
  if(!nickname||nickname.length>24){status('닉네임은 1~24자로 입력하세요.');return;}
  if(password.length<8){status('비밀번호는 8자 이상 입력하세요.');return;}
  try{
+  if(await checkNicknameModeration(nickname)){
+   status('욕설·음란·혐오·일베·페미·정치 관련 표현은 닉네임으로 사용할 수 없습니다.');
+   return;
+  }
   const {data:check,error:checkError}=await client.rpc('check_signup_names',{p_username:username,p_nickname:nickname});
   if(checkError)throw checkError;
   if(check.username_taken){status('이미 사용 중인 아이디입니다.');return;}
   if(check.nickname_taken){status('이미 사용 중인 닉네임입니다.');return;}
+  if(check.nickname_blocked){status('사용할 수 없는 닉네임입니다.');return;}
   const {data,error}=await client.auth.signUp({email:usernameEmail(username),password,options:{data:{username,nickname}}});
   if(error)throw error;
   if(!data.user){status('회원가입을 완료하지 못했습니다. 다시 시도해주세요.');return;}
@@ -396,7 +407,17 @@ $('profileSaveNickname').addEventListener('click',async()=>{
  if(!nickname||nickname.length>24){profileStatus('닉네임은 1~24자로 입력하세요.');return}
  if(nickname===currentProfile?.nickname){profileStatus('현재 닉네임과 같습니다.');return}
  profileBusy(button,true);
- try{await rpc('change_nickname',{p_nickname:nickname});await loadProfile();await loadRanks();profileStatus('닉네임이 변경되었습니다.')}catch(e){profileStatus(/unique|duplicate/i.test(friendly(e))?'이미 사용 중인 닉네임입니다.':friendly(e))}finally{profileBusy(button,false)}
+ try{
+  if(await checkNicknameModeration(nickname)){
+   profileStatus('욕설·음란·혐오·일베·페미·정치 관련 표현은 닉네임으로 사용할 수 없습니다.');
+   return;
+  }
+  await rpc('change_nickname',{p_nickname:nickname});
+  await loadProfile();
+  await loadRanks();
+  profileStatus('닉네임이 변경되었습니다.');
+ }catch(e){profileStatus(/unique|duplicate/i.test(friendly(e))?'이미 사용 중인 닉네임입니다.':friendly(e))}
+ finally{profileBusy(button,false)}
 });
 $('profileSavePassword').addEventListener('click',async()=>{
  const button=$('profileSavePassword'),old=$('profileOldPassword').value,pass=$('profileNewPassword').value,confirm=$('profileConfirmPassword').value;

@@ -6,7 +6,16 @@ const client=createClient(cfg.url,cfg.key,{auth:{persistSession:true,autoRefresh
 let user=null,period='day',currentProfile=null;
 const friendly=e=>e?.message||String(e);
 async function rpc(name,args={}){const {data,error}=await client.rpc(name,args);if(error)throw error;return data;}
-async function loadProfile(){if(!user)return;const {data,error}=await client.from('profiles').select('nickname,points,username').eq('id',user.id).single();if(error)throw error;currentProfile=data;$('profileUsername').textContent=data.username;$('profilePoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberSummary').textContent=`${data.nickname} · ${data.points}P`;$('headerNickname').textContent=data.nickname;$('headerPoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberStats').textContent='아이디는 다른 사용자에게 공개되지 않습니다.';}
+async function loadProfile(){if(!user)return;const {data,error}=await client.from('profiles').select('nickname,points,username').eq('id',user.id).single();if(error)throw error;currentProfile=data;$('profileUsername').textContent=data.username;$('profilePoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberSummary').textContent=`${data.nickname} · ${data.points}P`;renderHeaderEmblem(data.nickname);$('headerPoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberStats').textContent='아이디는 다른 사용자에게 공개되지 않습니다.';}
+async function renderHeaderEmblem(nickname){
+ const target=$('headerNickname');target.textContent=nickname;
+ if(!user)return;
+ try{
+  const {data,error}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',user.id).maybeSingle();
+  if(error)throw error;
+  if(user&&currentProfile?.nickname===nickname)target.replaceChildren(emblemArt(data||{shape:'shield1'},nickname,true));
+ }catch(e){console.warn('앰블럼 표시 실패:',e)}
+}
 async function loadPointLogs(){
  const area=$('pointLogItems');area.textContent='내역을 불러오는 중…';
  const {data,error}=await client.from('point_logs').select('delta,reason,balance_after,created_at').order('created_at',{ascending:false}).limit(100);
@@ -20,32 +29,40 @@ async function loadPointLogs(){
   right.className=item.delta>0?'point-positive':'point-negative';row.append(left,right);area.append(row);
  }
 }
+$('shopNav').addEventListener('click',()=>{$('shopDialog').showModal();loadShop()});
+$('shopClose').addEventListener('click',()=>$('shopDialog').close());
+$('shopDialog').addEventListener('click',e=>{if(e.target===$('shopDialog'))e.target.close()});
 $('headerPoints').addEventListener('click',async()=>{if(!user)return;$('pointLogDialog').showModal();try{await loadPointLogs()}catch(e){$('pointLogItems').textContent='포인트 내역 조회 실패: '+friendly(e)}});
 $('pointLogClose').addEventListener('click',()=>$('pointLogDialog').close());
 $('pointLogDialog').addEventListener('click',e=>{if(e.target===$('pointLogDialog'))e.target.close()});
 const EMBLEM_GROUPS=[
- {key:'shape',label:'앰블럼 모양',items:[['방패 1','shield1',0],['방패 2','shield2',400],['방패 3','shield3',1500],['하트','heart',100],['원','circle',0],['스페이스','space',1800],['다이아몬드','diamond',3000]]},
- {key:'pattern',label:'앰블럼 문양',items:[['없음','',0],['드래곤','dragon',3500],['호랑이','tiger',2000],['사자','lion',2000],['독수리','eagle',1500],['사슴','deer',500],['토끼','rabbit',100],['고양이','cat',100],['강아지','dog',100]]},
- {key:'crown',label:'전설 왕관',items:[['없음','',0],['전설 왕관 1','crown1',5000],['전설 왕관 2','crown2',10000],['전설 왕관 3','crown3',20000]]},
- {key:'wings',label:'앰블럼 날개',items:[['없음','',0],['작은 천사','angel-small',200],['작은 악마','demon-small',200],['작은 요정','fairy-small',200],['중간 천사','angel-mid',1200],['중간 악마','demon-mid',1200],['중간 요정','fairy-mid',1200],['큰 천사','angel-big',5000],['큰 악마','demon-big',5000],['큰 요정','fairy-big',5000]]},
- {key:'effect',label:'앰블럼 효과',items:[['없음','',0],['오로라','aurora',3000],['별빛','starlight',1000],['불꽃','fire',3000],['눈꽃','snow',2000],['번개','lightning',4000],['반짝임','sparkle',500]]},
+ {key:'shape',label:'모양',items:[['낡은 방패','shield1',10],['찌그러진 원','circle',20],['방패 1','shield1',0],['방패 2','shield2',400],['방패 3','shield3',1500],['하트','heart',100],['원','circle',0],['스페이스','space',1800],['다이아몬드','diamond',3000]]},
+ {key:'pattern',label:'문양',items:[['낙서 고양이','cat',15],['흐릿한 토끼','rabbit',30],['없음','',0],['드래곤','dragon',3500],['호랑이','tiger',2000],['사자','lion',2000],['독수리','eagle',1500],['사슴','deer',500],['토끼','rabbit',100],['고양이','cat',100],['강아지','dog',100]]},
+ {key:'crown',label:'왕관',items:[['종이 왕관','crown1',50],['없음','',0],['전설 왕관 1','crown1',5000],['전설 왕관 2','crown2',10000],['전설 왕관 3','crown3',20000]]},
+ {key:'wings',label:'날개',items:[['삐뚤어진 날개','angel-small',25],['없음','',0],['작은 천사','angel-small',200],['작은 악마','demon-small',200],['작은 요정','fairy-small',200],['중간 천사','angel-mid',1200],['중간 악마','demon-mid',1200],['중간 요정','fairy-mid',1200],['큰 천사','angel-big',5000],['큰 악마','demon-big',5000],['큰 요정','fairy-big',5000]]},
+ {key:'effect',label:'이펙트',items:[['희미한 반짝임','sparkle',20],['없음','',0],['오로라','aurora',3000],['별빛','starlight',1000],['불꽃','fire',3000],['눈꽃','snow',2000],['번개','lightning',4000],['반짝임','sparkle',500]]},
  {key:'namefx',label:'닉네임 효과',items:[['기본','',0],['빨강','red',300],['파랑','blue',300],['초록','green',300],['무지개','rainbow',1200],['오로라','aurora',3000]]}
 ];
 const asset=(key)=>'emblems/'+encodeURIComponent(key)+'.png';
 function emblemArt(config,nickname,compact=false){
- const el=document.createElement('span');el.className='png-emblem'+(compact?' compact':'');
- const image=(key,cls)=>{if(!key)return;const im=document.createElement('img');im.src=asset(key);im.alt='';im.className=cls;im.loading='lazy';el.append(im)};
- image(config.wings,'png-wings');image(config.shape,'png-shape');image(config.pattern,'png-pattern');image(config.crown,'png-crown');image(config.effect,'png-effect');
- const name=document.createElement('span');name.className='png-name fx-'+(config.namefx||'basic');name.textContent=nickname;el.append(name);return el;
+ const el=document.createElement('span');el.className='emblem-identity'+(compact?' compact':'');
+ const badge=document.createElement('span');badge.className='png-emblem'+(compact?' compact':'');badge.setAttribute('aria-hidden','true');
+ const image=(key,cls)=>{if(!key)return;const im=document.createElement('img');im.src=asset(key);im.alt='';im.className=cls;im.loading='lazy';badge.append(im)};
+ // Background to foreground: effect, wings, crown, shape, pattern.
+ // Crown is visually raised above the shape while its overlap stays behind the shape.
+ image(config.effect,'png-effect');image(config.wings,'png-wings');image(config.crown,'png-crown');image(config.shape,'png-shape');image(config.pattern,'png-pattern');
+ const name=document.createElement('span');name.className='emblem-nickname fx-'+(config.namefx||'basic');name.textContent=nickname;
+ el.append(badge,name);return el;
 }
 async function saveFreeEmblem(config){return rpc('equip_free_emblem',{p_shape:config.shape,p_pattern:config.pattern,p_crown:config.crown,p_wings:config.wings,p_effect:config.effect,p_namefx:config.namefx});}
 function loadShop(){
  const area=$('shop');area.replaceChildren();
- const selected={shape:0,pattern:0,crown:0,wings:0,effect:0,namefx:0};
+ const selected={shape:2,pattern:1,crown:1,wings:1,effect:1,namefx:0};
  const wrap=document.createElement('section');wrap.className='emblem-shop';
- const title=document.createElement('h3');title.textContent='✨ PNG 레이어드 앰블럼 꾸미기';wrap.append(title);
+ const title=document.createElement('h3');title.textContent='✨ 레이어드 PNG 앰블럼 미리보기';wrap.append(title);
  const note=document.createElement('p');note.className='shop-note';note.textContent='구매는 잠금 상태입니다. 무료 기본 앰블럼만 랭킹에 장착할 수 있으며, 유료 구성은 미리보기만 가능합니다.';wrap.append(note);
  const preview=document.createElement('div');preview.className='emblem-preview';preview.setAttribute('aria-live','polite');wrap.append(preview);
+ const tabs=document.createElement('div');tabs.className='shop-categories';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','상점 카테고리');wrap.append(tabs);const sections={};const tabButtons={};let activeCategory='shape';
  const buttons={};const footer=document.createElement('div');footer.className='shop-footer';
  const total=document.createElement('span');total.className='shop-price';footer.append(total);
  const freeBtn=document.createElement('button');freeBtn.type='button';freeBtn.className='emblem-free';freeBtn.textContent='무료 앰블럼 장착';footer.append(freeBtn);
@@ -56,16 +73,17 @@ function loadShop(){
   total.textContent='선택 조합: '+price.toLocaleString('ko-KR')+'P · 미리보기';
   freeBtn.disabled=price!==0||!user;freeBtn.title=price?'유료 아이템은 현재 장착할 수 없습니다.':'무료 기본 앰블럼을 랭킹에 표시합니다.';
   for(const g of EMBLEM_GROUPS)buttons[g.key].forEach((btn,i)=>btn.setAttribute('aria-pressed',String(selected[g.key]===i)));
+  for(const g of EMBLEM_GROUPS){sections[g.key].hidden=g.key!==activeCategory;tabButtons[g.key].setAttribute('aria-selected',String(g.key===activeCategory));}
  }
- for(const g of EMBLEM_GROUPS){const section=document.createElement('div');section.className='emblem-group';const label=document.createElement('strong');label.textContent=g.label;section.append(label);
+ for(const g of EMBLEM_GROUPS){const tab=document.createElement('button');tab.type='button';tab.textContent=g.label;tab.setAttribute('role','tab');tab.addEventListener('click',()=>{activeCategory=g.key;render()});tabs.append(tab);tabButtons[g.key]=tab;const section=document.createElement('div');sections[g.key]=section;section.className='emblem-group';const label=document.createElement('strong');label.textContent=g.label;section.append(label);
   const grid=document.createElement('div');grid.className='emblem-grid';buttons[g.key]=[];
-  g.items.forEach((item,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='emblem-option';
+  g.items.forEach((item,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='emblem-option'+(/낡은|찌그러진|낙서|흐릿한|종이|삐뚤어진|희미한/.test(item[0])?' rough':'');
    if(item[1]){const img=document.createElement('img');img.className='emblem-option-img';img.src=asset(item[1]==='rainbow'?'aurora':item[1]);img.alt='';img.loading='lazy';btn.append(img)}else{const blank=document.createElement('span');blank.className='emblem-option-img blank';blank.textContent='—';btn.append(blank)}
    const name=document.createElement('span');name.textContent=item[0];const cost=document.createElement('small');cost.textContent=item[2]===0?'무료':item[2].toLocaleString('ko-KR')+'P';
    btn.append(name,cost);btn.addEventListener('click',()=>{selected[g.key]=i;render()});buttons[g.key].push(btn);grid.append(btn);
   });section.append(grid);wrap.append(section);
  }
- freeBtn.addEventListener('click',async()=>{freeBtn.disabled=true;try{await saveFreeEmblem(getConfig());status('무료 앰블럼 장착 완료 · 랭킹에 표시됩니다.');await loadRanks()}catch(e){status('앰블럼 장착 실패: '+friendly(e))}finally{render()}});
+ freeBtn.addEventListener('click',async()=>{freeBtn.disabled=true;try{await saveFreeEmblem(getConfig());status('무료 앰블럼 장착 완료 · 랭킹에 표시됩니다.');await renderHeaderEmblem(currentProfile?.nickname||'');await loadRanks()}catch(e){status('앰블럼 장착 실패: '+friendly(e))}finally{render()}});
  wrap.append(footer);area.append(wrap);render();
 }
 async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard',{p_period:period});if(error)throw error;const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.className='rank-identity';const rank=document.createElement('b');rank.textContent=(i+1)+'위';left.append(rank);left.append(emblemArt({shape:entry.emblem_shape||'shield1',pattern:entry.emblem_pattern||'',crown:entry.emblem_crown||'',wings:entry.emblem_wings||'',effect:entry.emblem_effect||'',namefx:entry.emblem_namefx||''},entry.nickname,true));const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
@@ -83,7 +101,7 @@ async function refresh(){
  // Unlock game immediately after authenticated user is confirmed, even if profile/rank APIs fail.
  window.dispatchEvent(new Event('todayword-auth-ready'));
  try{
-  if(user){await loadProfile();await loadShop();status('로그인됨 · 온라인 기록 연결 완료');}
+  if(user){await loadProfile();status('로그인됨 · 온라인 기록 연결 완료');}
   else status('회원가입하거나 로그인하면 출석·포인트·랭킹을 이용할 수 있어요.');
   await loadRanks();
  }catch(e){status('로그인 상태는 확인됐지만 온라인 정보 불러오기 실패: '+friendly(e));}

@@ -171,6 +171,46 @@ html[data-theme="light"] .emblem-shop{color:#fff}
 .emblem-shop .emblem-option{min-height:106px}.emblem-free{background:#355bb8;color:#fff;border:0;border-radius:12px;padding:11px 16px;font-weight:800}.emblem-free:disabled{opacity:.45;cursor:not-allowed}
 .rank-identity{display:inline-flex;align-items:center;gap:5px;min-width:0}.png-emblem.compact{min-width:110px;width:110px;height:57px;transform:none;flex-shrink:0}.png-emblem.compact .png-wings{width:105px;height:60px}.png-emblem.compact .png-shape{width:51px;height:51px}.png-emblem.compact .png-pattern{width:32px;height:32px}.png-emblem.compact .png-crown{width:40px;height:28px;top:-5px}.png-emblem.compact .png-effect{width:104px;height:62px}.png-emblem.compact .png-name{font-size:12px;margin-top:35px;padding:1px 4px;max-width:90px;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:480px){.ranking-page .rankrow{font-size:11px;gap:3px}.rank-identity{gap:2px}.png-emblem.compact{width:95px;min-width:95px}.ranking-page .rankrow span:last-child{font-size:10px}}
+
+/* Shared layered emblem: background effect < wings < crown < shape < pattern. */
+.emblem-identity{display:inline-flex;align-items:center;gap:7px;min-width:0;max-width:100%;vertical-align:middle}
+.emblem-identity .png-emblem{position:relative;display:inline-block;flex:none;width:94px;min-width:94px;height:82px;isolation:isolate;overflow:visible}
+.emblem-identity .png-emblem img{position:absolute;display:block;object-fit:contain;pointer-events:none;left:50%;transform:translateX(-50%)}
+.emblem-identity .png-effect{z-index:0;width:110px;height:92px;top:-4px;opacity:.78}
+.emblem-identity .png-wings{z-index:1;width:110px;height:74px;top:5px}
+.emblem-identity .png-crown{z-index:2;width:48px;height:33px;top:-13px}
+.emblem-identity .png-shape{z-index:3;width:67px;height:67px;top:10px}
+.emblem-identity .png-pattern{z-index:4;width:39px;height:39px;top:23px}
+.emblem-nickname{font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:inherit}
+.emblem-nickname.fx-red{color:#ff7676}.emblem-nickname.fx-blue{color:#74bdff}.emblem-nickname.fx-green{color:#80f2aa}
+.emblem-nickname.fx-rainbow{background:linear-gradient(90deg,#ff6e8e,#ffe66c,#8df9d5,#8fa6ff);color:transparent;background-clip:text}
+.emblem-nickname.fx-aurora{background:linear-gradient(90deg,#92ffdc,#8da8ff,#f7a4ff,#92ffdc);color:transparent;background-clip:text}
+.emblem-identity.compact{gap:4px}.emblem-identity.compact .png-emblem{width:48px;min-width:48px;height:46px}
+.emblem-identity.compact .png-effect{width:60px;height:54px;top:-4px}
+.emblem-identity.compact .png-wings{width:59px;height:41px;top:2px}
+.emblem-identity.compact .png-crown{width:28px;height:19px;top:-7px}
+.emblem-identity.compact .png-shape{width:38px;height:38px;top:4px}
+.emblem-identity.compact .png-pattern{width:23px;height:23px;top:12px}
+.emblem-identity.compact .emblem-nickname{font-size:inherit;max-width:135px}
+.emblem-preview .emblem-identity{padding:20px 12px}
+.ranking-page .rank-identity{gap:7px;flex:1;min-width:0}.ranking-page .rank-identity>b{flex:none}
+.ranking-page .rankrow>span:last-child{flex:none}
+.header-profile #headerNickname .emblem-identity.compact .png-emblem{width:34px;min-width:34px;height:35px}
+.header-profile #headerNickname .emblem-identity.compact .png-effect{width:44px;height:40px;top:-3px}
+.header-profile #headerNickname .emblem-identity.compact .png-wings{width:44px;height:32px;top:1px}
+.header-profile #headerNickname .emblem-identity.compact .png-crown{width:20px;height:15px;top:-5px}
+.header-profile #headerNickname .emblem-identity.compact .png-shape{width:29px;height:29px;top:3px}
+.header-profile #headerNickname .emblem-identity.compact .png-pattern{width:18px;height:18px;top:9px}
+@media(max-width:480px){.emblem-identity.compact .png-emblem{width:40px;min-width:40px;height:42px}.emblem-identity.compact .emblem-nickname{max-width:75px}.ranking-page .rankrow>span:last-child{font-size:10px}}
+/* Standalone responsive emblem shop dialog */
+.shop-dialog{box-sizing:border-box;width:min(96vw,1000px);max-width:1000px;max-height:90dvh;overflow:auto;border:1px solid #8d79cb;border-radius:22px;padding:clamp(12px,3vw,24px);background:#1c1733;color:#fff;box-shadow:0 20px 75px #0009}
+.shop-dialog::backdrop{background:#070511bb;backdrop-filter:blur(5px)}
+.shop-dialog-head{display:flex;justify-content:space-between;align-items:start;gap:12px}.shop-dialog-head h2{margin:0;font-size:23px;color:#fff}.shop-dialog-head p{margin:4px 0 12px;color:#d4c9ef;font-size:13px}.shop-dialog-head button{background:#40335e;color:#fff;border:1px solid #7b6caa;border-radius:12px;padding:9px 14px;cursor:pointer}
+.shop-dialog .emblem-shop{margin:0;padding:12px;background:linear-gradient(150deg,#2b2248,#211937)}
+.shop-categories{display:flex;gap:7px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:thin}.shop-categories button{white-space:nowrap;background:#40355e;border:1px solid #8070b1;color:#fff;border-radius:12px;padding:11px 15px;cursor:pointer;font-weight:750}.shop-categories button[aria-selected=true]{background:#6150b4;border-color:#a7e4ff;box-shadow:0 0 10px #8ccaff77}
+.shop-dialog .emblem-group{margin:0 0 12px}.shop-dialog .emblem-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}.shop-dialog .emblem-option.rough .emblem-option-img{filter:grayscale(.75) sepia(.45) brightness(.7);opacity:.8}.shop-dialog .emblem-option.rough{background:#302b40;border-color:#6a6175}.shop-dialog .emblem-option.rough small{color:#c7b6a4}
+.shop-dialog .shop-footer{position:sticky;bottom:-12px;background:#261e42;padding:12px;border-radius:14px;border:1px solid #7765a4}
+@media(max-width:520px){.shop-dialog{max-height:94dvh;padding:10px}.shop-dialog .emblem-shop{padding:10px}.shop-dialog .emblem-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shop-dialog .emblem-option{padding:5px 2px;font-size:12px}.shop-dialog .emblem-option-img{width:54px;height:47px}}
 </style>
 <style id="onlineStyles">.online{margin:16px 0;padding:18px;border:1px solid #9aa6ba66;border-radius:16px;background:var(--panel,#ffffff0a)}.online h2{font-size:19px}.online input,.online button{font:inherit;padding:10px;border-radius:9px;border:1px solid #a5aec0}.online input{width:100%;background:transparent;color:inherit}.online button{cursor:pointer;background:#405bd7;color:white}.online .fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}.online .muted{font-size:12px;opacity:.8}.online .hidden{display:none}.online .rankrow{display:flex;justify-content:space-between;border-bottom:1px solid #9995;padding:8px 0;gap:8px}@media(max-width:420px){.online .fields{grid-template-columns:1fr}}</style><style id="accountPopupStyle">
 .account-open{white-space:nowrap;border:1px solid var(--border,#aaa);border-radius:10px;padding:8px 11px;background:var(--panel,#fff);color:var(--ink,#222);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
@@ -224,7 +264,7 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
 <body>
   <main class="shell">
     <header class="brandline">
-      <div class="header-left"><button id="homeNav" class="brand home-nav" type="button" aria-label="홈으로"><span class="brand-icon" aria-hidden="true">가</span><span>낱말 탐정</span></button><button id="rankingNav" class="nav-btn" type="button" aria-controls="rankingPage" aria-expanded="false">🏆 랭킹</button></div>
+      <div class="header-left"><button id="homeNav" class="brand home-nav" type="button" aria-label="홈으로"><span class="brand-icon" aria-hidden="true">가</span><span>낱말 탐정</span></button><button id="shopNav" class="nav-btn" type="button" aria-haspopup="dialog" aria-controls="shopDialog">🛒 상점</button><button id="rankingNav" class="nav-btn" type="button" aria-controls="rankingPage" aria-expanded="false">🏆 랭킹</button></div>
       <div class="header-actions">
         <div class="theme-switch" role="group" aria-label="화면 테마 선택">
           <button type="button" class="active" data-theme-choice="light" aria-pressed="true">☀️ 데이</button>
@@ -261,7 +301,7 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
       </div>
       <div class="bottom"><button id="nextButton" type="button" hidden>다음 문제 ↻</button><button id="shareButton" type="button" hidden>결과 공유 ⧉</button></div>
     </section>
-<section class="online" aria-label="내 계정과 포인트"><h2>🎁 출석 · 포인트 · 상점</h2><p id="onlineStatus" class="muted">Supabase 연결 설정 대기 중</p><div id="memberArea" class="hidden"><p id="memberSummary"></p><button id="checkin" type="button">📅 출석체크 +300P</button> <button id="signout" type="button">로그아웃</button><p id="memberStats" class="muted"></p><h3>🛒 아이템 상점</h3><div id="shop"></div></div><p class="muted">오늘의 단어: 5자 140~20P · 6자 160~40P · 7자 180~60P · 8자 200~80P (성공 횟수별), 실패 0P. 무제한 정답 +1P.</p></section>
+<section class="online" aria-label="내 계정과 포인트"><h2>🎁 출석 · 포인트 · 상점</h2><p id="onlineStatus" class="muted">Supabase 연결 설정 대기 중</p><div id="memberArea" class="hidden"><p id="memberSummary"></p><button id="checkin" type="button">📅 출석체크 +300P</button> <button id="signout" type="button">로그아웃</button><p id="memberStats" class="muted"></p></div><p class="muted">오늘의 단어: 5자 140~20P · 6자 160~40P · 7자 180~60P · 8자 200~80P (성공 횟수별), 실패 0P. 무제한 정답 +1P.</p></section>
     <p class="foot">오늘의 단어는 매일 00:00(KST) 자동 갱신 · 날짜·칸 수별 고유 ID<br>동사 제외 · 전체 명사 수와 5~8자모 입력 가능 수를 별도 표시</p>
     </div>
     <section id="rankingPage" class="ranking-page" hidden aria-label="랭킹 페이지">
@@ -275,6 +315,7 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
       <div class="ranking-table"><div class="ranking-table-head"><span>순위 · 닉네임</span><span>점수 · 승률</span></div><div id="ranks" aria-live="polite">랭킹을 불러오는 중입니다.</div></div>
     </section>
   </main>
+<dialog id="shopDialog" class="shop-dialog" aria-labelledby="shopDialogTitle"><div class="shop-dialog-head"><div><h2 id="shopDialogTitle">🛒 앰블럼 상점</h2><p>모양·문양·날개·왕관·이펙트 조합 미리보기</p></div><button id="shopClose" type="button" aria-label="상점 닫기">✕</button></div><div id="shop"></div></dialog>
 <dialog id="pointLogDialog" class="account-dialog" aria-labelledby="pointLogTitle"><div class="account-dialog-head"><h2 id="pointLogTitle">💰 포인트 내역</h2><button id="pointLogClose" type="button" aria-label="닫기">✕</button></div><p class="muted">최근 100건 · 한국 시간 기준</p><div id="pointLogItems" class="point-log-items"></div></dialog>
 <dialog id="accountDialog" class="account-dialog" aria-labelledby="accountTitle"><div class="account-dialog-head"><h2 id="accountTitle">회원가입</h2><button type="button" id="closeAccount" aria-label="닫기">✕</button></div><p id="authStatus" role="status" aria-live="polite"></p><div id="signupSuccess" class="hidden" style="text-align:center;padding:24px 8px"><h3>🎉 가입을 축하합니다!</h3><p>회원가입이 완료되었습니다.</p><button id="goLogin" type="button" style="width:100%;padding:13px;border-radius:12px;background:#405bd7;color:white;border:0;font-weight:800">로그인하러 가기</button></div><div id="authArea"><div class="fields"><input id="username" placeholder="아이디 (영문·숫자 4~24자)" maxlength="24" autocomplete="username" autocapitalize="none" spellcheck="false"><input id="nickname" maxlength="24" placeholder="닉네임 (중복 불가)"><input id="password" type="password" placeholder="비밀번호 (8자 이상)" autocomplete="new-password"><button id="signup" type="button">회원가입</button><button id="signin" type="button" class="hidden">로그인</button></div><p id="authHint" class="muted">아이디와 닉네임은 각각 중복 사용할 수 없습니다. 이메일은 필요하지 않습니다.</p></div></dialog>
   <dialog id="profileDialog" class="account-dialog" aria-labelledby="profileTitle">

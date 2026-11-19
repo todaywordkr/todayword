@@ -241,7 +241,7 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
     <section class="profile-section"><h3>비밀번호 변경</h3><label for="profileOldPassword">현재 비밀번호</label><input id="profileOldPassword" type="password" autocomplete="current-password" placeholder="현재 비밀번호"><label for="profileNewPassword">새 비밀번호</label><input id="profileNewPassword" type="password" autocomplete="new-password" placeholder="새 비밀번호 (8자 이상)"><label for="profileConfirmPassword">새 비밀번호 확인</label><input id="profileConfirmPassword" type="password" autocomplete="new-password" placeholder="새 비밀번호 다시 입력"><button id="profileSavePassword" type="button" class="profile-primary">비밀번호 변경</button></section>
     <section class="profile-section"><h3>계정 관리</h3><button id="profileLogout" type="button" class="profile-secondary">로그아웃</button><button id="profileDeleteToggle" type="button" class="profile-danger-outline">회원 탈퇴</button><div id="profileDeleteArea" class="hidden profile-delete-area"><p>탈퇴하면 계정, 포인트, 출석, 게임 기록과 구매 내역이 삭제되며 복구할 수 없습니다.</p><label for="profileDeletePassword">현재 비밀번호</label><input id="profileDeletePassword" type="password" autocomplete="current-password" placeholder="현재 비밀번호"><label for="profileDeleteConfirm">확인 문구</label><input id="profileDeleteConfirm" placeholder="탈퇴합니다" autocomplete="off"><button id="profileDelete" type="button" class="profile-danger">영구 탈퇴하기</button></div></section>
   </dialog>
-  <dialog id="helpDialog" aria-labelledby="helpTitle"><h2 id="helpTitle">게임 방법 🔍</h2><p>정답 단어를 자음과 모음으로 풀어 5번 안에 맞혀 보세요. 예를 들어 <b>사과 = ㅅ · ㅏ · ㄱ · ㅗ · ㅏ</b>이므로 <b>5자 문제</b>예요.</p><div class="legend"><span class="swatch correct">ㅅ</span> 자모와 자리 모두 정확해요.</div><div class="legend"><span class="swatch present">ㅏ</span> 정답에 있지만 자리가 달라요.</div><div class="legend"><span class="swatch absent">ㄴ</span> 정답에 없는 자모예요.</div><p>같은 자모가 여러 번 나와도 개수를 고려하여 판정합니다. 화면 키보드에 있는 ⌫·제출을 누르거나 PC에서 Backspace·Enter를 사용할 수 있어요. 겹모음은 기본 모음으로 나눠 입력합니다(재미 = ㅈㅏㅣㅁㅣ, 권총 = ㄱㅜㅓㄴㅊㅗㅇ, 계단 = ㄱㅕㅣㄷㅏㄴ). 없는 단어는 시도 횟수가 줄지 않아요. 품사 정보에서 명사만 골라 사전에 등록합니다. 전체 명사 수와 실제 게임에 사용 가능한 5~8자모 명사 수를 따로 표시합니다. 사전 불러오기가 실패했다면 소수의 기본 단어만 사용할 수 있으므로 사전 준비 상태를 확인하세요. 오늘의 단어는 매일 한국 시간 자정에 새 문제로 바뀌고, 같은 날짜와 칸 수는 누구나 동일한 문제 ID를 받습니다. ID는 12자리 영문·숫자 조합입니다.</p><button id="closeHelp" class="close" type="button">게임 시작하기</button></dialog>
+  <dialog id="helpDialog" aria-labelledby="helpTitle"><h2 id="helpTitle">게임 방법 🔍</h2><p>정답 단어를 자음과 모음으로 풀어 5번 안에 맞혀 보세요. 예를 들어 <b>사과 = ㅅ · ㅏ · ㄱ · ㅗ · ㅏ</b>이므로 <b>5자 문제</b>예요.</p><div class="legend"><span class="swatch correct">ㅅ</span> 자모와 자리 모두 정확해요.</div><div class="legend"><span class="swatch present">ㅏ</span> 정답에 있지만 자리가 달라요.</div><div class="legend"><span class="swatch absent">ㄴ</span> 정답에 없는 자모예요.</div><p>같은 자모가 여러 번 나와도 개수를 고려하여 판정합니다. 화면 키보드에 있는 ⌫·제출을 누르거나 PC에서 Backspace·Enter를 사용할 수 있어요. 겹모음은 기본 모음으로 나눠 입력합니다(재미 = ㅈㅏㅣㅁㅣ, 권총 = ㄱㅜㅓㄴㅊㅗㅇ, 계단 = ㄱㅕㅣㄷㅏㄴ). 없는 단어는 시도 횟수가 줄지 않아요. 품사 정보에서 명사만 골라 사전에 등록합니다. 전체 명사 수와 실제 게임에 사용 가능한 5~8자모 명사 수를 따로 표시합니다. 사전 불러오기가 실패했다면 소수의 기본 단어만 사용할 수 있으므로 사전 준비 상태를 확인하세요. 오늘의 단어는 서버에서 3개 후보 중 계정별로 하나를 정하며, 한국 시간 자정에 변경됩니다. 다른 브라우저에서도 시도 횟수와 결과가 유지됩니다. ID는 12자리 영문·숫자 조합입니다.</p><button id="closeHelp" class="close" type="button">게임 시작하기</button></dialog>
   <script>
     // Popup mode works even if the online module is blocked or loads slowly.
     window.todaywordAuthMode=function(mode){
@@ -613,6 +613,7 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
     const $ = id=>document.getElementById(id);
     let length=5, mode='daily', answerWord='', answer=[], history=[], current=[], finished=false, won=false, practiceNum=0;
     let activeDate='', puzzleId='', lastPracticeWord='';
+    let secureBusy=false, secureLoaded=false;
     const usedPracticeIds=new Set();
     const BASE_5=62**5;
     const ALPHA_NUM='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -685,7 +686,7 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
     }
     function storageKey(){return `natmal:v3:${activeDate}:${length}`;}
     function persist(){
-      if(mode==='daily') {try {localStorage.setItem(storageKey(),JSON.stringify({history, current, finished, won}));} catch { /* private browsing / local files */ }}
+      if(mode==='daily'&&false) {try {localStorage.setItem(storageKey(),JSON.stringify({history, current, finished, won}));} catch { /* private browsing / local files */ }}
     }
     function restore(){
       if(mode!=='daily')return;
@@ -700,7 +701,7 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
       activeDate=dateKST();
       answerWord=selectAnswer();answer=splitHangul(answerWord);history=[];current=[];won=false;finished=false;
       puzzleId=mode==='daily'?dailyId(activeDate,length):randomPracticeId();
-      if(mode==='daily')restore();
+      if(mode==='daily'){finished=false;won=false;history=[];current=[];secureLoaded=false;setTimeout(loadSecureDaily,0);}
       document.querySelectorAll('[data-length]').forEach(btn=>{
         const selected=Number(btn.dataset.length)===length;btn.classList.toggle('active',selected);btn.setAttribute('aria-pressed',selected);
       });
@@ -708,11 +709,12 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
       $('dailyMode').setAttribute('aria-pressed',mode==='daily');$('practiceMode').setAttribute('aria-pressed',mode==='practice');
       $('dateLabel').textContent=mode==='daily'?`${activeDate.replaceAll('-','.')} · 오늘의 문제`:`연습 문제 #${practiceNum}`;
       $('puzzleId').textContent=puzzleId;
-      $('shuffleLabel').textContent=mode==='daily'?'일별 무작위 순서 · 중복 방지':'연습용 무작위 문제';
+      $('shuffleLabel').textContent=mode==='daily'?'서버 3개 후보 중 무작위 · 계정별 중복 방지':'연습용 무작위 문제';
       updateTimeLabel();
       dictionaryMessage(dictionaryStatus==='ready'?'✓ 30만 이상 명사 사전 준비 완료':dictionaryStatus==='loading'?'명사 사전을 불러오는 중':dictionaryStatus==='partial'?'일부 명사만 불러왔어요 (30만 미달)':'외부 사전 연결 실패 · 기본 단어만 사용 중');
       render();
-      if(finished) setStatus(won?`🎉 정답! ${answerWord} · ${history.length}번째 시도에 성공했어요.`:`아쉬워요! 정답은 '${answerWord}'였어요.`,won?'success':'error');
+      if(mode==='daily')setStatus('로그인 및 오늘의 기록을 확인하고 있어요.');
+      else if(finished) setStatus(won?`🎉 정답! ${answerWord} · ${history.length}번째 시도에 성공했어요.`:`아쉬워요! 정답은 '${answerWord}'였어요.`,won?'success':'error');
       else setStatus('자음·모음을 눌러 단어를 입력해 보세요.');
     }
     function setStatus(message,type=''){
@@ -737,7 +739,7 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
       const keyboard=$('keyboard');keyboard.replaceChildren();
       KEY_ROWS.forEach((chars,rowIndex)=>{
         const row=document.createElement('div');row.className='keyrow';
-        for(const ch of chars){const key=document.createElement('button');key.type='button';key.className=`key ${state[ch]||''}`;key.textContent=ch;key.disabled=finished;key.setAttribute('aria-label',`${ch} 입력`);key.addEventListener('click',()=>typeLetter(ch));row.appendChild(key);}
+        for(const ch of chars){const key=document.createElement('button');key.type='button';key.className=`key ${state[ch]||''}`;key.textContent=ch;key.disabled=finished||!window.todaywordSecure?.isLoggedIn()||(mode==='daily'&&!secureLoaded);key.setAttribute('aria-label',`${ch} 입력`);key.addEventListener('click',()=>typeLetter(ch));row.appendChild(key);}
         if(rowIndex===2) {
           row.appendChild(actionKey('⌫','한 칸 지우기',erase,'action'));
           row.appendChild(actionKey('제출','단어 제출',submit,'submit'));
@@ -749,15 +751,15 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
     }
     function actionKey(text,label,handler,style){
       const key=document.createElement('button');key.type='button';key.className=`key action ${style}`;
-      key.textContent=text;key.disabled=finished;key.setAttribute('aria-label',label);
+      key.textContent=text;key.disabled=finished||!window.todaywordSecure?.isLoggedIn()||(mode==='daily'&&!secureLoaded);key.setAttribute('aria-label',label);
       key.addEventListener('click',handler);return key;
     }
     function typeLetter(letter){
-      if(finished)return;
+      if(finished||!window.todaywordSecure?.isLoggedIn()||(mode==='daily'&&!secureLoaded))return;
       for(const ch of (BREAK[letter]||letter)) if(current.length<length && KEY_ROWS.join('').includes(ch))current.push(ch);
       persist();render();
     }
-    function erase(){if(finished)return;current.pop();persist();render();}
+    function erase(){if(finished||!window.todaywordSecure?.isLoggedIn()||(mode==='daily'&&!secureLoaded))return;current.pop();persist();render();}
     function evaluate(guess,target){
       const result=Array(guess.length).fill('absent'),remain={};
       for(let i=0;i<target.length;i++){
@@ -772,6 +774,8 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
     }
     function submit(){
       if(finished)return;
+      if(mode==='daily'){submitSecureDaily();return;}
+      if(!window.todaywordSecure?.isLoggedIn()){setStatus('로그인 후 게임을 풀 수 있어요.','error');return;}
       if(current.length!==length){setStatus(`${length}칸을 모두 채워 주세요. (현재 ${current.length}칸)`,'error');return;}
       const wordKey=current.join('');
       if(!isValidWord(wordKey)){
@@ -789,6 +793,43 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
       else if(finished)setStatus(`아쉬워요! 정답은 '${answerWord}'였습니다.`,'error');
       else setStatus(`힌트를 확인하세요. 남은 기회 ${5-history.length}번!`);
     }
+    async function loadSecureDaily(){
+      if(mode!=='daily')return;
+      const expectedLength=length,expectedDate=activeDate;
+      if(!window.todaywordSecure?.isLoggedIn()){
+        secureLoaded=false;history=[];current=[];finished=false;render();
+        setStatus('🔒 오늘의 단어는 로그인 후에만 도전할 수 있어요.','error');return;
+      }
+      if(secureBusy)return;
+      secureBusy=true;
+      try{
+        const state=await window.todaywordSecure.state(expectedLength);
+        if(mode!=='daily'||length!==expectedLength||activeDate!==expectedDate)return;
+        applySecureState(state);
+      }catch(e){secureLoaded=false;setStatus('오늘의 기록을 불러오지 못했습니다: '+e.message,'error');}
+      finally{secureBusy=false;render();}
+    }
+    function applySecureState(state){
+      history=(state.guesses||[]).map(entry=>({letters:entry.letters,result:entry.result}));
+      current=[];finished=!!state.finished;won=!!state.won;secureLoaded=true;
+      answerWord=state.answer||'';
+      render();
+      if(finished)setStatus(won?`🎉 오늘의 정답! ${answerWord} · ${history.length}회 만에 성공!`:`오늘의 도전 종료. 정답은 ${answerWord}입니다.`,won?'success':'error');
+      else setStatus(`서버 기록 불러오기 완료 · 남은 기회 ${5-history.length}회`);
+    }
+    async function submitSecureDaily(){
+      if(secureBusy||!secureLoaded){setStatus('서버 기록을 확인 중입니다.','error');return;}
+      if(!window.todaywordSecure?.isLoggedIn()){setStatus('로그인이 필요합니다.','error');return;}
+      if(current.length!==length){setStatus(`${length}칸을 모두 채워 주세요.`,'error');return;}
+      if(!isValidWord(current.join(''))){setStatus('사전에 없는 명사입니다.','error');return;}
+      const n=length,day=activeDate,guess=current.join('');secureBusy=true;
+      try{
+        const state=await window.todaywordSecure.guess(n,guess);
+        if(mode==='daily'&&length===n&&activeDate===day)applySecureState(state);
+      }catch(e){setStatus('서버 제출 실패: '+e.message,'error');await loadSecureDaily();}
+      finally{secureBusy=false;render();}
+    }
+    window.addEventListener('todayword-auth-ready',()=>{if(mode==='daily')loadSecureDaily();else render();});
     function share(){
       const squares={correct:'🟩',present:'🟨',absent:'⬜'};
       const text=`낱말 탐정 ${activeDate} · ${length}자 · ID ${puzzleId} · ${won?history.length:'X'}/5\n${history.map(h=>h.result.map(s=>squares[s]).join('')).join('\n')}\n${location.href}`;

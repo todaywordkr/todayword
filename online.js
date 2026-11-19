@@ -23,7 +23,51 @@ async function loadPointLogs(){
 $('headerPoints').addEventListener('click',async()=>{if(!user)return;$('pointLogDialog').showModal();try{await loadPointLogs()}catch(e){$('pointLogItems').textContent='포인트 내역 조회 실패: '+friendly(e)}});
 $('pointLogClose').addEventListener('click',()=>$('pointLogDialog').close());
 $('pointLogDialog').addEventListener('click',e=>{if(e.target===$('pointLogDialog'))e.target.close()});
-async function loadShop(){const {data,error}=await client.from('shop_items').select('id,title,cost,description').eq('active',true).order('cost');if(error)throw error;const area=$('shop');area.replaceChildren();for(const item of data){const row=document.createElement('div');row.className='rankrow';const info=document.createElement('span');info.textContent=`${item.title} · ${item.cost}P (${item.description||''})`;const btn=document.createElement('button');btn.type='button';btn.textContent='구매';btn.onclick=async()=>{try{await rpc('buy_item',{p_item_id:item.id});status('아이템 구매 완료');await loadProfile()}catch(e){status(friendly(e))}};row.append(info,btn);area.append(row)}}
+function loadShop(){
+ const area=$('shop');area.replaceChildren();
+ const groups=[
+  {key:'shape',label:'앰블럼 모양',items:[['없음','▫️',0],['하트','💗',0],['고양이','🐱',100],['방패','🛡️',1000],['왕관','👑',5000],['드래곤','🐉',10000]]},
+  {key:'pattern',label:'앰블럼 문양',items:[['없음','▫️',0],['별','⭐',0],['클로버','🍀',100],['달','🌙',500],['보석','💎',1500],['불꽃 문장','🔱',3000]]},
+  {key:'wings',label:'앰블럼 날개',items:[['없음','▫️',0],['나비','🦋',300],['천사','🪽',2000],['황금','🌟',5000],['악마','🦇',5000]]},
+  {key:'effect',label:'앰블럼 효과',items:[['없음','▫️',0],['별빛','✨',300],['오로라','🌌',3000],['불꽃','🔥',3000],['눈꽃','❄️',2000],['번개','⚡',5000]]},
+  {key:'namefx',label:'닉네임 효과',items:[['기본','▫️',0],['무지개','🌈',1000],['네온','💜',1500],['골드','🌟',3000],['아이스','🧊',2000]]}
+ ];
+ const selected={shape:0,pattern:0,wings:0,effect:0,namefx:0};
+ const wrap=document.createElement('section');wrap.className='emblem-shop';
+ const title=document.createElement('h3');title.textContent='✨ 레이어드 앰블럼 꾸미기';wrap.append(title);
+ const note=document.createElement('p');note.className='shop-note';note.textContent='모양 + 문양 + 날개 + 효과 + 닉네임 효과를 조합해 보세요. 현재 구매는 잠겨 있으며 포인트는 차감되지 않습니다.';wrap.append(note);
+ const preview=document.createElement('div');preview.className='emblem-preview';preview.setAttribute('aria-live','polite');wrap.append(preview);
+ const buttons={};
+ const footer=document.createElement('div');footer.className='shop-footer';
+ const total=document.createElement('span');total.className='shop-price';footer.append(total);
+ const locked=document.createElement('button');locked.type='button';locked.className='shop-locked';locked.disabled=true;locked.textContent='🔒 구매 준비 중';footer.append(locked);
+ function render(){
+  const pick=key=>groups.find(g=>g.key===key).items[selected[key]];
+  const [shape,pattern,wings,effect,namefx]=['shape','pattern','wings','effect','namefx'].map(pick);
+  const art=document.createElement('div');art.className='emblem-art';art.dataset.namefx=['','rainbow','neon','gold','ice'][selected.namefx];
+  const add=(cls,value)=>{const el=document.createElement('span');el.className=cls;el.textContent=value;art.append(el)};
+  if(selected.wings)add('emblem-wings',wings[1]);
+  if(selected.shape)add('emblem-core',shape[1]);
+  if(selected.pattern)add('emblem-pattern',pattern[1]);
+  if(selected.effect)add('emblem-fx',effect[1]);
+  add('emblem-name',currentProfile?.nickname||'내 닉네임');preview.replaceChildren(art);
+  const price=groups.reduce((sum,g)=>sum+g.items[selected[g.key]][2],0);
+  total.textContent='선택 조합 가격: '+price.toLocaleString('ko-KR')+'P · 미리보기 전용';
+  for(const g of groups)buttons[g.key].forEach((btn,i)=>btn.setAttribute('aria-pressed',String(selected[g.key]===i)));
+ }
+ for(const g of groups){
+  const section=document.createElement('div');section.className='emblem-group';
+  const label=document.createElement('strong');label.textContent=g.label;section.append(label);
+  const grid=document.createElement('div');grid.className='emblem-grid';buttons[g.key]=[];
+  g.items.forEach((item,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='emblem-option';
+   const icon=document.createElement('span');icon.className='emblem-icon';icon.textContent=item[1];
+   const name=document.createElement('span');name.textContent=item[0];
+   const cost=document.createElement('small');cost.textContent=item[2]===0?'무료':item[2].toLocaleString('ko-KR')+'P';
+   btn.append(icon,name,cost);btn.addEventListener('click',()=>{selected[g.key]=i;render()});buttons[g.key].push(btn);grid.append(btn);
+  });section.append(grid);wrap.append(section);
+ }
+ wrap.append(footer);area.append(wrap);render();
+}
 async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard',{p_period:period});if(error)throw error;const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.textContent=`${i+1}위 ${entry.nickname}`;const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
 async function refresh(){
  const {data:{user:current},error:authError}=await client.auth.getUser();

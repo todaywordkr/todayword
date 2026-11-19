@@ -135,6 +135,31 @@
 .point-log-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid rgba(128,128,128,.2);font-size:13px}
 .point-log-row strong{white-space:nowrap}.point-positive{color:#16a34a}.point-negative{color:#dc2626}
 html[data-theme="dark"] .point-positive{color:#86efac}html[data-theme="dark"] .point-negative{color:#fca5a5}
+
+/* Emblem preview shop: no purchases or database writes */
+.emblem-shop{margin-top:18px;padding:18px;border:1px solid #7773bd66;border-radius:20px;background:linear-gradient(140deg,#282044,#44316d);color:#fff}
+.emblem-shop h3{margin:0 0 6px;color:#fff}.emblem-shop .shop-note{color:#ded7ff;font-size:13px;margin:0 0 14px}
+.emblem-preview{display:flex;justify-content:center;align-items:center;min-height:145px;border:1px solid #a6a0ff66;border-radius:16px;background:radial-gradient(circle,#6451a5 0%,#211b3e 75%);overflow:hidden;margin-bottom:15px}
+.emblem-art{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:165px;min-height:108px;padding:10px 36px}
+.emblem-art .emblem-wings{position:absolute;font-size:58px;z-index:0;filter:drop-shadow(0 0 8px #a6a3ff);opacity:.9}
+.emblem-art .emblem-core{position:relative;z-index:1;font-size:43px;filter:drop-shadow(0 0 6px #e6baff)}
+.emblem-art .emblem-pattern{position:absolute;z-index:2;font-size:23px;top:49px;left:50%;transform:translateX(-50%);filter:drop-shadow(0 0 4px #111)}
+.emblem-art .emblem-fx{position:absolute;inset:0;display:grid;place-items:center;z-index:3;font-size:75px;pointer-events:none;opacity:.7}
+.emblem-art .emblem-name{position:relative;z-index:4;font-size:19px;font-weight:900;white-space:nowrap;margin-left:10px;text-shadow:0 2px 5px #080414}
+.emblem-art[data-namefx="rainbow"] .emblem-name{background:linear-gradient(90deg,#ff9bbb,#ffe79b,#98ffe2,#adacff);color:transparent;background-clip:text}
+.emblem-art[data-namefx="neon"] .emblem-name{color:#f4caff;text-shadow:0 0 6px #d37dff,0 0 14px #a04dff}
+.emblem-art[data-namefx="gold"] .emblem-name{color:#ffe49a;text-shadow:0 0 7px #f6a832}
+.emblem-art[data-namefx="ice"] .emblem-name{color:#b4edff;text-shadow:0 0 8px #42c7ff}
+.emblem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:9px}
+.emblem-group{margin:13px 0}.emblem-group>strong{display:block;margin-bottom:8px;font-size:14px}
+.emblem-option{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:92px;border:1px solid #8e83c0;background:#3b315d;color:#fff;border-radius:12px;padding:8px 5px;cursor:pointer}
+.emblem-option[aria-pressed="true"]{border:2px solid #8ee5ff;background:#51458b;box-shadow:0 0 10px #6fbcff66}
+.emblem-option .emblem-icon{font-size:28px}.emblem-option small{color:#f5d994;font-size:11px}
+.emblem-shop .shop-footer{margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.emblem-shop .shop-locked{background:#6c6289;color:#fff;border:1px solid #aaa2c3;padding:11px 16px;border-radius:12px;cursor:not-allowed;opacity:.85}
+.emblem-shop .shop-price{font-weight:800;color:#ffe59e}
+html[data-theme="light"] .emblem-shop{color:#fff}
+
 </style>
 <style id="onlineStyles">.online{margin:16px 0;padding:18px;border:1px solid #9aa6ba66;border-radius:16px;background:var(--panel,#ffffff0a)}.online h2{font-size:19px}.online input,.online button{font:inherit;padding:10px;border-radius:9px;border:1px solid #a5aec0}.online input{width:100%;background:transparent;color:inherit}.online button{cursor:pointer;background:#405bd7;color:white}.online .fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}.online .muted{font-size:12px;opacity:.8}.online .hidden{display:none}.online .rankrow{display:flex;justify-content:space-between;border-bottom:1px solid #9995;padding:8px 0;gap:8px}@media(max-width:420px){.online .fields{grid-template-columns:1fr}}</style><style id="accountPopupStyle">
 .account-open{white-space:nowrap;border:1px solid var(--border,#aaa);border-radius:10px;padding:8px 11px;background:var(--panel,#fff);color:var(--ink,#222);font:inherit;font-size:13px;font-weight:700;cursor:pointer}

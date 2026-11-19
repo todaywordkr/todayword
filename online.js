@@ -23,15 +23,37 @@ const client=createClient(cfg.url,cfg.key,{auth:{persistSession:true,autoRefresh
 let user=null,period='day',currentProfile=null;
 const friendly=e=>e?.message||String(e);
 async function rpc(name,args={}){const {data,error}=await client.rpc(name,args);if(error)throw error;return data;}
-async function loadProfile(){if(!user)return;const {data,error}=await client.from('profiles').select('nickname,points,username').eq('id',user.id).single();if(error)throw error;currentProfile=data;$('profileUsername').textContent=data.username;$('profilePoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberSummary').textContent=`${data.nickname} · ${data.points}P`;renderHeaderEmblem(data.nickname);$('headerPoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberStats').textContent='아이디는 다른 사용자에게 공개되지 않습니다.';}
+async function loadProfile(){if(!user)return;const {data,error}=await client.from('profiles').select('nickname,points,username').eq('id',user.id).single();if(error)throw error;currentProfile=data;$('profileUsername').textContent=data.username;$('profilePoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberSummary').textContent=`${data.nickname} · ${data.points}P`;await renderHeaderEmblem(data.nickname);$('headerPoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberStats').textContent='아이디는 다른 사용자에게 공개되지 않습니다.';}
 async function renderHeaderEmblem(nickname){
- const target=$('headerNickname');target.textContent=nickname;
+ const target=$('headerNickname');
+ if(!target)return;
+ // 기존 CSS의 max-width:110px + overflow:hidden 때문에 왼쪽 앰블럼이 잘리는 현상 방지.
+ target.style.setProperty('display','inline-flex','important');
+ target.style.setProperty('align-items','center','important');
+ target.style.setProperty('max-width','none','important');
+ target.style.setProperty('overflow','visible','important');
+ target.style.setProperty('white-space','nowrap','important');
+ const profile=$('headerProfile');
+ if(profile){profile.style.setProperty('max-width','none','important');profile.style.setProperty('overflow','visible','important');}
+ const trigger=$('profileOpen');
+ if(trigger){trigger.style.setProperty('display','inline-flex','important');trigger.style.setProperty('align-items','center','important');trigger.style.setProperty('overflow','visible','important');}
+ target.textContent=nickname;
  if(!user)return;
  try{
   const {data,error}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',user.id).maybeSingle();
   if(error)throw error;
-  if(user&&currentProfile?.nickname===nickname)target.replaceChildren(emblemArt(data||{shape:'shield1'},nickname,true));
- }catch(e){console.warn('앰블럼 표시 실패:',e)}
+  if(user&&currentProfile?.nickname===nickname){
+   const config=data||{shape:'frames/frame_001.png'};
+   const visual=emblemArt({...config,shape:config.shape||'frames/frame_001.png'},nickname,true);
+   visual.style.setProperty('display','inline-flex','important');
+   visual.style.setProperty('align-items','center','important');
+   visual.style.setProperty('overflow','visible','important');
+   visual.style.setProperty('max-width','none','important');
+   const badge=visual.querySelector('.png-emblem');
+   if(badge){badge.style.setProperty('flex-shrink','0','important');badge.style.setProperty('overflow','visible','important');}
+   target.replaceChildren(visual);
+  }
+ }catch(e){console.warn('앰블럼 표시 실패:',e);target.replaceChildren(emblemArt({shape:'frames/frame_001.png'},nickname,true))}
 }
 async function loadPointLogs(){
  const area=$('pointLogItems');area.textContent='내역을 불러오는 중…';

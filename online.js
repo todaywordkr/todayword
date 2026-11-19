@@ -9,7 +9,26 @@ async function rpc(name,args={}){const {data,error}=await client.rpc(name,args);
 async function loadProfile(){if(!user)return;const {data,error}=await client.from('profiles').select('nickname,points,username').eq('id',user.id).single();if(error)throw error;currentProfile=data;$('profileUsername').textContent=data.username;$('profilePoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberSummary').textContent=`${data.nickname} · ${data.points}P`;$('headerNickname').textContent=data.nickname;$('headerPoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberStats').textContent='아이디는 다른 사용자에게 공개되지 않습니다.';}
 async function loadShop(){const {data,error}=await client.from('shop_items').select('id,title,cost,description').eq('active',true).order('cost');if(error)throw error;const area=$('shop');area.replaceChildren();for(const item of data){const row=document.createElement('div');row.className='rankrow';const info=document.createElement('span');info.textContent=`${item.title} · ${item.cost}P (${item.description||''})`;const btn=document.createElement('button');btn.type='button';btn.textContent='구매';btn.onclick=async()=>{try{await rpc('buy_item',{p_item_id:item.id});status('아이템 구매 완료');await loadProfile()}catch(e){status(friendly(e))}};row.append(info,btn);area.append(row)}}
 async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard',{p_period:period});if(error)throw error;const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.textContent=`${i+1}위 ${entry.nickname}`;const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
-async function refresh(){const {data:{user:current}}=await client.auth.getUser();user=current;$('authArea').classList.toggle('hidden',!!user);$('openAccount').classList.toggle('hidden',!!user);$('openLogin').classList.toggle('hidden',!!user);$('headerProfile').classList.toggle('hidden',!user);if(!user){currentProfile=null;$('headerNickname').textContent='';$('headerPoints').textContent='';if($('profileDialog').open)$('profileDialog').close();}if(user&&window.todaywordAccountDialog?.open)window.todaywordAccountDialog.close();$('memberArea').classList.toggle('hidden',!user);if(user){await loadProfile();await loadShop();status('로그인됨 · 온라인 기록 연결 완료')}else status('회원가입하거나 로그인하면 출석·포인트·랭킹을 이용할 수 있어요.');await loadRanks();window.dispatchEvent(new Event('todayword-auth-ready'))}
+async function refresh(){
+ const {data:{user:current},error:authError}=await client.auth.getUser();
+ if(authError)throw authError;
+ user=current;
+ $('authArea').classList.toggle('hidden',!!user);
+ $('openAccount').classList.toggle('hidden',!!user);
+ $('openLogin').classList.toggle('hidden',!!user);
+ $('headerProfile').classList.toggle('hidden',!user);
+ if(!user){currentProfile=null;$('headerNickname').textContent='';$('headerPoints').textContent='';if($('profileDialog').open)$('profileDialog').close();}
+ if(user&&window.todaywordAccountDialog?.open)window.todaywordAccountDialog.close();
+ $('memberArea').classList.toggle('hidden',!user);
+ // Unlock game immediately after authenticated user is confirmed, even if profile/rank APIs fail.
+ window.dispatchEvent(new Event('todayword-auth-ready'));
+ try{
+  if(user){await loadProfile();await loadShop();status('로그인됨 · 온라인 기록 연결 완료');}
+  else status('회원가입하거나 로그인하면 출석·포인트·랭킹을 이용할 수 있어요.');
+  await loadRanks();
+ }catch(e){status('로그인 상태는 확인됐지만 온라인 정보 불러오기 실패: '+friendly(e));}
+}
+
 // Supabase Auth requires an email internally. Use a deterministic, non-deliverable
 // address derived from the private username; no real email is requested or sent.
 const usernameEmail=name=>`${name.toLowerCase()}@pynscyjkjiwjmaanbeie.supabase.co`;

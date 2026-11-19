@@ -17,9 +17,9 @@ const normalizeUsername=value=>value.trim().toLowerCase();
 const authError=e=>{
  const msg=friendly(e);
  if(/duplicate|unique|already registered|already exists|already been registered/i.test(msg))return '이미 사용 중인 아이디 또는 닉네임입니다.';
- if(/invalid login credentials/i.test(msg))return '아이디 또는 비밀번호가 틀렸습니다.';
+ if(/invalid login credentials/i.test(msg))return '아이디 또는 비밀번호가 일치하지 않습니다. 이전 버전에서 가입했다면 로그인 주소 형식이 달랐을 수도 있습니다. ('+msg+')';
  if(/invalid email|email address.*invalid|email.*not valid/i.test(msg))return '인증 이메일 설정 오류입니다. 새 버전으로 업데이트하고 다시 시도하세요.';
- if(/email.*confirm|confirmation/i.test(msg))return 'Supabase에서 이메일 확인 기능을 꺼주세요.';
+ if(/email.*not.*confirm|email_not_confirmed/i.test(msg))return '이 계정은 이메일 미인증 상태입니다. Supabase Authentication → Users에서 해당 사용자를 확인해 주세요. (원본 오류: '+msg+')';
  return msg;
 };
 $('signup').onclick=async()=>{
@@ -35,7 +35,7 @@ $('signup').onclick=async()=>{
   const {data,error}=await client.auth.signUp({email:usernameEmail(username),password,options:{data:{username,nickname}}});
   if(error)throw error;
   if(!data.user){status('회원가입을 완료하지 못했습니다. 다시 시도해주세요.');return;}
-  if(!data.session){status('이메일 확인이 켜져 있습니다. Supabase에서 Confirm email을 꺼주세요.');return;}
+  if(!data.session){status('계정은 생성됐지만 인증 세션이 없습니다. Supabase Authentication → Users에서 사용자 확인 상태를 확인해 주세요.');return;}
   // Keep signup separate from login, and show a dedicated success screen.
   await client.auth.signOut();
   user=null;

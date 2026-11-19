@@ -106,7 +106,7 @@ async function loadShop(){
  const nameRow=document.createElement('div');nameRow.className='shop-namefx-row';
  const nameTitle=document.createElement('span');nameTitle.textContent='닉네임 색상';nameRow.append(nameTitle);
  for(const [label,id] of SHOP_NAMEFX){const btn=document.createElement('button');btn.type='button';btn.textContent=label;btn.dataset.namefx=id;btn.addEventListener('click',()=>{selectedNamefx=id;updatePreview()});nameRow.append(btn);}
- wrap.insertBefore(nameRow,footer);wrap.append(footer);
+ wrap.append(nameRow,footer);
  const nav={};
  for(const group of SHOP_GROUPS){const btn=document.createElement('button');btn.type='button';btn.textContent=group.label+' ('+groups[group.key].length+')';btn.setAttribute('role','tab');btn.addEventListener('click',()=>{activeCategory=group.key;activeTier='전체';renderGrid()});tabs.append(btn);nav[group.key]=btn;}
  function updatePreview(){

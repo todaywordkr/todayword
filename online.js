@@ -3,13 +3,13 @@ const cfg=window.TODAYWORD_SUPABASE;
 const $=id=>document.getElementById(id);
 const status=message=>{$('onlineStatus').textContent=message;const el=$('authStatus');if(el)el.textContent=message};
 const client=createClient(cfg.url,cfg.key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
-let user=null,period='day';
+let user=null,period='day',currentProfile=null;
 const friendly=e=>e?.message||String(e);
 async function rpc(name,args={}){const {data,error}=await client.rpc(name,args);if(error)throw error;return data;}
-async function loadProfile(){if(!user)return;const {data,error}=await client.from('profiles').select('nickname,points,username').eq('id',user.id).single();if(error)throw error;$('memberSummary').textContent=`${data.nickname} · ${data.points}P`;$('headerNickname').textContent=data.nickname;$('headerPoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberStats').textContent='아이디는 다른 사용자에게 공개되지 않습니다.';}
+async function loadProfile(){if(!user)return;const {data,error}=await client.from('profiles').select('nickname,points,username').eq('id',user.id).single();if(error)throw error;currentProfile=data;$('profileUsername').textContent=data.username;$('profilePoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberSummary').textContent=`${data.nickname} · ${data.points}P`;$('headerNickname').textContent=data.nickname;$('headerPoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberStats').textContent='아이디는 다른 사용자에게 공개되지 않습니다.';}
 async function loadShop(){const {data,error}=await client.from('shop_items').select('id,title,cost,description').eq('active',true).order('cost');if(error)throw error;const area=$('shop');area.replaceChildren();for(const item of data){const row=document.createElement('div');row.className='rankrow';const info=document.createElement('span');info.textContent=`${item.title} · ${item.cost}P (${item.description||''})`;const btn=document.createElement('button');btn.type='button';btn.textContent='구매';btn.onclick=async()=>{try{await rpc('buy_item',{p_item_id:item.id});status('아이템 구매 완료');await loadProfile()}catch(e){status(friendly(e))}};row.append(info,btn);area.append(row)}}
 async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard',{p_period:period});if(error)throw error;const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.textContent=`${i+1}위 ${entry.nickname}`;const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
-async function refresh(){const {data:{user:current}}=await client.auth.getUser();user=current;$('authArea').classList.toggle('hidden',!!user);$('openAccount').classList.toggle('hidden',!!user);$('openLogin').classList.toggle('hidden',!!user);$('headerProfile').classList.toggle('hidden',!user);if(!user){$('headerNickname').textContent='';$('headerPoints').textContent='';}if(user&&window.todaywordAccountDialog?.open)window.todaywordAccountDialog.close();$('memberArea').classList.toggle('hidden',!user);if(user){await loadProfile();await loadShop();status('로그인됨 · 온라인 기록 연결 완료')}else status('회원가입하거나 로그인하면 출석·포인트·랭킹을 이용할 수 있어요.');await loadRanks()}
+async function refresh(){const {data:{user:current}}=await client.auth.getUser();user=current;$('authArea').classList.toggle('hidden',!!user);$('openAccount').classList.toggle('hidden',!!user);$('openLogin').classList.toggle('hidden',!!user);$('headerProfile').classList.toggle('hidden',!user);if(!user){currentProfile=null;$('headerNickname').textContent='';$('headerPoints').textContent='';if($('profileDialog').open)$('profileDialog').close();}if(user&&window.todaywordAccountDialog?.open)window.todaywordAccountDialog.close();$('memberArea').classList.toggle('hidden',!user);if(user){await loadProfile();await loadShop();status('로그인됨 · 온라인 기록 연결 완료')}else status('회원가입하거나 로그인하면 출석·포인트·랭킹을 이용할 수 있어요.');await loadRanks()}
 // Supabase Auth requires an email internally. Use a deterministic, non-deliverable
 // address derived from the private username; no real email is requested or sent.
 const usernameEmail=name=>`${name.toLowerCase()}@pynscyjkjiwjmaanbeie.supabase.co`;
@@ -55,6 +55,54 @@ $('signin').onclick=async()=>{
   await refresh();
  }catch(e){status(authError(e))}
 };
+
+// Account management: require password reauthentication before sensitive changes.
+const profileDialog=$('profileDialog');
+const profileStatus=message=>{$('profileMessage').textContent=message};
+const profileBusy=(button,busy)=>{button.disabled=busy;button.setAttribute('aria-busy',String(busy))};
+async function reauthenticate(password){
+ if(!user||!currentProfile)throw Error('로그인이 필요합니다.');
+ if(!password)throw Error('현재 비밀번호를 입력하세요.');
+ const {error}=await client.auth.signInWithPassword({email:user.email||usernameEmail(currentProfile.username),password});
+ if(error)throw Error('현재 비밀번호가 올바르지 않습니다.');
+}
+$('profileOpen').addEventListener('click',async()=>{
+ if(!user)return;
+ profileStatus('');$('profileDeleteArea').classList.add('hidden');
+ $('profileOldPassword').value='';$('profileNewPassword').value='';$('profileConfirmPassword').value='';$('profileDeletePassword').value='';$('profileDeleteConfirm').value='';
+ try{await loadProfile();$('profileNewNickname').value=currentProfile.nickname}catch(e){profileStatus(friendly(e))}
+ profileDialog.showModal();
+});
+$('profileClose').addEventListener('click',()=>profileDialog.close());
+profileDialog.addEventListener('click',event=>{if(event.target===profileDialog)profileDialog.close()});
+$('profileSaveNickname').addEventListener('click',async()=>{
+ const button=$('profileSaveNickname'),nickname=$('profileNewNickname').value.trim();
+ if(!nickname||nickname.length>24){profileStatus('닉네임은 1~24자로 입력하세요.');return}
+ if(nickname===currentProfile?.nickname){profileStatus('현재 닉네임과 같습니다.');return}
+ profileBusy(button,true);
+ try{await rpc('change_nickname',{p_nickname:nickname});await loadProfile();await loadRanks();profileStatus('닉네임이 변경되었습니다.')}catch(e){profileStatus(/unique|duplicate/i.test(friendly(e))?'이미 사용 중인 닉네임입니다.':friendly(e))}finally{profileBusy(button,false)}
+});
+$('profileSavePassword').addEventListener('click',async()=>{
+ const button=$('profileSavePassword'),old=$('profileOldPassword').value,pass=$('profileNewPassword').value,confirm=$('profileConfirmPassword').value;
+ if(pass.length<8){profileStatus('새 비밀번호는 8자 이상 입력하세요.');return}
+ if(pass!==confirm){profileStatus('새 비밀번호 확인이 일치하지 않습니다.');return}
+ if(old===pass){profileStatus('현재 비밀번호와 다른 비밀번호를 입력하세요.');return}
+ profileBusy(button,true);
+ try{await reauthenticate(old);const {error}=await client.auth.updateUser({password:pass});if(error)throw error;
+  $('profileOldPassword').value='';$('profileNewPassword').value='';$('profileConfirmPassword').value='';profileStatus('비밀번호가 변경되었습니다.')
+ }catch(e){profileStatus(friendly(e))}finally{profileBusy(button,false)}
+});
+$('profileLogout').addEventListener('click',async()=>{try{await client.auth.signOut();profileDialog.close();await refresh()}catch(e){profileStatus(friendly(e))}});
+$('profileDeleteToggle').addEventListener('click',()=>{$('profileDeleteArea').classList.toggle('hidden');profileStatus('')});
+$('profileDelete').addEventListener('click',async()=>{
+ const button=$('profileDelete');
+ if($('profileDeleteConfirm').value.trim()!=='탈퇴합니다'){profileStatus('확인 문구에 탈퇴합니다를 정확히 입력하세요.');return}
+ if(!window.confirm('정말 회원 탈퇴하시겠습니까? 모든 계정 기록이 영구 삭제됩니다.'))return;
+ profileBusy(button,true);
+ try{await reauthenticate($('profileDeletePassword').value);await rpc('delete_my_account');await client.auth.signOut({scope:'local'});profileDialog.close();await refresh();status('회원 탈퇴가 완료되었습니다.')}
+ catch(e){profileStatus('회원 탈퇴 실패: '+friendly(e))}finally{profileBusy(button,false)}
+});
+
 $('signout').onclick=async()=>{await client.auth.signOut();await refresh()};
 $('checkin').onclick=async()=>{try{const points=await rpc('daily_checkin');status(`출석 완료! 현재 ${points}P`);await loadProfile()}catch(e){status(friendly(e))}};
 document.querySelectorAll('[data-rank]').forEach(button=>button.onclick=async()=>{period=button.dataset.rank;document.querySelectorAll('[data-rank]').forEach(b=>(b.setAttribute('aria-pressed',String(b===button)),b.setAttribute('aria-selected',String(b===button))));try{await loadRanks()}catch(e){status(friendly(e))}});

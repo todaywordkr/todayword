@@ -1000,7 +1000,55 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
     startGame();
     loadDictionary();
   </script>
+  
+<script>
+/* 긴급 복구: 네비게이션은 Supabase 로딩과 독립적으로 동작 */
+(function(){
+  function ready(){
+    const $=id=>document.getElementById(id);
+    const show=(id)=>{const d=$(id);if(!d)return;try{if(!d.open)d.showModal()}catch(e){d.setAttribute('open','')}};
+    const close=(id)=>{const d=$(id);if(d?.open)d.close()};
+    function auth(mode){
+      const signup=mode==='signup';
+      $('accountTitle').textContent=signup?'회원가입':'로그인';
+      $('nickname').classList.toggle('hidden',!signup);
+      $('signup').classList.toggle('hidden',!signup);
+      $('signin').classList.toggle('hidden',signup);
+      $('authArea').classList.remove('hidden');
+      $('signupSuccess').classList.add('hidden');
+      $('authHint').textContent=signup?'아이디·닉네임은 중복 불가. 이메일은 필요하지 않습니다.':'가입한 아이디와 비밀번호로 로그인하세요.';
+      $('password').setAttribute('autocomplete',signup?'new-password':'current-password');
+      $('authStatus').textContent=window.todaywordOnline?'':'온라인 연결 확인 중…';
+      show('accountDialog');
+    }
+    function nav(rank){
+      const home=$('homePage'),page=$('rankingPage');
+      if(home)home.hidden=rank;
+      if(page)page.hidden=!rank;
+      $('rankingNav')?.setAttribute('aria-expanded',String(rank));
+      if(rank && !$('ranks')?.textContent.trim())$('ranks').textContent='랭킹을 불러오는 중…';
+    }
+    const actions={
+      openLogin:()=>auth('login'),openAccount:()=>auth('signup'),
+      closeAccount:()=>close('accountDialog'),goLogin:()=>auth('login'),
+      rankingNav:()=>nav(true),rankingBack:()=>nav(false),homeNav:()=>nav(false),
+      shopNav:()=>{show('shopDialog');if(window.todaywordOnline?.openShop)window.todaywordOnline.openShop();else if($('shop'))$('shop').textContent='온라인 연결 중…';},
+      shopClose:()=>close('shopDialog')
+    };
+    document.addEventListener('click',function(e){
+      const target=e.target.closest?.('button[id]');
+      if(!target||!actions[target.id])return;
+      e.preventDefault();e.stopImmediatePropagation();
+      try{actions[target.id]()}catch(err){const status=$('authStatus');if(status)status.textContent='화면 열기 실패: '+err.message;console.error(err)}
+    },true);
+    window.addEventListener('error',e=>{if($('authStatus'))$('authStatus').textContent='스크립트 오류: '+(e.message||'알 수 없음');});
+    window.addEventListener('unhandledrejection',e=>{if($('authStatus'))$('authStatus').textContent='온라인 오류: '+(e.reason?.message||String(e.reason));});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
+})();
+</script>
+
   <script src="config.js"></script>
-  <script type="module" src="online.js?v=20261120-recovery3"></script>
+  <script type="module" src="online.js?v=20261120-emergency4"></script>
 </body>
 </html>

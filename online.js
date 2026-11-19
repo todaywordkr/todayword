@@ -40,7 +40,11 @@ function ensureEmblemStyles(){
  style.textContent=`
  #headerNickname{display:inline-flex!important;align-items:center!important;gap:6px;max-width:none!important;overflow:visible!important;white-space:nowrap!important}
  #headerProfile,#profileOpen{overflow:visible!important;max-width:none!important}
- #headerNickname .emblem-identity{display:inline-flex!important;align-items:center!important;gap:6px!important;max-width:none!important}
+ #headerNickname .emblem-identity{display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;gap:3px!important;width:max-content!important;max-width:none!important;min-width:0!important;margin:0!important;padding:0!important}
+ #headerNickname .emblem-identity.compact .png-emblem.compact{position:relative!important;display:inline-block!important;flex:0 0 32px!important;width:32px!important;min-width:32px!important;max-width:32px!important;height:34px!important;margin:0!important;padding:0!important;transform:none!important}
+ #headerNickname .emblem-identity.compact .png-emblem.compact img{left:50%!important;top:50%!important;width:100%!important;height:100%!important;max-width:100%!important;object-fit:contain!important;transform:translate(-50%,-50%)!important}
+ #headerNickname .emblem-identity.compact .emblem-nickname{display:inline-block!important;flex:0 0 auto!important;margin:0!important;padding:0!important;max-width:none!important;line-height:1.2!important}
+ #profileOpen.profile-trigger{display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;gap:0!important;width:auto!important;padding-left:0!important;padding-right:0!important}
  #headerNickname .png-emblem,#profileEmblemView .png-emblem{position:relative!important;display:inline-block!important;flex:none!important;width:36px!important;min-width:36px!important;height:36px!important;overflow:visible!important;vertical-align:middle!important}
  #headerNickname .png-emblem img,#profileEmblemView .png-emblem img{position:absolute!important;left:0!important;top:0!important;width:100%!important;height:100%!important;object-fit:contain!important;image-rendering:pixelated!important}
  #headerNickname .emblem-nickname,#profileEmblemView .emblem-nickname{display:inline-block!important;white-space:nowrap!important}

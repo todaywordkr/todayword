@@ -91,13 +91,13 @@ async function renderHeaderEmblem(nickname){
   if(data){
    equippedEmblem=normalizeEquipped(data);
    writeEquippedCache(equippedEmblem);
-  }else if(cached){
-   // Do not erase the last confirmed equip merely because the server returned no row.
-   equippedEmblem=normalizeEquipped(cached);
-   console.warn('서버에 장착 행이 없습니다. 기존 장착 표시를 유지합니다.');
-  }else equippedEmblem=normalizeEquipped();
+  }else if(!cached){equippedEmblem=normalizeEquipped();}
   renderEquippedEverywhere();
- }catch(e){console.warn('장착 앰블럼 조회 실패:',e);renderEquippedEverywhere();}
+ }catch(e){
+  console.error('장착 조회 실패',e);
+  status('앰블럼 서버 조회 실패: '+friendly(e));
+  renderEquippedEverywhere();
+ }
 }
 
 async function loadPointLogs(){
@@ -229,6 +229,7 @@ async function loadShop(){
  }
  const wrap=document.createElement('section');wrap.className='emblem-shop shop-200';
  const note=document.createElement('p');note.className='shop-note';note.textContent='무료 방패 2개만 소유 · 나머지는 300P부터 · 유료 구매/장착 잠금 · 미리보기는 나갔다 와도 유지';wrap.append(note);
+ const equipInfo=document.createElement('p');equipInfo.className='shop-note';equipInfo.id='shopEquippedInfo';equipInfo.textContent='현재 장착: 서버 확인 중…';wrap.append(equipInfo);
  const preview=document.createElement('div');preview.className='emblem-preview shop-preview-200';preview.setAttribute('aria-live','polite');wrap.append(preview);
  const tabs=document.createElement('div');tabs.className='shop-categories';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','아이템 종류');wrap.append(tabs);
  const filter=document.createElement('div');filter.className='shop-tier-filter';wrap.append(filter);
@@ -244,6 +245,7 @@ async function loadShop(){
  const nav={};
  for(const group of SHOP_GROUPS){const btn=document.createElement('button');btn.type='button';btn.textContent=group.label+' ('+groups[group.key].length+')';btn.setAttribute('role','tab');btn.addEventListener('click',()=>{activeCategory=group.key;activeTier='전체';renderGrid()});tabs.append(btn);nav[group.key]=btn;}
  function updatePreview(){
+  equipInfo.textContent='현재 장착: '+(SHOP_CATALOG.find(it=>it.file===equippedEmblem.shape)?.name||'기본 방패')+' · 아래는 미리보기 (장착 버튼을 눌러야 적용)';
   saveShopPreview(selected,selectedNamefx,activeCategory,activeTier);
   preview.replaceChildren(shopPreviewArt(selected,currentProfile?.nickname||'내 닉네임',selectedNamefx));
   const sum=Object.values(selected).reduce((total,it)=>total+(it?.price||0),0);
@@ -279,25 +281,28 @@ async function loadShop(){
   updatePreview();
  }
  freeBtn.addEventListener('click',async()=>{
-  if(!user)return;
+  if(!user){status('로그인이 필요합니다.');return;}
   freeBtn.disabled=true;
+  const value=key=>selected[key]?.file||'';
+  const requested=normalizeEquipped({shape:value('frames'),pattern:value('patterns'),crown:value('crowns'),wings:value('wings'),effect:value('effects'),namefx:''});
   try{
    if(Object.values(selected).some(it=>it&&it.price!==0)){status('유료 아이템은 아직 장착할 수 없습니다.');return;}
-   const value=(key)=>selected[key]?.file||'';
-   await saveFreeEmblem({shape:value('frames'),pattern:value('patterns'),crown:value('crowns'),wings:value('wings'),effect:value('effects'),namefx:''});
-   const requested=normalizeEquipped({shape:value('frames'),pattern:value('patterns'),crown:value('crowns'),wings:value('wings'),effect:value('effects'),namefx:''});
+   await saveFreeEmblem(requested);
    const {data:confirmed,error:verifyError}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',user.id).maybeSingle();
-   if(verifyError)throw new Error('장착 저장 검증 실패: '+friendly(verifyError));
+   if(verifyError)throw verifyError;
    if(!confirmed||!sameEquipped(normalizeEquipped(confirmed),requested)){
-    throw new Error('서버 장착 정보가 변경되지 않았습니다. Supabase equip_owned_free_emblem 함수와 emblem_equipment 테이블을 확인해야 합니다.');
+    status('장착 실패: 서버에 요청한 방패가 저장되지 않았습니다. Supabase 저장 함수 확인이 필요합니다.');
+    return;
    }
    equippedEmblem=normalizeEquipped(confirmed);
    writeEquippedCache(equippedEmblem);
    renderEquippedEverywhere();
    saveShopPreview(selected,selectedNamefx,activeCategory,activeTier);
-   status('장착 완료 · 서버 저장 확인됨 · 새로고침해도 유지됩니다.');
+   updatePreview();
+   status('장착 완료 · 서버 저장 확인됨 · 새로고침 후에도 유지됩니다.');
    await loadRanks();
-  }catch(e){status('무료 앰블럼 장착 실패: '+friendly(e));}finally{freeBtn.disabled=!user||Object.values(selected).some(it=>it&&it.price!==0);}
+  }catch(e){status('장착 실패: '+friendly(e));console.error('장착 저장 오류',e);}
+  finally{freeBtn.disabled=!user||Object.values(selected).some(it=>it&&it.price!==0);}
  });
  area.replaceChildren(wrap);renderGrid();
 }

@@ -55,36 +55,105 @@ function emblemArt(config,nickname,compact=false){
  el.append(badge,name);return el;
 }
 async function saveFreeEmblem(config){return rpc('equip_free_emblem',{p_shape:config.shape,p_pattern:config.pattern,p_crown:config.crown,p_wings:config.wings,p_effect:config.effect,p_namefx:config.namefx});}
-function loadShop(){
+const SHOP_GROUPS = [
+ {key:'frames',label:'모양',field:'shape'},
+ {key:'patterns',label:'문양',field:'pattern'},
+ {key:'wings',label:'날개',field:'wings'},
+ {key:'crowns',label:'왕관',field:'crown'},
+ {key:'effects',label:'이펙트',field:'effect'}
+];
+const SHOP_NAMEFX=[['기본',''],['빨강','red'],['파랑','blue'],['초록','green'],['무지개','rainbow'],['오로라','aurora']];
+let shopCatalogPromise=null;
+function fetchShopCatalog(){
+ if(!shopCatalogPromise){shopCatalogPromise=fetch('./emblems/catalog.json',{cache:'no-cache'}).then(async response=>{
+  if(!response.ok)throw new Error('아이템 목록을 불러오지 못했습니다 ('+response.status+')');
+  const data=await response.json();
+  if(!Array.isArray(data)||data.length!==200)throw new Error('200종 가격표를 확인해 주세요.');
+  return data;
+ }).catch(e=>{shopCatalogPromise=null;throw e});}
+ return shopCatalogPromise;
+}
+const shopAsset=item=>'./emblems/'+item.file;
+function shopPreviewArt(selected,nickname,namefx){
+ const container=document.createElement('div');container.className='shop-200-art';
+ const layer=document.createElement('span');layer.className='shop-200-layer';layer.setAttribute('aria-hidden','true');
+ // 뒤 -> 앞: 이펙트(30%) / 날개 / 왕관(상단) / 틀 / 문양
+ for(const key of ['effects','wings','crowns','frames','patterns']){
+  const item=selected[key];if(!item)continue;
+  const img=document.createElement('img');img.src=shopAsset(item);img.alt='';img.className='shop-layer shop-layer-'+key;img.decoding='async';
+  layer.append(img);
+ }
+ const label=document.createElement('strong');label.className='emblem-nickname fx-'+(namefx||'basic');label.textContent=nickname||'내 닉네임';
+ container.append(layer,label);return container;
+}
+async function loadShop(){
  const area=$('shop');area.replaceChildren();
- const selected={shape:2,pattern:1,crown:1,wings:1,effect:1,namefx:0};
- const wrap=document.createElement('section');wrap.className='emblem-shop';
- const title=document.createElement('h3');title.textContent='✨ 레이어드 PNG 앰블럼 미리보기';wrap.append(title);
- const note=document.createElement('p');note.className='shop-note';note.textContent='구매는 잠금 상태입니다. 무료 기본 앰블럼만 랭킹에 장착할 수 있으며, 유료 구성은 미리보기만 가능합니다.';wrap.append(note);
- const preview=document.createElement('div');preview.className='emblem-preview';preview.setAttribute('aria-live','polite');wrap.append(preview);
- const tabs=document.createElement('div');tabs.className='shop-categories';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','상점 카테고리');wrap.append(tabs);const sections={};const tabButtons={};let activeCategory='shape';
- const buttons={};const footer=document.createElement('div');footer.className='shop-footer';
+ const loading=document.createElement('p');loading.className='shop-note';loading.textContent='200종 앰블럼 불러오는 중…';area.append(loading);
+ let catalog;
+ try{catalog=await fetchShopCatalog()}catch(e){loading.textContent='앰블럼 불러오기 실패: '+friendly(e)+' · GitHub에 emblems 폴더 전체와 catalog.json을 올렸는지 확인하세요.';return;}
+ // 상점이 닫힌 동안 응답이 온 경우 불필요한 렌더 방지
+ if(!$('shopDialog').open)return;
+ const groups=Object.fromEntries(SHOP_GROUPS.map(g=>[g.key,catalog.filter(it=>it.category===g.key)]));
+ const selected={frames:groups.frames[0],patterns:null,wings:null,crowns:null,effects:null};
+ let selectedNamefx='',activeCategory='frames',activeTier='전체';
+ const wrap=document.createElement('section');wrap.className='emblem-shop shop-200';
+ const note=document.createElement('p');note.className='shop-note';note.textContent='픽셀아트 PNG 200종 · 자유 조합 미리보기 전용 · 구매 및 포인트 차감은 잠금 상태입니다.';wrap.append(note);
+ const preview=document.createElement('div');preview.className='emblem-preview shop-preview-200';preview.setAttribute('aria-live','polite');wrap.append(preview);
+ const tabs=document.createElement('div');tabs.className='shop-categories';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','아이템 종류');wrap.append(tabs);
+ const filter=document.createElement('div');filter.className='shop-tier-filter';wrap.append(filter);
+ const grid=document.createElement('div');grid.className='emblem-grid shop-grid-200';wrap.append(grid);
+ const footer=document.createElement('div');footer.className='shop-footer';
  const total=document.createElement('span');total.className='shop-price';footer.append(total);
- const freeBtn=document.createElement('button');freeBtn.type='button';freeBtn.className='emblem-free';freeBtn.textContent='무료 앰블럼 장착';footer.append(freeBtn);
- const locked=document.createElement('button');locked.type='button';locked.className='shop-locked';locked.disabled=true;locked.textContent='🔒 유료 구매 잠금';footer.append(locked);
- const getConfig=()=>Object.fromEntries(EMBLEM_GROUPS.map(g=>[g.key,g.items[selected[g.key]][1]]));
- function render(){const config=getConfig();preview.replaceChildren(emblemArt(config,currentProfile?.nickname||'내 닉네임'));
-  const price=EMBLEM_GROUPS.reduce((sum,g)=>sum+g.items[selected[g.key]][2],0);
-  total.textContent='선택 조합: '+price.toLocaleString('ko-KR')+'P · 미리보기';
-  freeBtn.disabled=price!==0||!user;freeBtn.title=price?'유료 아이템은 현재 장착할 수 없습니다.':'무료 기본 앰블럼을 랭킹에 표시합니다.';
-  for(const g of EMBLEM_GROUPS)buttons[g.key].forEach((btn,i)=>btn.setAttribute('aria-pressed',String(selected[g.key]===i)));
-  for(const g of EMBLEM_GROUPS){sections[g.key].hidden=g.key!==activeCategory;tabButtons[g.key].setAttribute('aria-selected',String(g.key===activeCategory));}
+ const locked=document.createElement('button');locked.type='button';locked.disabled=true;locked.className='shop-locked';locked.textContent='🔒 구매 준비 중 (미리보기 전용)';footer.append(locked);
+ const freeBtn=document.createElement('button');freeBtn.type='button';freeBtn.className='emblem-free';freeBtn.textContent='무료 기본 방패 장착';freeBtn.disabled=!user;freeBtn.title='기존 무료 방패만 계정과 랭킹에 저장합니다.';footer.append(freeBtn);
+ const nameRow=document.createElement('div');nameRow.className='shop-namefx-row';
+ const nameTitle=document.createElement('span');nameTitle.textContent='닉네임 색상';nameRow.append(nameTitle);
+ for(const [label,id] of SHOP_NAMEFX){const btn=document.createElement('button');btn.type='button';btn.textContent=label;btn.dataset.namefx=id;btn.addEventListener('click',()=>{selectedNamefx=id;updatePreview()});nameRow.append(btn);}
+ wrap.insertBefore(nameRow,footer);wrap.append(footer);
+ const nav={};
+ for(const group of SHOP_GROUPS){const btn=document.createElement('button');btn.type='button';btn.textContent=group.label+' ('+groups[group.key].length+')';btn.setAttribute('role','tab');btn.addEventListener('click',()=>{activeCategory=group.key;activeTier='전체';renderGrid()});tabs.append(btn);nav[group.key]=btn;}
+ function updatePreview(){
+  preview.replaceChildren(shopPreviewArt(selected,currentProfile?.nickname||'내 닉네임',selectedNamefx));
+  const sum=Object.values(selected).reduce((total,it)=>total+(it?.price||0),0);
+  total.textContent='조합 예상 가격: '+sum.toLocaleString('ko-KR')+'P (구매 불가)';
+  for(const btn of nameRow.querySelectorAll('button'))btn.setAttribute('aria-pressed',String(btn.dataset.namefx===selectedNamefx));
+  for(const btn of grid.querySelectorAll('button[data-id]')){const curr=selected[activeCategory];btn.setAttribute('aria-pressed',String((curr?.id||'')===btn.dataset.id));}
  }
- for(const g of EMBLEM_GROUPS){const tab=document.createElement('button');tab.type='button';tab.textContent=g.label;tab.setAttribute('role','tab');tab.addEventListener('click',()=>{activeCategory=g.key;render()});tabs.append(tab);tabButtons[g.key]=tab;const section=document.createElement('div');sections[g.key]=section;section.className='emblem-group';const label=document.createElement('strong');label.textContent=g.label;section.append(label);
-  const grid=document.createElement('div');grid.className='emblem-grid';buttons[g.key]=[];
-  g.items.forEach((item,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='emblem-option'+(/낡은|찌그러진|낙서|흐릿한|종이|삐뚤어진|희미한/.test(item[0])?' rough':'');
-   if(item[1]){const img=document.createElement('img');img.className='emblem-option-img';img.src=asset(item[1]==='rainbow'?'aurora':item[1]);img.alt='';img.loading='lazy';btn.append(img)}else{const blank=document.createElement('span');blank.className='emblem-option-img blank';blank.textContent='—';btn.append(blank)}
-   const name=document.createElement('span');name.textContent=item[0];const cost=document.createElement('small');cost.textContent=item[2]===0?'무료':item[2].toLocaleString('ko-KR')+'P';
-   btn.append(name,cost);btn.addEventListener('click',()=>{selected[g.key]=i;render()});buttons[g.key].push(btn);grid.append(btn);
-  });section.append(grid);wrap.append(section);
+ function renderGrid(){
+  for(const group of SHOP_GROUPS)nav[group.key].setAttribute('aria-selected',String(group.key===activeCategory));
+  filter.replaceChildren();
+  for(const tier of ['전체','기본','일반','고급','희귀','전설']){
+   const btn=document.createElement('button');btn.type='button';btn.textContent=tier;btn.setAttribute('aria-pressed',String(activeTier===tier));btn.addEventListener('click',()=>{activeTier=tier;renderGrid()});filter.append(btn);
+  }
+  grid.replaceChildren();
+  // 종류별 빈 슬롯: 앞/뒤 장식 없이 조합해 볼 수 있음.
+  if(activeCategory!=='frames'){
+   const blank=document.createElement('button');blank.type='button';blank.className='emblem-option';blank.dataset.id='';
+   const mark=document.createElement('span');mark.className='emblem-option-img blank';mark.textContent='—';
+   const label=document.createElement('span');label.textContent='없음';const price=document.createElement('small');price.textContent='무료';
+   blank.append(mark,label,price);blank.addEventListener('click',()=>{selected[activeCategory]=null;updatePreview()});grid.append(blank);
+  }
+  for(const it of groups[activeCategory]){
+   if(activeTier!=='전체'&&it.tier!==activeTier)continue;
+   const btn=document.createElement('button');btn.type='button';btn.className='emblem-option';btn.dataset.id=it.id;btn.title=it.name+' · '+it.tier;
+   const img=document.createElement('img');img.src=shopAsset(it);img.alt='';img.className='emblem-option-img shop-200-thumb';img.loading='lazy';img.decoding='async';
+   const label=document.createElement('span');label.textContent=it.name;
+   const price=document.createElement('small');price.textContent=it.price===0?'무료':Number(it.price).toLocaleString('ko-KR')+'P';
+   const tierTag=document.createElement('em');tierTag.textContent=it.tier;tierTag.className='shop-tier shop-tier-'+it.tier;
+   btn.append(img,label,tierTag,price);btn.addEventListener('click',()=>{selected[activeCategory]=it;updatePreview()});grid.append(btn);
+  }
+  updatePreview();
  }
- freeBtn.addEventListener('click',async()=>{freeBtn.disabled=true;try{await saveFreeEmblem(getConfig());status('무료 앰블럼 장착 완료 · 랭킹에 표시됩니다.');await renderHeaderEmblem(currentProfile?.nickname||'');await loadRanks()}catch(e){status('앰블럼 장착 실패: '+friendly(e))}finally{render()}});
- wrap.append(footer);area.append(wrap);render();
+ freeBtn.addEventListener('click',async()=>{
+  if(!user)return;
+  freeBtn.disabled=true;
+  try{
+   await saveFreeEmblem({shape:'shield1',pattern:'',crown:'',wings:'',effect:'',namefx:''});
+   status('무료 기본 방패 장착 완료 · 랭킹에 표시됩니다.');
+   await renderHeaderEmblem(currentProfile?.nickname||'');await loadRanks();
+  }catch(e){status('무료 앰블럼 장착 실패: '+friendly(e));}finally{freeBtn.disabled=!user;}
+ });
+ area.replaceChildren(wrap);renderGrid();
 }
 async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard',{p_period:period});if(error)throw error;const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.className='rank-identity';const rank=document.createElement('b');rank.textContent=(i+1)+'위';left.append(rank);left.append(emblemArt({shape:entry.emblem_shape||'shield1',pattern:entry.emblem_pattern||'',crown:entry.emblem_crown||'',wings:entry.emblem_wings||'',effect:entry.emblem_effect||'',namefx:entry.emblem_namefx||''},entry.nickname,true));const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
 async function refresh(){

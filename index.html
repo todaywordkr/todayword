@@ -212,30 +212,6 @@ html[data-theme="light"] .emblem-shop{color:#fff}
 .shop-dialog .shop-footer{position:sticky;bottom:-12px;background:#261e42;padding:12px;border-radius:14px;border:1px solid #7765a4}
 @media(max-width:520px){.shop-dialog{max-height:94dvh;padding:10px}.shop-dialog .emblem-shop{padding:10px}.shop-dialog .emblem-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shop-dialog .emblem-option{padding:5px 2px;font-size:12px}.shop-dialog .emblem-option-img{width:54px;height:47px}}
 
-/* 200 pixel-art emblem shop: preview-only; real PNG assets are 30x30. */
-.shop-200 .shop-preview-200{min-height:202px;overflow:visible;position:relative;}
-.shop-200-art{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:15px 8px;}
-.shop-200-layer{position:relative;width:150px;height:150px;display:block;image-rendering:pixelated;}
-.shop-200-layer .shop-layer{position:absolute;inset:0;width:150px;height:150px;object-fit:contain;image-rendering:pixelated;pointer-events:none;}
-.shop-200-layer .shop-layer-effects{z-index:0;opacity:.30;}
-.shop-200-layer .shop-layer-wings{z-index:1;}
-.shop-200-layer .shop-layer-crowns{z-index:2;}
-.shop-200-layer .shop-layer-frames{z-index:3;}
-.shop-200-layer .shop-layer-patterns{z-index:4;}
-.shop-200-art .emblem-nickname{font-size:18px;max-width:100%;text-align:center;}
-.shop-200-thumb{width:54px!important;height:54px!important;image-rendering:pixelated;object-fit:contain;}
-.shop-grid-200{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));max-height:440px;overflow-y:auto;align-content:start;}
-.shop-grid-200 .emblem-option{min-height:128px;justify-content:flex-start;}
-.shop-grid-200 .emblem-option>span:not(.blank){font-size:12px;line-height:1.3;}
-.shop-tier-filter,.shop-namefx-row{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:9px 0 14px;}
-.shop-tier-filter button,.shop-namefx-row button{border:1px solid #8070b1;background:#3c315c;color:#fff;border-radius:18px;padding:7px 11px;font-size:12px;cursor:pointer;}
-.shop-tier-filter button[aria-pressed=true],.shop-namefx-row button[aria-pressed=true]{background:#7666d1;border-color:#b3eaff;}
-.shop-namefx-row>span{font-size:12px;font-weight:700;margin-right:5px;}
-.shop-tier{display:block;font-size:10px;color:#beb5d5;font-style:normal;}
-.shop-tier-전설{color:#ffd76a}.shop-tier-희귀{color:#dfa8ff}.shop-tier-고급{color:#91c8ff}
-.shop-200 .shop-footer{justify-content:space-between;}
-@media(max-width:520px){.shop-grid-200{grid-template-columns:repeat(3,minmax(0,1fr));max-height:45dvh;}.shop-200-layer,.shop-200-layer .shop-layer{width:115px;height:115px}.shop-200 .shop-preview-200{min-height:165px}.shop-grid-200 .emblem-option{min-height:115px}.shop-200-thumb{width:45px!important;height:45px!important}}
-
 /* Desktop and laptop responsive layout: keep game centered, give navigation room. */
 @media (min-width: 960px) {
   .shell { width:min(calc(100% - 64px), 1040px); padding-top:30px; }
@@ -266,7 +242,6 @@ html[data-theme="light"] .emblem-shop{color:#fff}
 .ranking-page .rank-identity { min-width:0; overflow:hidden; }
 .ranking-page .rankrow>span:last-child { max-width:48%; }
 @media (min-width:960px) { .ranking-page .rankrow>span:last-child { max-width:none; } }
-.shop-grid-200 .emblem-option.image-missing::before{content:"이미지 확인 필요";font-size:10px;color:#ffd6a0;display:block;padding:12px 2px;}
 </style>
 <style id="onlineStyles">.online{margin:16px 0;padding:18px;border:1px solid #9aa6ba66;border-radius:16px;background:var(--panel,#ffffff0a)}.online h2{font-size:19px}.online input,.online button{font:inherit;padding:10px;border-radius:9px;border:1px solid #a5aec0}.online input{width:100%;background:transparent;color:inherit}.online button{cursor:pointer;background:#405bd7;color:white}.online .fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}.online .muted{font-size:12px;opacity:.8}.online .hidden{display:none}.online .rankrow{display:flex;justify-content:space-between;border-bottom:1px solid #9995;padding:8px 0;gap:8px}@media(max-width:420px){.online .fields{grid-template-columns:1fr}}</style><style id="accountPopupStyle">
 .account-open{white-space:nowrap;border:1px solid var(--border,#aaa);border-radius:10px;padding:8px 11px;background:var(--panel,#fff);color:var(--ink,#222);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
@@ -1026,6 +1001,6 @@ html[data-theme="dark"] .header-actions .account-open:focus-visible {
     loadDictionary();
   </script>
   <script src="config.js"></script>
-  <script type="module" src="online.js?v=20261119-shopfix2"></script>
+  <script type="module" src="online.js?v=20261120-recovery3"></script>
 </body>
 </html>

@@ -43,7 +43,10 @@ const EMBLEM_GROUPS=[
  {key:'effect',label:'이펙트',items:[['희미한 반짝임','sparkle',20],['없음','',0],['오로라','aurora',3000],['별빛','starlight',1000],['불꽃','fire',3000],['눈꽃','snow',2000],['번개','lightning',4000],['반짝임','sparkle',500]]},
  {key:'namefx',label:'닉네임 효과',items:[['기본','',0],['빨강','red',300],['파랑','blue',300],['초록','green',300],['무지개','rainbow',1200],['오로라','aurora',3000]]}
 ];
-const asset=(key)=>'emblems/'+encodeURIComponent(key)+'.png';
+// 레거시 장착 ID는 새 픽셀 PNG 경로로 변환 (오래된 PNG 파일 불필요).
+const PIXEL_LEGACY_ASSETS = {"shield1":"frames/frame_001.png","shield2":"frames/frame_002.png","shield3":"frames/frame_003.png","heart":"frames/frame_004.png","circle":"frames/frame_005.png","space":"frames/frame_006.png","diamond":"frames/frame_007.png","dragon":"patterns/pattern_001.png","tiger":"patterns/pattern_002.png","lion":"patterns/pattern_003.png","eagle":"patterns/pattern_004.png","deer":"patterns/pattern_005.png","rabbit":"patterns/pattern_006.png","cat":"patterns/pattern_007.png","dog":"patterns/pattern_008.png","wing_small_angel":"wings/wing_001.png","wing_small_demon":"wings/wing_002.png","wing_small_fairy":"wings/wing_003.png","wing_medium_angel":"wings/wing_004.png","wing_medium_demon":"wings/wing_005.png","wing_medium_fairy":"wings/wing_006.png","wing_large_angel":"wings/wing_007.png","wing_large_demon":"wings/wing_008.png","wing_large_fairy":"wings/wing_009.png","crown1":"crowns/crown_001.png","crown2":"crowns/crown_002.png","crown3":"crowns/crown_003.png","effect_red":"effects/effect_001.png","effect_blue":"effects/effect_002.png","effect_green":"effects/effect_003.png","effect_rainbow":"effects/effect_004.png","effect_aurora":"effects/effect_005.png"};
+const asset=(key)=>'./emblems/'+(PIXEL_LEGACY_ASSETS[key]||PIXEL_LEGACY_ASSETS.shield1);
+
 function emblemArt(config,nickname,compact=false){
  const el=document.createElement('span');el.className='emblem-identity'+(compact?' compact':'');
  const badge=document.createElement('span');badge.className='png-emblem'+(compact?' compact':'');badge.setAttribute('aria-hidden','true');

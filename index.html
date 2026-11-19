@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f7f8fc" />
+  <meta name="description" content="자음과 모음 다섯 칸부터 여덟 칸까지, 오늘의 낱말을 맞혀 보세요." />
+  <title>낱말 탐정 | 한글 자모 퍼즐</title>
+  <script>
+    // 저장된 테마를 먼저 적용해 첫 화면의 번쩍임을 줄입니다.
+    try {
+      const savedTheme=localStorage.getItem('natmal:theme:v1');
+      document.documentElement.dataset.theme=savedTheme==='dark'?'dark':'light';
+    } catch {document.documentElement.dataset.theme='light';}
+  </script>
+  <style>
+    :root { --ink:#273049;--muted:#7b8498;--line:#e3e7ef;--accent:#6c61df;--accentLight:#efedff;--green:#45ac81;--yellow:#e5b857;--gray:#8c98ab;--paper:#fff;--background:#f7f8fc;--shadow:0 12px 40px rgba(49,53,111,.075) }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100dvh; font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif; background: radial-gradient(circle at 50% -100px, #eceaff 0, transparent 38%), var(--background); color:var(--ink); }
+    button { font:inherit;cursor:pointer; }
+    button:focus-visible { outline:3px solid #9e94fb;outline-offset:3px; }
+    .shell { width:min(100% - 32px, 570px);margin:0 auto;padding:26px 0 32px; }
+    .brandline { display:flex;align-items:center;justify-content:space-between; gap:10px;margin:0 0 26px; }
+    .brand { display:flex;align-items:center;gap:10px;font-weight:850;font-size:17px;letter-spacing:-.5px; }
+    .brand-icon { display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:var(--accent);color:#fff;font-size:18px;box-shadow:0 6px 12px #6c61df33; }
+    .header-actions {display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+    .theme-switch {display:flex;gap:3px;padding:3px;background:#eeeff7;border:1px solid var(--line);border-radius:22px;}
+    .theme-switch button {font-size:11px;font-weight:850;background:transparent;color:var(--muted);border:0;padding:6px 9px;border-radius:20px;white-space:nowrap;}
+    .theme-switch button.active {background:#fff;color:var(--ink);box-shadow:0 2px 6px #20204218;}
+    .help-btn {border:1px solid var(--line);background:#fff;border-radius:24px;padding:8px 13px;color:var(--muted);font-weight:700;font-size:13px;}
+    .hero {text-align:center;margin-bottom:23px;}
+    .eyebrow {font-size:12px;letter-spacing:1.4px;color:var(--accent);font-weight:850;}
+    h1 {font-size:clamp(27px,6vw,37px);line-height:1.24;letter-spacing:-1.6px;margin:7px 0 9px;}
+    .hero p {font-size:14px;color:var(--muted);margin:0;line-height:1.65;}
+    .panel { background:var(--paper);border:1px solid #edf0f5;border-radius:24px;box-shadow:var(--shadow);padding:22px 22px 20px; }
+    .section-caption {font-size:12px;font-weight:850;letter-spacing:.2px;color:#5b6477;margin-bottom:10px;}
+    .lengths {display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
+    .choice {border:1px solid var(--line);background:#fff;border-radius:11px;padding:11px 6px;color:#667085;font-weight:850;font-size:15px;transition:.14s ease;}
+    .choice.active {background:var(--accent);border-color:var(--accent);color:white;box-shadow:0 5px 13px #6c61df30;}
+    .mode {display:flex;gap:5px;background:#f4f5fa;border-radius:12px;padding:4px;margin-bottom:18px;}
+    .mode button {flex:1;border:none;background:transparent;color:#8d94a3;padding:9px 4px;border-radius:9px;font-size:13px;font-weight:750;}
+    .mode button.active {background:white;color:var(--ink);box-shadow:0 2px 9px #27304912;}
+    .puzzle-meta {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px 12px;background:#f7f7ff;border:1px solid #eae8ff;border-radius:12px;padding:11px 12px;margin:-5px 0 16px;}
+    .id-group {display:flex;align-items:center;flex-wrap:wrap;gap:7px;font-size:12px;color:#73758e;}
+    .id-group strong {font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px;letter-spacing:.45px;color:#383358;}
+    .id-copy {border:1px solid #d9d5fc;background:#fff;color:#665cc4;border-radius:7px;padding:4px 8px;font-size:11px;font-weight:850;}
+    .rollover-info {color:#736ca2;font-size:11px;font-weight:750;line-height:1.45;}
+    .game-top {display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;}
+    .today {font-size:12px;font-weight:750;color:var(--muted);}
+    .attempt {font-size:12px;font-weight:800;color:var(--accent);background:var(--accentLight);padding:6px 10px;border-radius:999px;}
+    .board {display:grid;grid-template-rows:repeat(5,1fr);gap:7px;width:min(100%,390px);margin:0 auto 15px;}
+    .board-row {display:flex;gap:6px;justify-content:center;}
+    .tile {display:flex;align-items:center;justify-content:center;width:clamp(29px,8.2vw,54px);height:clamp(43px,11vw,57px);border:2px solid #e1e5ed;border-radius:9px;background:#fff;color:var(--ink);font-size:clamp(18px,5vw,25px);font-weight:850;transition:transform .15s ease,background .2s ease;}
+    .tile.filled {border-color:#b4bacc;background:#fbfbff;}
+    .tile.current {border-color:var(--accent);}
+    .tile.correct,.tile.present,.tile.absent {color:white;border-color:transparent;}
+    .tile.correct,.key.correct {background:var(--green);}
+    .tile.present,.key.present {background:var(--yellow);}
+    .tile.absent,.key.absent {background:var(--gray);}
+    .tile.pop {animation:pop .16s ease-out;}
+    @keyframes pop {from{transform:scale(.87)}to{transform:scale(1)}}
+    .status {min-height:36px;text-align:center;padding:8px 4px;font-size:13px;font-weight:750;color:#667085;}
+    .status.success {color:#1c8c64;}.status.error {color:#cb6b44;}
+    .keys {display:flex;flex-direction:column;gap:7px;margin:3px auto 0;max-width:470px;}
+    .keyrow {display:flex;gap:5px;justify-content:center;}
+    .key {height:44px;flex:1;min-width:0;padding:0;background:#e8ebf3;border:none;border-bottom:2px solid #d9dee9;border-radius:7px;font-weight:850;color:#38415a;font-size:16px;user-select:none;touch-action:manipulation;}
+    .key:active {transform:translateY(1px);}
+    .key.correct,.key.present,.key.absent {border-bottom-color:transparent;color:white;}
+    .key.action {font-size:13px;background:#dcdff4;color:#605aa7;flex:1.55;}
+    .key.submit {background:var(--accent);color:white;flex:1.65;border-bottom-color:#5347bc;}
+    .key:disabled {opacity:.5;cursor:not-allowed;}
+    .dictionary-row {display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px;margin:12px 0 -3px;}
+    .dictionary-state {font-size:11px;color:#808ba1;text-align:center;line-height:1.5;}
+    .dictionary-state.ready {color:#2a8b67;font-weight:750;}
+    .dictionary-state.offline {color:#ad7256;}
+    .retry-dictionary {border:1px solid #d5d8e3;background:#fff;color:#656ca2;border-radius:8px;padding:4px 8px;font-size:11px;font-weight:800;}
+    .bottom {display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:16px;}
+    .bottom button {border:1px solid var(--line);color:#5e6578;background:white;border-radius:10px;padding:9px 13px;font-size:12px;font-weight:800;}
+    .bottom .primary {background:var(--accent);color:white;border-color:var(--accent);}
+    .bottom button:disabled {opacity:.45;cursor:not-allowed;}
+    .foot {margin:20px 0 0;text-align:center;color:#a1a7b6;font-size:11px;line-height:1.8;}
+    dialog {border:none;border-radius:20px;padding:24px;width:min(90vw,430px);box-shadow:0 30px 80px #1b1d4755;color:var(--ink);}
+    dialog::backdrop {background:#19213c88;}
+    dialog h2 {font-size:22px;letter-spacing:-.6px;margin:0 0 12px;}
+    dialog p,dialog li {font-size:14px;color:#626d82;line-height:1.8;}
+    dialog ul {padding-left:20px;}
+    .legend {display:flex;gap:7px;align-items:center;margin:8px 0;font-size:13px;color:#626d82;}
+    .swatch {display:grid;place-items:center;height:32px;width:32px;border-radius:6px;color:white;font-weight:850;}
+    .swatch.correct{background:var(--green)}.swatch.present{background:var(--yellow)}.swatch.absent{background:var(--gray)}
+    .close {width:100%;border:none;background:var(--accent);color:white;border-radius:11px;padding:11px;margin-top:15px;font-weight:850;}
+    /* 데이/나이트 모드 — 사용자가 직접 선택하고 브라우저에 저장합니다. */
+    html[data-theme="dark"] {color-scheme:dark;--ink:#e9edfc;--muted:#aab4cb;--line:#37415b;--accent:#938aff;--accentLight:#302d56;--green:#338f70;--yellow:#b58b38;--gray:#647086;--paper:#222b3e;--background:#151c2b;--shadow:0 12px 40px rgba(0,0,0,.21)}
+    html[data-theme="dark"] body {background:radial-gradient(circle at 50% -100px,#2a2b57 0,transparent 38%),var(--background);}
+    html[data-theme="dark"] .panel {border-color:#36415c;}
+    html[data-theme="dark"] .brand-icon {box-shadow:0 6px 12px #10132777;}
+    html[data-theme="dark"] .help-btn,html[data-theme="dark"] .choice,html[data-theme="dark"] .id-copy,html[data-theme="dark"] .retry-dictionary,html[data-theme="dark"] .bottom button:not(.primary) {background:#293348;color:#d1d7e9;border-color:#485371;}
+    html[data-theme="dark"] .choice.active {background:var(--accent);color:#141529;border-color:var(--accent);}
+    html[data-theme="dark"] .theme-switch,html[data-theme="dark"] .mode {background:#192234;border-color:#35405a;}
+    html[data-theme="dark"] .theme-switch button.active,html[data-theme="dark"] .mode button.active {background:#394563;color:#f3f5ff;box-shadow:0 2px 8px #11182480;}
+    html[data-theme="dark"] .mode button:not(.active) {color:#aab3cb;}
+    html[data-theme="dark"] .puzzle-meta {background:#2a2b4c;border-color:#41416a;}
+    html[data-theme="dark"] .id-group {color:#c5c7e3;}
+    html[data-theme="dark"] .id-group strong {color:#f1edff;}
+    html[data-theme="dark"] .rollover-info {color:#d2caff;}
+    html[data-theme="dark"] .tile {background:#252f43;border-color:#43506a;color:#eef1fc;}
+    html[data-theme="dark"] .tile.filled {background:#313c55;border-color:#7380a3;}
+    html[data-theme="dark"] .tile.current {border-color:var(--accent);}
+    html[data-theme="dark"] .tile.correct,html[data-theme="dark"] .tile.present,html[data-theme="dark"] .tile.absent {color:#fff;border-color:transparent;}
+    html[data-theme="dark"] .tile.correct {background:var(--green);}
+    html[data-theme="dark"] .tile.present {background:var(--yellow);}
+    html[data-theme="dark"] .tile.absent {background:var(--gray);}
+    html[data-theme="dark"] .key {background:#3c4862;color:#eef1fa;border-bottom-color:#253047;}
+    html[data-theme="dark"] .key.action {background:#55537e;color:#f4f0ff;}
+    html[data-theme="dark"] .key.submit {background:var(--accent);color:#151629;border-bottom-color:#6b63d1;}
+    html[data-theme="dark"] .key.correct {background:var(--green);color:#fff;}
+    html[data-theme="dark"] .key.present {background:var(--yellow);color:#fff;}
+    html[data-theme="dark"] .key.absent {background:var(--gray);color:#fff;}
+    html[data-theme="dark"] .section-caption {color:#c1cae0;}
+    html[data-theme="dark"] .status {color:#b6c1d9;}
+    html[data-theme="dark"] .status.error {color:#ff9b83;}
+    html[data-theme="dark"] .status.success {color:#82d7b4;}
+    html[data-theme="dark"] .dictionary-state {color:#b7c4de;}
+    html[data-theme="dark"] .dictionary-state.ready {color:#7dd6af;}
+    html[data-theme="dark"] .dictionary-state.offline {color:#e2ac8c;}
+    html[data-theme="dark"] .foot {color:#95a3c0;}
+    html[data-theme="dark"] dialog {background:#232e45;color:var(--ink);border:1px solid #445172;}
+    html[data-theme="dark"] dialog p,html[data-theme="dark"] dialog li,html[data-theme="dark"] .legend {color:#c4cde1;}
+    html[data-theme="dark"] .close {color:#161a33;}
+    @media(max-width:390px) {.brandline{flex-wrap:wrap;gap:9px;}.header-actions{margin-left:auto;}}
+    @media(max-width:430px) { .shell{width:min(100% - 20px,570px);padding-top:16px;} .brandline{margin-bottom:21px;} .panel{padding:18px 13px 18px;border-radius:18px;} .tile{width:clamp(29px,10vw,44px);height:49px;} .board-row{gap:4px;}.keyrow{gap:3px;}.key{height:44px;font-size:14px;}.key.action{font-size:11px;} }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="brandline">
+      <div class="brand"><span class="brand-icon" aria-hidden="true">가</span> 낱말 탐정</div>
+      <div class="header-actions">
+        <div class="theme-switch" role="group" aria-label="화면 테마 선택">
+          <button type="button" class="active" data-theme-choice="light" aria-pressed="true">☀️ 데이</button>
+          <button type="button" data-theme-choice="dark" aria-pressed="false">🌙 나이트</button>
+        </div>
+        <button id="helpButton" class="help-btn" type="button">ⓘ 도움말</button>
+      </div>
+    </header>
+    <section class="hero"><div class="eyebrow">KOREAN WORD PUZZLE</div><h1>오늘의 낱말을 찾아보세요!</h1><p>자음과 모음을 한 칸씩 맞히는 한글 추리 게임</p></section>
+    <section class="panel" aria-label="한글 자모 퍼즐">
+      <div class="section-caption">자모 칸 수 선택</div>
+      <div class="lengths" role="group" aria-label="자모 칸 수">
+        <button class="choice active" data-length="5" type="button">5자</button>
+        <button class="choice" data-length="6" type="button">6자</button>
+        <button class="choice" data-length="7" type="button">7자</button>
+        <button class="choice" data-length="8" type="button">8자</button>
+      </div>
+      <div class="mode" role="group" aria-label="게임 모드">
+        <button id="dailyMode" class="active" type="button">☀️ 오늘의 단어</button>
+        <button id="practiceMode" type="button">∞ 무제한 연습</button>
+      </div>
+      <div class="puzzle-meta" aria-live="polite">
+        <div class="id-group"><span>문제 ID</span><strong id="puzzleId">------------</strong><button id="copyIdButton" class="id-copy" type="button">복사</button></div>
+        <div class="rollover-info"><span id="shuffleLabel">매일 무작위 순서 · 중복 방지</span><span id="nextChange"></span></div>
+      </div>
+      <div class="game-top"><span id="dateLabel" class="today"></span><span id="attemptLabel" class="attempt">시도 0 / 5</span></div>
+      <div id="board" class="board" aria-label="게임 판"></div>
+      <div id="status" class="status" role="status" aria-live="polite">자음·모음을 눌러 단어를 입력해 보세요.</div>
+      <div id="keyboard" class="keys" aria-label="자모 키보드"></div>
+      <div class="dictionary-row">
+        <div id="dictionaryState" class="dictionary-state" aria-live="polite">30만 명사 사전 연결 중…</div>
+        <button id="retryDictionary" class="retry-dictionary" type="button" hidden>다시 연결</button>
+      </div>
+      <div class="bottom"><button id="nextButton" type="button" hidden>다음 문제 ↻</button><button id="shareButton" type="button" hidden>결과 공유 ⧉</button></div>
+    </section>
+    <p class="foot">오늘의 단어는 매일 00:00(KST) 자동 갱신 · 날짜·칸 수별 고유 ID<br>동사 제외 · 전체 명사 수와 5~8자모 입력 가능 수를 별도 표시</p>
+  </main>
+  <dialog id="helpDialog" aria-labelledby="helpTitle"><h2 id="helpTitle">게임 방법 🔍</h2><p>정답 단어를 자음과 모음으로 풀어 5번 안에 맞혀 보세요. 예를 들어 <b>사과 = ㅅ · ㅏ · ㄱ · ㅗ · ㅏ</b>이므로 <b>5자 문제</b>예요.</p><div class="legend"><span class="swatch correct">ㅅ</span> 자모와 자리 모두 정확해요.</div><div class="legend"><span class="swatch present">ㅏ</span> 정답에 있지만 자리가 달라요.</div><div class="legend"><span class="swatch absent">ㄴ</span> 정답에 없는 자모예요.</div><p>같은 자모가 여러 번 나와도 개수를 고려하여 판정합니다. 화면 키보드에 있는 ⌫·제출을 누르거나 PC에서 Backspace·Enter를 사용할 수 있어요. 겹모음은 기본 모음으로 나눠 입력합니다(재미 = ㅈㅏㅣㅁㅣ, 권총 = ㄱㅜㅓㄴㅊㅗㅇ, 계단 = ㄱㅕㅣㄷㅏㄴ). 없는 단어는 시도 횟수가 줄지 않아요. 품사 정보에서 명사만 골라 사전에 등록합니다. 전체 명사 수와 실제 게임에 사용 가능한 5~8자모 명사 수를 따로 표시합니다. 사전 불러오기가 실패했다면 소수의 기본 단어만 사용할 수 있으므로 사전 준비 상태를 확인하세요. 오늘의 단어는 매일 한국 시간 자정에 새 문제로 바뀌고, 같은 날짜와 칸 수는 누구나 동일한 문제 ID를 받습니다. ID는 12자리 영문·숫자 조합입니다.</p><button id="closeHelp" class="close" type="button">게임 시작하기</button></dialog>
+  <script>
+    'use strict';
+    // 한글 음절의 초성 / 중성 / 종성(유니코드 U+AC00부터 분해)
+    const CHO = [...'ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ'];
+    const JUNG = [...'ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ'];
+    const JONG = ['', ...'ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ'];
+    const BREAK = {
+      'ㄲ':'ㄱㄱ','ㄸ':'ㄷㄷ','ㅃ':'ㅂㅂ','ㅆ':'ㅅㅅ','ㅉ':'ㅈㅈ',
+      'ㄳ':'ㄱㅅ','ㄵ':'ㄴㅈ','ㄶ':'ㄴㅎ','ㄺ':'ㄹㄱ','ㄻ':'ㄹㅁ','ㄼ':'ㄹㅂ','ㄽ':'ㄹㅅ','ㄾ':'ㄹㅌ','ㄿ':'ㄹㅍ','ㅀ':'ㄹㅎ','ㅄ':'ㅂㅅ',
+      'ㅐ':'ㅏㅣ','ㅒ':'ㅑㅣ','ㅔ':'ㅓㅣ','ㅖ':'ㅕㅣ','ㅘ':'ㅗㅏ','ㅙ':'ㅗㅏㅣ','ㅚ':'ㅗㅣ',
+      'ㅝ':'ㅜㅓ','ㅞ':'ㅜㅓㅣ','ㅟ':'ㅜㅣ','ㅢ':'ㅡㅣ'
+    };
+    const KEY_ROWS = ['ㅂㅈㄷㄱㅅㅛㅕㅑ','ㅁㄴㅇㄹㅎㅗㅓㅏㅣ','ㅋㅌㅊㅍㅠㅜㅡ'];
+    const ENG = {q:'ㅂ',w:'ㅈ',e:'ㄷ',r:'ㄱ',t:'ㅅ',y:'ㅛ',u:'ㅕ',i:'ㅑ',a:'ㅁ',s:'ㄴ',d:'ㅇ',f:'ㄹ',g:'ㅎ',h:'ㅗ',j:'ㅓ',k:'ㅏ',l:'ㅣ',z:'ㅋ',x:'ㅌ',c:'ㅊ',v:'ㅍ',b:'ㅠ',n:'ㅜ',m:'ㅡ',o:'ㅏㅣ',p:'ㅓㅣ'};
+    const SHIFT_ENG = {q:'ㅂㅂ',w:'ㅈㅈ',e:'ㄷㄷ',r:'ㄱㄱ',t:'ㅅㅅ',o:'ㅑㅣ',p:'ㅕㅣ'};
+    const ALL_WORDS = `부패 웹 부산 쓰레기 흑염소 수험증 대궐 사과 바람 학교 사람 사탕 우산 감자 수박 국수 지갑 하늘 식사 과자 가방 노래 연필 창문 별빛 행복 태양 달력 운동 풍선 열쇠 장갑 모래 신발 기분 미소 손목 마음 가수 자동차 자전거 바닷가 우주선 컴퓨터 휴대폰 냉장고 장난감 미끄럼틀 놀이터 수영장 도서관 비행기 기차역 동물원 소방차 토마토 고구마 돼지고기 김치찌개 고양이 강아지 물고기 고래상어 학교생활 운동장 노트북 여행가방 그림자 비밀번호 무지개 재미 권총 계단 사랑 친구 토끼 그림 사전 빈도 시계 그네 매미 가위 부채 파도 개미 매화 체육 샴푸 백화점 태풍 새우 머리 수영 노을 잠옷 사슴 꽃병 편지 의자 동전 하모니 무대 가을 겨울 봄날 그림책 약국 기상 바위 화분 소금 풍경 사진 음악 조각 미술 꽃잎 다리 책상 식탁 냄비 양말 강물 수풀 체리 바나나 과일 마늘 양파 고추 거울 안경 계란 카레 종이 단풍 소풍 놀이 연못 낚시 정원 가족 지구 우주 마음 목걸이 전화 풍경화 달리기 배구 농구 축구 야구 체조 체육관 숙제 교실 문제 정답 시험 날짜 주말 요일 오늘 내일 어제 저녁 아침 새벽 시간 계절 시냇물 우정 기쁨 설렘 추억 기억 노력 용기 칭찬 격려 한옥 김밥 비빔밥 국밥 된장국 불고기 갈비 만두 찐빵 호빵 도시락 통장 연못 가구 전구 창고 천둥 번개 얼음 수돗물 우주복 우편 별자리 하트 열차 버스 산책 지도 지하철 지구촌 백조 앵무새 매머드 물개 햇빛 달걀 초콜릿 아이스크림 카메라 라디오 텔레비전 지구본 병아리 다람쥐 우체국 경찰서 무인도 한글날 크리스마스 달팽이 개구리 붕어빵 시계바늘 크레파스 선물상자 코끼리 텀블러 영화관 해바라기 파인애플 종이비행기 망원경 구급차 선풍기 선인장 가로등 모닥불 나침반 물방울 돌고래 호랑이 사자 토끼 나비 모자 바다 버스 토스트 빵집 찻잔 계산기 나뭇잎 땅콩 눈사람 수건 점심 밤하늘 바람개비`.split(/\s+/);
+
+    function splitHangul(word) {
+      const out = [];
+      for (const char of word.normalize('NFC')) {
+        const index = char.charCodeAt(0) - 0xAC00;
+        if (index >= 0 && index < 11172) {
+          const pieces = [CHO[Math.floor(index/588)], JUNG[Math.floor(index%588/28)], JONG[index%28]];
+          for (const part of pieces) if (part) out.push(...(BREAK[part] || part));
+        } else if (BREAK[char]) out.push(...BREAK[char]);
+        else if (KEY_ROWS.join('').includes(char)) out.push(char);
+        else if (!/\s/.test(char)) return null;
+      }
+      return out;
+    }
+    // 오프라인 기본 명사: 동사/형용사 활용형 없이, 5~8자모에 맞는 명사만 수록.
+    const EXTRA_NOUNS = `
+      // 5 자모 · 519개
+      가게 가격 가뭄 가방 가설 가슴 가위 가을 가재 가족 가죽 갈비 갈치 감기 감사 감자
+      강가 개미 거실 거울 거위 거짓 건기 걷기 검사 겨울 격려 경기 경비 고궁 고독 고래
+      고장 골프 공고 공기 공부 공주 공지 공포 과거 교감 교량 교실 교육 교장 교통 교회
+      구름 구매 구청 구체 국가 국보 국수 국어 국자 국토 군수 규칙 그릇 그림 그물 그제
+      글자 금고 금리 급여 기간 기금 기능 기대 기록 기린 기분 기억 기업 기온 기준 기침
+      기회 길이 김치 까치 꿩 나물 나흘 낙지 난로 네트 노랑 노래 노력 노을 녹두 녹차
+      농구 농부 높이 단어 단오 단추 담요 대리 대추 대파 대표 더위 도넛 도덕 도장 도전
+      도청 도형 독서 독자 동료 동지 두뇌 두통 드럼 드론 라면 라임 로봇 로션 리듬 리본
+      린스 마늘 마당 마을 마음 말투 망고 매너 매미 머핀 먼지 메기 메뉴 멸치 명도 모래
+      모레 모음 모임 모직 목수 목표 무게 무대 무릎 무침 문서 문어 문자 물가 미래 미술
+      미역 바늘 바닥 바람 바위 박수 박자 반도 발표 방어 배구 배려 배우 배추 배포 버릇
+      버섯 버전 버튼 번호 벼락 벽지 변기 변수 병사 보물 보석 보안 보험 복구 복도 복사
+      복지 봄비 봉사 봉투 부엌 부장 부탁 분수 분자 붕어 비단 비밀 비용 비율 빌라 빙수
+      빙하 뿌리 사건 사격 사과 사람 사랑 사막 사슴 사장 사전 사진 사찰 사촌 사회 사흘
+      산호 살구 상가 상어 상자 상처 상추 새우 샴푸 서랍 서예 서점 석류 선거 선수 세포
+      소금 소득 소설 소식 소장 속도 손녀 손자 송어 수건 수경 수당 수면 수박 수술 수신
+      수업 수영 수입 수정 수첩 수필 수학 순서 숫자 습도 승리 승마 시각 시간 시계 시골
+      시민 시인 시작 시장 시집 시청 시합 시험 식기 식사 식초 실크 아내 아들 아빠 아침
+      악기 악보 악어 안부 암기 암호 야식 야채 약사 양초 양파 어른 어제 어촌 어항 언니
+      언어 엄마 에러 여름 역사 연고 연수 연어 연초 연휴 열차 엽서 영어 오늘 오답 오븐
+      오빠 오전 온도 요약 요일 요정 요청 욕조 용기 우동 우럭 우산 우승 우정 유물 유성
+      유적 유화 육교 은하 의무 의사 의자 의지 이끼 이레 이력 이론 이불 이슬 이웃 이윤
+      이익 이직 이틀 인도 인사 일기 입구 입사 입추 입하 잉어 자갈 자력 자막 자매 자몽
+      자연 자음 자정 작가 잔디 잔치 잡지 장교 장구 장마 장미 재미 저녁 저울 저장 저축
+      저항 전구 전기 전류 전시 전자 전파 점수 점토 점퍼 접시 정보 정부 정오 정치 제비
+      조각 조개 조건 조끼 조명 조언 조직 조합 종교 종이 좌표 주걱 주말 주문 주민 주방
+      주식 주중 줄기 지갑 지네 지방 지붕 지식 지역 지진 지출 지폐 진주 질서 차량 차례
+      찰나 참치 창고 채도 채소 처방 처음 철도 체리 체조 초록 초밥 초성 추석 추억 추위
+      축구 축하 출구 출시 충고 취미 취소 치과 치실 치약 치킨 치통 친구 커튼 코딩 콜라
+      쿠폰 크림 키위 타일 탁구 탁자 태도 터널 토끼 토론 퇴사 트럭 특기 파랑 파일 파전
+      판사 펀드 편지 평가 포장 폭우 폭포 폴더 표범 표정 피망 피클 필기 하늘 학교 학비
+      한자 한파 함수 항구 해마 향수 현미 형수 호박 호흡 홍수 홍차 화가 화소 화초 회로
+      회비 회사 후배 후식 휴식 휴일 흉터
+      // 6 자모 · 607개
+      간식 간장 감격 감귤 감독 감동 감정 강당 강물 강의 강좌 개강 개발 개성 개울 개학
+      객차 걱정 건강 건물 걸레 검정 검진 결과 결론 결산 결제 경계 경제 경첩 계곡 계단
+      계란 계산 계절 계정 고객 고구마 고라니 고사리 고택 곡식 곤충 골대 골망 골목 골반 곰탕
+      곱창 공간 공방 공연 공예 공장 공정 공항 과외 과일 과장 과정 과제 과학 광고 광어
+      교차로 교환 국경 국물 국민 국밥 국적 국화 국회 군인 군청 권리 권투 극장 근육 글씨
+      금전 급식 기러기 기쁨 기차표 김밥 김장 깃털 꼬막 꽁치 끈기 나이프 난간 날씨 날짜 남극
+      남방 남편 낮잠 낱말 내역 내일 냄비 냇가 너구리 넓이 논술 농담 농촌 눈물 눈빛 늑대
+      다리미 다시마 단계 단점 단체 달걀 달력 달빛 담장 답안 답장 닷새 당근 대금 대답 대륙
+      대문 대장 대접 대출 대화 대회 덮밥 도라지 도자기 독감 동굴 동네 동물 동상 동전 동화
+      두더지 두루미 드라마 득점 들판 등급 등산 등심 디저트 딸기 라떼 라벨 라켓 레몬 레인 로켓
+      리코더 마우스 마이크 막창 말벌 말씨 맛집 매실 매입 매출 멍게 메달 명암 명절 명함 모니터
+      모뎀 모텔 목련 목살 몸살 몸짓 문단 문법 문장 문제 문학 문화 물감 물건 물결 물병
+      물질 물컵 물통 물품 미나리 민박 민속 밀림 바구니 바나나 반숙 반찬 반품 받침 발등 발목
+      발음 발짓 발톱 밝기 밤잠 밤중 밥솥 방법 방송 방학 방향 배낭 배달 배송 배열 백조
+      버스표 번개 번역 벌레 벌새 법칙 베개 별빛 별장 병균 병실 보너스 보리차 복습 복싱 복통
+      봄날 북극 분석 분필 분홍 불안 붕대 브러시 비디오 빌딩 빙산 빙상 사거리 사우나 사원 사이다
+      삭제 산길 삼촌 삽화 상장 상점 상품 새벽 새해 생수 서쪽 선물 선배 설날 설탕 설화
+      성게 성격 성공 성금 성능 성당 성문 성벽 성운 성적 세계 세균 세금 세제 센서 소고기
+      소나기 소나무 소비자 소시지 소원 소쿠리 손금 손님 손등 손목 손익 손짓 손톱 손해 송신 송편
+      수소차 수탉 숙제 순간 순대 순위 술잔 숲길 숲속 스쿠터 스티커 스포츠 스피커 슬픔 승진 식단
+      식당 식물 식칼 식탁 식혜 신경 신년 신뢰 신문 신발 신화 실점 실패 실험 심장 심판
+      씨름 아버지 아이디 아파트 악몽 안개 안경 안내 안방 안심 안전 알림 암석 액자 앰프 약국
+      약속 약품 양궁 양념 양말 어깨 어머니 억양 얼굴 얼음 여관 여권 연결 연극 연락 연말
+      연못 연봉 연필 열병 열쇠 열정 열흘 엿새 영문 영상 영화 예금 예능 예산 예습 예절
+      예제 옥상 옷감 옷장 옷핀 와플 완료 왕비 왕자 요리사 욕실 용과 용량 용암 운동 울음
+      움막 웃음 원자 위성 위장 위험 위협 유모차 유자차 육상 음계 음성 음식 음악 음절 음향
+      의견 의회 이야기 인내 인증 인턴 일몰 일출 임금 입동 입력 입술 입체 입춘 입학 잇몸
+      작품 잔돈 잡곡 장갑 장난 장애 장점 장판 장화 재난 재능 재킷 재해 적금 전등 전복
+      전선 전설 전세 전송 전압 전철 전통 전화 절벽 점검 점심 접근 접속 정글 정답 정산
+      정의 제안 제출 제품 존중 졸업 종강 종성 좌석 주머니 주차료 주택 주황 중간 중력 중성
+      중심 중앙 지하도 직업 진단 진실 진찰 질량 질문 질병 집게 집세 집중 집회 짜장 찬합
+      참새 참외 찻잔 창문 창틀 채반 천둥 천장 철길 철봉 철학 첫눈 체력 체온 체육 첼로
+      초원 촛대 촛불 축제 출력 취업 친절 친척 칠판 침대 침실 칫솔 칭찬 케첩 코코아 콧물
+      클릭 클립 키보드 태양 태풍 택시 토마토 토스트 통계 통신 통장 통화 투자자 튀김 튤립 트랙
+      트로피 특강 특징 티셔츠 티켓 파파야 판매 판화 팥죽 패딩 패배 편집 평등 평일 평화 포스터
+      폭염 풀밭 풍속 풍향 피아노 필름 필통 학습 학점 학회 한글 한낮 한식 한옥 할인 해변
+      해삼 해킹 행사 허브차 헬스 현금 현재 혈압 협동 협력 협회 형님 형제 혜성 호텔 홍합
+      화단 화면 화병 화분 화산 화음 화질 화폐 화합 회복 회의 회장 후보자 희망 흰자
+      // 7 자모 · 353개
+      가디건 가로등 가습기 가야금 가을비 각도기 간호사 갈색 감나무 강아지 개구리 개나리 갯벌 거문고 건조기 건포도
+      검표소 경쟁 계획 고드름 고등어 고마움 고양이 고추장 곱셈 공원 공유기 공책 관습 관심 관중 관찰
+      광물 광선 광장 교과서 교무실 교수님 교육자 교통비 구급차 구독자 구렁이 구버전 궁궐 귓불 그래프 그리움
+      근로자 금색 기념비 기록표 기부금 기숙사 기술자 기차역 김가루 껍질 꽃밭 꽃병 꽃씨 꽃잎 꽃집 꿀벌
+      나이테 남색 남쪽 냉면 노동자 노른자 노트북 놀이터 눈보라 눈썹 단무지 달리기 닭죽 대나무 덧셈 데이터
+      도로명 도서실 도시락 도어락 도화지 독수리 동생 동아리 동쪽 된장 두꺼비 두려움 들깨 디버깅 땅콩 떡국
+      랍스터 랜선 랜턴 랭킹 레이스 레이저 리모컨 마가린 마지막 마케터 매표소 맥박 머그컵 머리빗 메모리 메모지
+      메시지 멜론 면도기 목도리 목소리 무더위 무승부 무인도 무지개 문고리 물티슈 뮤지컬 미용사 믹서기 밀가루 밀크티
+      바게트 바느질 바닷가 바인더 바지락 반바지 발코니 배꼽 배나무 배터리 백신 백업 백합 법원 벚꽃 벚나무
+      변호사 별자리 병아리 병원 보건소 보일러 보험료 보험사 보호대 볼펜 부가세 부엉이 북쪽 분무기 불도저 불행
+      비둘기 빗자루 빨강 빵집 사마귀 사무실 사무직 사용자 사진기 사진사 산호초 삼거리 색상 샌들 생각 생강
+      생김 생명 생물 생선 생일 샤워기 선거구 설렘 세무사 세미나 소방서 소방차 소형차 쇠고기 수리공 수영모
+      수제비 순두부 스크롤 스크린 스타킹 슬리퍼 습관 시금치 시래기 시청자 식권 식빵 쌈장 아몬드 아이콘 아저씨
+      아흐레 암탉 야구공 야구장 양고기 어린이 업로드 에너지 엔진 여드레 연꽃 오두막 오징어 오페라 옥수수 완숙
+      왕궁 왕실 우롱차 우주복 우주선 우주인 우체부 울타리 원룸 원인 원칙 월급 월세 위생 유리창 유리컵
+      유전자 은색 은하수 은행 응원 의원 이발소 이슬비 이어폰 이용료 이용자 이정표 입원 자기장 자동차 자부심
+      자전거 잠자리 장관 쟁반 전기차 전투기 점원 정원 조종사 종아리 주꾸미 주소창 주스병 주전자 주차선 주차장
+      지게차 지구본 지렁이 지우개 지하실 지하철 직원 진흙 집값 쫄면 참가비 참가자 참고서 참깨 참나무 찹쌀
+      채권 책상 책임 책장 철쭉 청구서 청소기 청소부 청소차 청포도 초가집 초음파 추어탕 치료실 카메라 컴퍼스
+      컴퓨터 케이크 코끼리 코코넛 콘서트 킥보드 택배 터미널 테니스 테라스 테스트 테이프 통깨 통지표 퇴원 팀원
+      파김치 펜션 펜싱 편지지 포인트 포장지 플러그 플루트 픽셀 학부모 학생 학원 할머니 핫도그 해조류 해파리
+      햇빛 햇살 행동 행복 행성 허벅지 현관 혈관 혈액 호기심 호랑이 확률 확인 환경 환불 황새
+      회색
+      // 8 자모 · 320개
+      가을날 갈비탕 감기약 감자탕 개발자 거울장 건전지 겉절이 게시물 게시판 겨울날 견인차 경기장 경운기 경찰서 경찰차
+      계산기 계산서 고가도로 골짜기 골프공 골프장 골프채 곰돌이 공기업 공휴일 과학자 관객 관리자 교장실 구청장 군만두
+      굴착기 글쓰기 금붕어 급식비 기관차 기념일 기찻길 기획자 길찾기 김자반 김치전 김치통 까마귀 깍두기 꽃가루 나룻배
+      나침반 농구공 농구장 눈사태 눈송이 다락방 다람쥐 단호박 닭고기 담벼락 대기실 대형차 도마뱀 도메인 도서관 독일어
+      돌고래 드라이기 들기름 등산로 디자이너 딥러닝 뜀틀 레몬차 립스틱 막국수 머릿결 머스터드 메뚜기 멜로디 목감기 무궁화
+      무화과 문구점 문어발 문자열 물김치 물만두 미술실 미술품 미안함 미역국 미용실 바람결 바람길 바이러스 반도체 반창고
+      발가락 발바닥 배구공 배달차 백팩 번역가 범고래 베란다 베이글 베이컨 벽시계 보증금 복분자 복숭아 부동산 부침개
+      분석가 분수대 브라우저 비누곽 비빔밥 비행기 사각형 사무원 사진첩 사진틀 삼각자 상담사 색깔 샐러드 서랍장 선수단
+      선풍기 설계자 성적표 세입자 세탁기 세탁소 셀러리 셔틀콕 소독약 소독제 소득세 소화제 손가락 손바닥 손수건 손잡이
+      쇼핑몰 수납장 수선화 수술실 수영복 수영장 수정과 수채화 수평선 숟가락 스노보드 스웨터 스탠드 스포츠카 승강기 승용차
+      시상식 식당가 식용유 식재료 신청자 신호등 실로폰 심박수 쌀가루 아보카도 아쉬움 아이디어 아주머니 아침밥 아침잠 안전모
+      암호문 암호화 앞마당 애호박 야구모자 야영장 양배추 양상추 엉덩이 에어컨 여객기 여름날 여행사 연구실 연주회 열대야
+      열대어 영수증 오각형 오렌지 오리고기 오아시스 오토바이 온도계 온풍기 옷가게 옷걸이 옷소매 외국어 외로움 외숙모 요구르트
+      우승컵 우체국 우체통 운전사 원뿔 원피스 유람선 음악가 이구아나 이벤트 인절미 일본어 임대료 입장료 잎사귀 자격증
+      자동화 자료구조 자물쇠 자신감 잠수함 장마철 장맛비 장아찌 재채기 저녁놀 저녁밥 전단지 전동차 전시장 전시회 전화기
+      젓가락 정류장 제습기 제작자 조각상 종이컵 주먹밥 주차권 준우승 줄넘기 중국어 즐거움 지평선 진료실 진미채 집주인
+      짬뽕 참기름 창업자 책표지 처방전 철도역 청설모 청소년 초대장 초상화 초청장 축구공 축구장 출입구 출판사 충전기
+      치약통 칠면조 카푸치노 칼국수 캔버스 콧구멍 콩나물 타박상 탁구공 탄산수 탕수육 토스터기 통역사 트랙터 트롬본 파도소리
+      파스텔 파일명 파프리카 팔레트 팥빙수 펭귄 편집자 표창장 하모니카 하숙집 한겨울 한국어 한라봉 한여름 항공기 해넘이
+      해돋이 해상도 해수면 햄버거 헤드폰 헬멧 현미경 호박씨 호박죽 화물차 화장지 활주로 회계사 회로판 휴대폰 흰색
+    `.split(/\s+/).filter(word=>/^[가-힣]+$/.test(word));
+    const NOUN_WORDS=[...new Set([...ALL_WORDS,...EXTRA_NOUNS])].filter(word=>{
+      const count=splitHangul(word)?.length;
+      return count>=5&&count<=8;
+    });
+    function hashString(text) {let h=2166136261;for(const ch of text){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0;}
+    function dateKST() {
+      const parts = new Intl.DateTimeFormat('en-US', {timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+      const get = type => parts.find(p=>p.type===type).value;
+      return `${get('year')}-${get('month')}-${get('day')}`;
+    }
+    const WORDS_BY_LENGTH = {};
+    // 출제는 직접 선별한 오프라인 명사만 사용합니다. 온라인 사전 갱신과 독립적이라 하루 정답이 안정적입니다.
+    for (let n=5;n<=8;n++) WORDS_BY_LENGTH[n] = NOUN_WORDS.filter(w=>splitHangul(w)?.length===n);
+    // 이 파일만 단독 실행하면 내장 1,800여 명사를 인정합니다. 30만 명사 전체
+    // 자료는 외부 CSV(품사=명사) 또는 download_dictionary.py 로 내려받은
+    // nouns-300k.txt를 읽습니다. 숫자는 실제 읽어 검증한 단어 수를 표시합니다.
+    const RE_HANGUL=/^[가-힣]+$/;
+    const dictionaryKeys=new Set();
+    const dictionaryByLength={5:new Set(),6:new Set(),7:new Set(),8:new Set()};
+    const nounWords=new Set();
+    function addNoun(word){
+      if(!RE_HANGUL.test(word)||nounWords.has(word))return false;
+      nounWords.add(word);
+      const chars=splitHangul(word);
+      if(chars?.length>=5&&chars?.length<=8){
+        const key=chars.join('');dictionaryKeys.add(key);
+        dictionaryByLength[chars.length].add(key);
+      }
+      return true;
+    }
+    NOUN_WORDS.forEach(addNoun);
+    const MIN_DICTIONARY_NOUNS=300000;
+    const CACHE_KEY='natmal:nouns-300k:2026-11-v4';
+    let dictionaryStatus='loading'; // loading | ready | partial | offline
+    let dictionaryLoading=false;
+    let dictionarySource='기본 단어';
+    function isValidWord(jamos){return dictionaryKeys.has(jamos);}
+    function dictionaryMessage(message,status=dictionaryStatus){
+      const count=nounWords.size;
+      const playable=dictionaryByLength[length].size;
+      const el=document.getElementById('dictionaryState');
+      el.textContent=`${message} · 전체 명사 ${count.toLocaleString('ko-KR')}개 / ${length}칸 입력 가능 ${playable.toLocaleString('ko-KR')}개`;
+      el.classList.toggle('ready',status==='ready');
+      el.classList.toggle('offline',status==='offline'||status==='partial');
+      document.getElementById('retryDictionary').hidden=status==='ready'||status==='loading';
+    }
+    // 명사 품사만 허용합니다. 원본 CSV는 품사,종류,표제어 순서입니다.
+    // 큰 CSV는 한 줄씩 처리하며, 쉼표가 있는 외국어 표제어는 한글 필터로 제거합니다.
+    function parseNIKLCSV(text){
+      let added=0, lines=0;
+      for(const line of text.split(/\r?\n/)){
+        lines++;
+        // 표준국어대사전 크롤링 CSV: '명사,일반어,부패' / '명사,지명,부산'
+        const cells=line.replace(/^\uFEFF/,'').split(',');
+        if(cells.length<3)continue;
+        const pos=cells[0].trim().replace(/^"|"$/g,'');
+        if(!/^(?:명사|고유\s*명사|의존\s*명사)$/.test(pos))continue;
+        let word=cells.slice(2).join(',').trim().replace(/^"|"$/g,'').trim();
+        if(addNoun(word))added++;
+      }
+      return {added,lines};
+    }
+    // 대체 자료 MeCab의 NNG/NNP 명사만 허용 (VV/VA 동사·형용사 제외).
+    function parseMeCabCSV(text){
+      let added=0;
+      for(const line of text.split(/\r?\n/)){
+        const cells=line.split(',');
+        if(cells.length>=5&&/^(NNG|NNP|NNB|NNBC)$/.test(cells[4].trim())){
+          const word=cells[0].trim();
+          if(addNoun(word))added++;
+        }
+      }
+      return {added};
+    }
+    // 미리 생성한 오프라인 단어 파일: 1행에 한글 명사 1개.
+    function parseLocalNounText(text){
+      let added=0;
+      for(const word of text.split(/\s+/))if(addNoun(word))added++;
+      return {added};
+    }
+    function showDictionaryProgress(prefix){dictionaryMessage(prefix,dictionaryStatus);}
+    async function fetchText(url,timeoutMs=42000){
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),timeoutMs);
+      try{
+        const response=await fetch(url,{signal:controller.signal,cache:'force-cache'});
+        if(!response.ok)throw Error(`HTTP ${response.status}: ${url}`);
+        return await response.text();
+      } finally {clearTimeout(timer);}
+    }
+    function openDictionaryDB(){
+      return new Promise((resolve,reject)=>{
+        if(!('indexedDB' in window))return reject(Error('IndexedDB unavailable'));
+        const req=indexedDB.open('natmal-noun-cache',1);
+        req.onupgradeneeded=()=>req.result.createObjectStore('lists');
+        req.onsuccess=()=>resolve(req.result);
+        req.onerror=()=>reject(req.error);
+      });
+    }
+    async function readCachedDictionary(){
+      let db;
+      try{
+        db=await openDictionaryDB();
+        return await new Promise((resolve,reject)=>{
+          const req=db.transaction('lists','readonly').objectStore('lists').get(CACHE_KEY);
+          req.onsuccess=()=>resolve(req.result);
+          req.onerror=()=>reject(req.error);
+        });
+      } finally {db?.close();}
+    }
+    async function saveCachedDictionary(){
+      let db;
+      try{
+        db=await openDictionaryDB();
+        await new Promise((resolve,reject)=>{
+          const tx=db.transaction('lists','readwrite');
+          tx.objectStore('lists').put([...nounWords].join('\n'),CACHE_KEY);
+          tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);
+        });
+      } finally {db?.close();}
+    }
+    async function tryLoadSource(url,parse,label){
+      const text=await fetchText(url);
+      // 외부 자료가 HTML 오류 문서로 바뀌면 형식 오류로 거부합니다.
+      if(text.slice(0,250).toLowerCase().includes('<!doctype html'))throw Error('HTML response');
+      const before=nounWords.size;
+      parse(text);
+      if(nounWords.size-before<1000)throw Error('명사 자료가 부족하거나 형식이 다릅니다.');
+      dictionarySource=label;
+      return nounWords.size-before;
+    }
+    async function loadDictionary(){
+      if(dictionaryLoading)return;
+      dictionaryLoading=true;
+      dictionaryStatus='loading';
+      dictionaryMessage('명사 사전을 불러오는 중');
+      try {
+      const errors=[];
+      // 첫 접속에 없는 단어가 제출되는 문제를 막기 위해 기본 명사도 즉시 허용합니다.
+      try{
+        const cached=await readCachedDictionary();
+        if(typeof cached==='string'&&cached.length>100000){
+          parseLocalNounText(cached);
+          if(nounWords.size>=MIN_DICTIONARY_NOUNS){
+            dictionarySource='브라우저에 저장된 명사 사전';
+            dictionaryStatus='ready';
+            dictionaryMessage('✓ 30만 이상 명사 사전 준비 완료 (저장된 자료)');
+            return;
+          }
+        }
+      }catch(error){errors.push('캐시: '+error.message);}
+      // 다운로드 스크립트로 생성한 파일을 같은 폴더에 업로드하면 외부 연결 없이 작동.
+      try{
+        await tryLoadSource('./nouns-300k.txt',parseLocalNounText,'자체 배포 파일');
+        if(nounWords.size>=MIN_DICTIONARY_NOUNS){
+          dictionaryStatus='ready';
+          dictionaryMessage('✓ 30만 이상 명사 사전 준비 완료 (자체 파일)');
+          try{await saveCachedDictionary();}catch{}
+          return;
+        }
+      }catch(error){errors.push('로컬 사전: '+error.message);}
+      // 표준국어대사전 표제어 CSV: 품사 '명사'만 받아들입니다.
+      // 브라우저 CORS가 허용되는 두 호스트 중 먼저 성공한 것을 사용합니다.
+      const stdictSources=[
+        'https://cdn.jsdelivr.net/gh/minsuho/-DB@main/%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%8C%80%EC%82%AC%EC%A0%84.csv',
+        'https://raw.githubusercontent.com/minsuho/-DB/main/%ED%91%9C%EC%A4%80%EA%B5%AD%EC%96%B4%EB%8C%80%EC%82%AC%EC%A0%84.csv'
+      ];
+      for(const url of stdictSources){
+        showDictionaryProgress('표준국어대사전 명사 추출 중');
+        try{
+          await tryLoadSource(url,parseNIKLCSV,'표준국어대사전');
+          break;
+        }catch(error){errors.push(error.message);}
+      }
+      // 목표에 도달하지 못한 경우 추가 명사 자료를 합치되 동사 자료는 섞지 않습니다.
+      if(nounWords.size<MIN_DICTIONARY_NOUNS){
+        const alternativeSources=[
+          ['https://cdn.jsdelivr.net/gh/lindera/mecab-ko-dic@main/NNG.csv',parseMeCabCSV,'MeCab 일반명사'],
+          ['https://raw.githubusercontent.com/lindera/mecab-ko-dic/main/NNG.csv',parseMeCabCSV,'MeCab 일반명사'],
+          ['https://cdn.jsdelivr.net/gh/lindera/mecab-ko-dic@main/NNP.csv',parseMeCabCSV,'MeCab 고유명사'],
+          ['https://cdn.jsdelivr.net/gh/jeongwookie/new_korean_words@master/mecab_new_corpus_132799.csv',parseMeCabCSV,'뉴스 말뭉치에서 추출한 명사']
+        ];
+        for(const [url,parser,label] of alternativeSources){
+          if(nounWords.size>=MIN_DICTIONARY_NOUNS)break;
+          showDictionaryProgress(`${label} 추가 중`);
+          try{await tryLoadSource(url,parser,label);}catch(error){errors.push(label+': '+error.message);}
+        }
+      }
+      dictionaryStatus=nounWords.size>=MIN_DICTIONARY_NOUNS?'ready':nounWords.size>2000?'partial':'offline';
+      const completed=dictionaryStatus==='ready';
+      dictionaryMessage(completed?'✓ 30만 이상 명사 사전 준비 완료':
+        dictionaryStatus==='partial'?'일부 명사만 불러왔어요 (30만 미달)':'외부 사전 연결 실패 · 기본 단어만 사용 중');
+      if(dictionaryStatus!=='offline'){
+        try{await saveCachedDictionary();}catch{}
+      }
+      if(!completed)console.warn('명사 사전 목표 미달. 사전별 오류:',errors);
+      } finally {dictionaryLoading=false;}
+    }
+    const $ = id=>document.getElementById(id);
+    let length=5, mode='daily', answerWord='', answer=[], history=[], current=[], finished=false, won=false, practiceNum=0;
+    let activeDate='', puzzleId='', lastPracticeWord='';
+    const usedPracticeIds=new Set();
+    const BASE_5=62**5;
+    const ALPHA_NUM='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const LETTERS='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    // 10자리 base62 영역의 Feistel 일대일 치환: 날짜/칸 수가 다르면 같은 ID가 나오지 않습니다.
+    function opaqueId(serial){
+      let left=Math.floor(serial/BASE_5),right=serial%BASE_5;
+      for(let round=0;round<8;round++){
+        const value=hashString(`natmal-id:2026:v1:${round}:${right}`)%BASE_5;
+        [left,right]=[right,(left+value)%BASE_5];
+      }
+      function b62(value){
+        let out='';
+        for(let i=0;i<5;i++) {out=ALPHA_NUM[value%62]+out;value=Math.floor(value/62);}
+        return out;
+      }
+      const code=b62(left)+b62(right);
+      const h=hashString(`mix:${code}`);
+      return LETTERS[h%LETTERS.length]+String(hashString(`digit:${code}`)%10)+code;
+    }
+    function daySerial(date){
+      const [y,m,d]=date.split('-').map(Number);
+      return Math.floor(Date.UTC(y,m-1,d)/86400000);
+    }
+    // 같은 날+칸 수 -> 같은 ID, 다른 날/칸 수 -> 다른 ID (충돌 없음).
+    function dailyId(date,n){return opaqueId(daySerial(date)*4+(n-5));}
+    function randomPracticeId(){
+      // 연습 문제 ID는 임시 난수이며, 한 번 열린 탭 안에서는 중복을 막습니다.
+      let result;
+      do {
+        const bytes=new Uint32Array(2);
+        crypto.getRandomValues(bytes);
+        result=opaqueId(100000000+((bytes[0]%65536)*65536+(bytes[1]%65536)));
+      } while(usedPracticeIds.has(result)||result===dailyId(activeDate,length));
+      usedPracticeIds.add(result);
+      return result;
+    }
+    function shufflePool(n,cycle){
+      const items=[...WORDS_BY_LENGTH[n]];
+      let seed=hashString(`natmal-shuffle:2026:v1:${n}:${cycle}`)||1;
+      const rand=()=>{seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return seed>>>0;};
+      for(let i=items.length-1;i>0;i--){const j=rand()%(i+1);[items[i],items[j]]=[items[j],items[i]];}
+      return items;
+    }
+    function wordForDay(date,n){
+      const pool=WORDS_BY_LENGTH[n];
+      // 첫 출시일을 기준으로 한 사이클을 모두 돈 후에만 같은 단어가 다시 나옵니다.
+      const day=daySerial(date)-daySerial('2026-11-19'), cycle=Math.floor(day/pool.length);
+      const offset=((day%pool.length)+pool.length)%pool.length;
+      const list=shufflePool(n,cycle);
+      if(cycle>0&&list[0]===shufflePool(n,cycle-1).at(-1)&&list.length>2)
+        [list[0],list[1]]=[list[1],list[0]];
+      return list[offset];
+    }
+    function selectAnswer() {
+      if(mode==='daily')return wordForDay(activeDate,length);
+      const pool=WORDS_BY_LENGTH[length];
+      const available=pool.filter(word=>word!==lastPracticeWord);
+      const value=available[Math.floor(Math.random()*available.length)];
+      lastPracticeWord=value;
+      return value;
+    }
+    function updateTimeLabel(){
+      if(mode!=='daily'){$('nextChange').textContent=' · 새 문제마다 무작위';return;}
+      const milliseconds=86400000-((Date.now()+9*3600000)%86400000);
+      const hours=String(Math.floor(milliseconds/3600000)).padStart(2,'0');
+      const minutes=String(Math.floor(milliseconds%3600000/60000)).padStart(2,'0');
+      const seconds=String(Math.floor(milliseconds%60000/1000)).padStart(2,'0');
+      $('nextChange').textContent=` · 다음 변경 ${hours}:${minutes}:${seconds}`;
+    }
+    function storageKey(){return `natmal:v3:${activeDate}:${length}`;}
+    function persist(){
+      if(mode==='daily') {try {localStorage.setItem(storageKey(),JSON.stringify({history, current, finished, won}));} catch { /* private browsing / local files */ }}
+    }
+    function restore(){
+      if(mode!=='daily')return;
+      try{
+        const state=JSON.parse(localStorage.getItem(storageKey()));
+        if(state && Array.isArray(state.history) && Array.isArray(state.current)) {
+          history=state.history.slice(0,5);current=state.current.slice(0,length);finished=!!state.finished;won=!!state.won;
+        }
+      }catch{}
+    }
+    function startGame(){
+      activeDate=dateKST();
+      answerWord=selectAnswer();answer=splitHangul(answerWord);history=[];current=[];won=false;finished=false;
+      puzzleId=mode==='daily'?dailyId(activeDate,length):randomPracticeId();
+      if(mode==='daily')restore();
+      document.querySelectorAll('[data-length]').forEach(btn=>{
+        const selected=Number(btn.dataset.length)===length;btn.classList.toggle('active',selected);btn.setAttribute('aria-pressed',selected);
+      });
+      $('dailyMode').classList.toggle('active',mode==='daily');$('practiceMode').classList.toggle('active',mode==='practice');
+      $('dailyMode').setAttribute('aria-pressed',mode==='daily');$('practiceMode').setAttribute('aria-pressed',mode==='practice');
+      $('dateLabel').textContent=mode==='daily'?`${activeDate.replaceAll('-','.')} · 오늘의 문제`:`연습 문제 #${practiceNum}`;
+      $('puzzleId').textContent=puzzleId;
+      $('shuffleLabel').textContent=mode==='daily'?'일별 무작위 순서 · 중복 방지':'연습용 무작위 문제';
+      updateTimeLabel();
+      dictionaryMessage(dictionaryStatus==='ready'?'✓ 30만 이상 명사 사전 준비 완료':dictionaryStatus==='loading'?'명사 사전을 불러오는 중':dictionaryStatus==='partial'?'일부 명사만 불러왔어요 (30만 미달)':'외부 사전 연결 실패 · 기본 단어만 사용 중');
+      render();
+      if(finished) setStatus(won?`🎉 정답! ${answerWord} · ${history.length}번째 시도에 성공했어요.`:`아쉬워요! 정답은 '${answerWord}'였어요.`,won?'success':'error');
+      else setStatus('자음·모음을 눌러 단어를 입력해 보세요.');
+    }
+    function setStatus(message,type=''){
+      const el=$('status');el.textContent=message;el.className=`status ${type}`;
+    }
+    function render(){
+      $('attemptLabel').textContent=`시도 ${history.length} / 5`;
+      const board=$('board');board.replaceChildren();
+      for(let r=0;r<5;r++){
+        const row=document.createElement('div');row.className='board-row';row.setAttribute('aria-label',`${r+1}번째 시도`);
+        const letters=r<history.length?history[r].letters:r===history.length&&!finished?current:[];
+        for(let c=0;c<length;c++){
+          const tile=document.createElement('div');tile.className='tile';tile.textContent=letters[c]||'';
+          if(r<history.length)tile.classList.add(history[r].result[c]);
+          else if(r===history.length&&!finished){if(letters[c])tile.classList.add('filled');if(c===letters.length)tile.classList.add('current');}
+          row.appendChild(tile);
+        }
+        board.appendChild(row);
+      }
+      const state={};const priority={absent:1,present:2,correct:3};
+      for(const entry of history){entry.letters.forEach((ch,i)=>{const s=entry.result[i];if((priority[s]||0)>(priority[state[ch]]||0))state[ch]=s;});}
+      const keyboard=$('keyboard');keyboard.replaceChildren();
+      KEY_ROWS.forEach((chars,rowIndex)=>{
+        const row=document.createElement('div');row.className='keyrow';
+        for(const ch of chars){const key=document.createElement('button');key.type='button';key.className=`key ${state[ch]||''}`;key.textContent=ch;key.disabled=finished;key.setAttribute('aria-label',`${ch} 입력`);key.addEventListener('click',()=>typeLetter(ch));row.appendChild(key);}
+        if(rowIndex===2) {
+          row.appendChild(actionKey('⌫','한 칸 지우기',erase,'action'));
+          row.appendChild(actionKey('제출','단어 제출',submit,'submit'));
+        }
+        keyboard.appendChild(row);
+      });
+      $('nextButton').hidden=!(finished && mode==='practice');
+      $('shareButton').hidden=!finished;
+    }
+    function actionKey(text,label,handler,style){
+      const key=document.createElement('button');key.type='button';key.className=`key action ${style}`;
+      key.textContent=text;key.disabled=finished;key.setAttribute('aria-label',label);
+      key.addEventListener('click',handler);return key;
+    }
+    function typeLetter(letter){
+      if(finished)return;
+      for(const ch of (BREAK[letter]||letter)) if(current.length<length && KEY_ROWS.join('').includes(ch))current.push(ch);
+      persist();render();
+    }
+    function erase(){if(finished)return;current.pop();persist();render();}
+    function evaluate(guess,target){
+      const result=Array(guess.length).fill('absent'),remain={};
+      for(let i=0;i<target.length;i++){
+        if(guess[i]===target[i])result[i]='correct';
+        else remain[target[i]]=(remain[target[i]]||0)+1;
+      }
+      for(let i=0;i<guess.length;i++){
+        if(result[i]==='correct')continue;
+        if(remain[guess[i]]>0){result[i]='present';remain[guess[i]]--;}
+      }
+      return result;
+    }
+    function submit(){
+      if(finished)return;
+      if(current.length!==length){setStatus(`${length}칸을 모두 채워 주세요. (현재 ${current.length}칸)`,'error');return;}
+      const wordKey=current.join('');
+      if(!isValidWord(wordKey)){
+        const message=dictionaryStatus==='loading'?'전체 명사 사전을 불러오는 중입니다. 추가 단어는 로딩 완료 후 제출할 수 있어요.':
+          dictionaryStatus==='offline'?'외부 사전 연결이 실패했어요. 기본 명사만 인정되고 있어요.':'사전에 없는 명사예요. (동사·형용사 제외)';
+        setStatus(message,'error');return;
+      }
+      const letters=[...current],result=evaluate(letters,answer);
+      history.push({letters,result});current=[];
+      won=result.every(s=>s==='correct');finished=won||history.length===5;
+      persist();render();
+      if(won)setStatus(`🎉 정답! '${answerWord}' · ${history.length}번 만에 맞혔어요!`,'success');
+      else if(finished)setStatus(`아쉬워요! 정답은 '${answerWord}'였습니다.`,'error');
+      else setStatus(`힌트를 확인하세요. 남은 기회 ${5-history.length}번!`);
+    }
+    function share(){
+      const squares={correct:'🟩',present:'🟨',absent:'⬜'};
+      const text=`낱말 탐정 ${activeDate} · ${length}자 · ID ${puzzleId} · ${won?history.length:'X'}/5\n${history.map(h=>h.result.map(s=>squares[s]).join('')).join('\n')}\n${location.href}`;
+      if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>setStatus('결과가 복사되었어요! 친구에게 공유해 보세요.','success')).catch(()=>setStatus('복사가 허용되지 않았어요.','error'));
+      else setStatus('이 브라우저에서는 클립보드 복사를 사용할 수 없어요.','error');
+    }
+    function setTheme(theme){
+      const actual=theme==='dark'?'dark':'light';
+      document.documentElement.dataset.theme=actual;
+      document.querySelector('meta[name="theme-color"]').setAttribute('content',actual==='dark'?'#151c2b':'#f7f8fc');
+      document.querySelectorAll('[data-theme-choice]').forEach(button=>{
+        const active=button.dataset.themeChoice===actual;
+        button.classList.toggle('active',active);
+        button.setAttribute('aria-pressed',String(active));
+      });
+      try{localStorage.setItem('natmal:theme:v1',actual);}catch{}
+    }
+    document.querySelectorAll('[data-theme-choice]').forEach(button=>button.addEventListener('click',()=>setTheme(button.dataset.themeChoice)));
+    setTheme(document.documentElement.dataset.theme);
+    $('retryDictionary').addEventListener('click',loadDictionary);
+    $('copyIdButton').addEventListener('click',async()=>{
+      try{await navigator.clipboard.writeText(puzzleId);setStatus('문제 식별번호를 복사했어요.','success');}
+      catch{setStatus('브라우저 설정에서 복사가 허용되지 않았어요.','error');}
+    });
+    function checkDayChange(){
+      if(mode==='daily' && dateKST()!==activeDate){
+        startGame();
+        setStatus('🌅 한국 시간 자정! 오늘의 새 문제가 시작됐어요.','success');
+      }
+      updateTimeLabel();
+    }
+    setInterval(checkDayChange,1000);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkDayChange();});
+    window.addEventListener('focus',checkDayChange);
+    $('helpButton').addEventListener('click',()=>$('helpDialog').showModal());
+    $('closeHelp').addEventListener('click',()=>$('helpDialog').close());
+    $('helpDialog').addEventListener('click',e=>{if(e.target===$('helpDialog'))$('helpDialog').close();});
+    document.querySelectorAll('[data-length]').forEach(btn=>btn.addEventListener('click',()=>{length=Number(btn.dataset.length);startGame();}));
+    $('dailyMode').addEventListener('click',()=>{mode='daily';startGame();});
+    $('practiceMode').addEventListener('click',()=>{if(mode!=='practice'){mode='practice';practiceNum=1;startGame();}});
+    $('nextButton').addEventListener('click',()=>{practiceNum++;startGame();});
+    $('shareButton').addEventListener('click',share);
+    document.addEventListener('keydown',e=>{
+      if(e.target instanceof HTMLElement && (e.target.matches('input,textarea')||e.target.closest('dialog')))return;
+      // 다른 버튼에 포커스가 있어도 글자 입력은 가능하게 하고, Enter로 버튼을 누르는 동작은 보존해요.
+      if(e.target instanceof HTMLButtonElement && (e.key==='Enter'||e.key===' '))return;
+      if(e.ctrlKey||e.metaKey||e.altKey||e.isComposing)return;
+      if(e.key==='Backspace'){e.preventDefault();erase();return;}
+      if(e.key==='Enter'){e.preventDefault();submit();return;}
+      const direct=splitHangul(e.key);
+      const eng=e.key.toLowerCase();
+      const mapped=e.key.length===1&&/[a-z]/i.test(e.key)?(e.shiftKey&&SHIFT_ENG[eng]||ENG[eng]):null;
+      if(mapped){e.preventDefault();typeLetter(mapped);}
+      else if(direct && direct.length && e.key.length===1){e.preventDefault();direct.forEach(typeLetter);}
+    });
+    startGame();
+    loadDictionary();
+  </script>
+</body>
+</html>

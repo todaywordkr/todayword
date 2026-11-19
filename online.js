@@ -285,15 +285,17 @@ async function loadShop(){
    if(Object.values(selected).some(it=>it&&it.price!==0)){status('유료 아이템은 아직 장착할 수 없습니다.');return;}
    const value=(key)=>selected[key]?.file||'';
    await saveFreeEmblem({shape:value('frames'),pattern:value('patterns'),crown:value('crowns'),wings:value('wings'),effect:value('effects'),namefx:''});
-   equippedEmblem=normalizeEquipped({shape:value('frames'),pattern:value('patterns'),crown:value('crowns'),wings:value('wings'),effect:value('effects'),namefx:''});
+   const requested=normalizeEquipped({shape:value('frames'),pattern:value('patterns'),crown:value('crowns'),wings:value('wings'),effect:value('effects'),namefx:''});
+   const {data:confirmed,error:verifyError}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',user.id).maybeSingle();
+   if(verifyError)throw new Error('장착 저장 검증 실패: '+friendly(verifyError));
+   if(!confirmed||!sameEquipped(normalizeEquipped(confirmed),requested)){
+    throw new Error('서버 장착 정보가 변경되지 않았습니다. Supabase equip_owned_free_emblem 함수와 emblem_equipment 테이블을 확인해야 합니다.');
+   }
+   equippedEmblem=normalizeEquipped(confirmed);
    writeEquippedCache(equippedEmblem);
    renderEquippedEverywhere();
    saveShopPreview(selected,selectedNamefx,activeCategory,activeTier);
-   const {data:confirmed,error:verifyError}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',user.id).maybeSingle();
-   if(verifyError||!confirmed||!sameEquipped(normalizeEquipped(confirmed),equippedEmblem)){
-    status('화면에는 장착됐지만 서버 저장 확인 실패 · Supabase 장착 테이블/RLS 확인 필요');
-   }else status('장착 완료 · 서버에 저장 확인됨');
-   if(confirmed&&!verifyError&&sameEquipped(normalizeEquipped(confirmed),equippedEmblem))await renderHeaderEmblem(currentProfile?.nickname||'');
+   status('장착 완료 · 서버 저장 확인됨 · 새로고침해도 유지됩니다.');
    await loadRanks();
   }catch(e){status('무료 앰블럼 장착 실패: '+friendly(e));}finally{freeBtn.disabled=!user||Object.values(selected).some(it=>it&&it.price!==0);}
  });

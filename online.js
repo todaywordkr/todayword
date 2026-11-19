@@ -180,12 +180,6 @@ async function refresh(){
 
 // Supabase Auth requires an email internally. Use a deterministic, non-deliverable
 // address derived from the private username; no real email is requested or sent.
-const NICKNAME_BLOCKED_TERMS = ["시발", "씨발", "씨팔", "ㅅㅂ", "ㅆㅂ", "병신", "ㅂㅅ", "개새끼", "새끼", "좆", "존나", "지랄", "미친놈", "미친년", "애미뒤", "느금마", "니애미", "창녀", "걸레년", "보지", "자지", "섹스", "야동", "포르노", "강간", "성폭행", "일베충", "노알라", "운지", "홍어새끼", "김치녀", "된장녀", "한남충", "한녀충", "맘충", "틀딱", "급식충", "장애인비하", "관리자", "운영자", "어드민", "admin", "administrator", "moderator"];
-function nicknameBlockReason(value){
- const normalized=String(value||'').normalize('NFKC').toLocaleLowerCase().replace(/[\\s\\p{P}\\p{S}\\u200B-\\u200D\\uFEFF]/gu,'');
- if(NICKNAME_BLOCKED_TERMS.some(term=>normalized.includes(term)))return '욕설·음란·비하 표현 또는 운영자 사칭 표현은 사용할 수 없습니다.';
- return '';
-}
 const usernameEmail=name=>`${name.toLowerCase()}@pynscyjkjiwjmaanbeie.supabase.co`;
 const normalizeUsername=value=>value.trim().toLowerCase();
 const authError=e=>{
@@ -199,12 +193,12 @@ const authError=e=>{
 $('signup').onclick=async()=>{
  const username=normalizeUsername($('username').value),nickname=$('nickname').value.trim(),password=$('password').value;
  if(!/^[a-z0-9]{4,24}$/.test(username)){status('아이디는 영문·숫자 4~24자로 입력하세요.');return;}
- if(!nickname||nickname.length>24){status('닉네임은 1~24자로 입력하세요.');return;}\n const nicknameReason=nicknameBlockReason(nickname)||nicknameBlockReason(username);if(nicknameReason){status(nicknameReason);return;}
+ if(!nickname||nickname.length>24){status('닉네임은 1~24자로 입력하세요.');return;}
  if(password.length<8){status('비밀번호는 8자 이상 입력하세요.');return;}
  try{
   const {data:check,error:checkError}=await client.rpc('check_signup_names',{p_username:username,p_nickname:nickname});
   if(checkError)throw checkError;
-  if(check.username_blocked||check.nickname_blocked){status('사용할 수 없는 아이디 또는 닉네임입니다.');return;}\n  if(check.username_taken){status('이미 사용 중인 아이디입니다.');return;}
+  if(check.username_taken){status('이미 사용 중인 아이디입니다.');return;}
   if(check.nickname_taken){status('이미 사용 중인 닉네임입니다.');return;}
   const {data,error}=await client.auth.signUp({email:usernameEmail(username),password,options:{data:{username,nickname}}});
   if(error)throw error;
@@ -251,7 +245,7 @@ $('profileClose').addEventListener('click',()=>profileDialog.close());
 profileDialog.addEventListener('click',event=>{if(event.target===profileDialog)profileDialog.close()});
 $('profileSaveNickname').addEventListener('click',async()=>{
  const button=$('profileSaveNickname'),nickname=$('profileNewNickname').value.trim();
- if(!nickname||nickname.length>24){profileStatus('닉네임은 1~24자로 입력하세요.');return}\n const nicknameReason=nicknameBlockReason(nickname);if(nicknameReason){profileStatus(nicknameReason);return}
+ if(!nickname||nickname.length>24){profileStatus('닉네임은 1~24자로 입력하세요.');return}
  if(nickname===currentProfile?.nickname){profileStatus('현재 닉네임과 같습니다.');return}
  profileBusy(button,true);
  try{await rpc('change_nickname',{p_nickname:nickname});await loadProfile();await loadRanks();profileStatus('닉네임이 변경되었습니다.')}catch(e){profileStatus(/unique|duplicate/i.test(friendly(e))?'이미 사용 중인 닉네임입니다.':friendly(e))}finally{profileBusy(button,false)}

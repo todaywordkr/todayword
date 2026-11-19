@@ -74,10 +74,11 @@ function renderEquippedEverywhere(){
   view.replaceChildren(emblemArt(equippedEmblem,name,true));
  }
 }
-function equippedCacheKey(){return user?.id?'todayword_equipped_v2_'+user.id:null;}
+function equippedCacheKey(){return user?.id?'todayword_equipped_v3_'+user.id:null;}
 function readEquippedCache(){try{const key=equippedCacheKey();return key?JSON.parse(localStorage.getItem(key)||'null'):null;}catch(e){return null;}}
 function writeEquippedCache(value){try{const key=equippedCacheKey();if(key)localStorage.setItem(key,JSON.stringify(normalizeEquipped(value)));}catch(e){console.warn('장착 캐시 저장 실패',e);}}
 function sameEquipped(a,b){return ['shape','pattern','crown','wings','effect','namefx'].every(k=>(a?.[k]||'')===(b?.[k]||''));}
+let emblemServerError='';
 async function renderHeaderEmblem(nickname){
  if(!user)return;
  const accountId=user.id;
@@ -85,18 +86,17 @@ async function renderHeaderEmblem(nickname){
  if(cached)equippedEmblem=normalizeEquipped(cached);
  renderEquippedEverywhere();
  try{
-  const {data,error}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',accountId).maybeSingle();
-  if(error)throw error;
+  // RLS가 가린 빈 행이 아닌, 인증된 본인의 서버 장착 상태를 항상 읽습니다.
+  const verified=await rpc('tw_get_my_emblem_v3');
   if(!user||user.id!==accountId||currentProfile?.nickname!==nickname)return;
-  if(data){
-   equippedEmblem=normalizeEquipped(data);
-   writeEquippedCache(equippedEmblem);
-  }else if(!cached){equippedEmblem=normalizeEquipped();}
+  emblemServerError='';
+  equippedEmblem=normalizeEquipped(verified);
+  writeEquippedCache(equippedEmblem);
   renderEquippedEverywhere();
  }catch(e){
-  console.error('장착 조회 실패',e);
-  status('앰블럼 서버 조회 실패: '+friendly(e));
-  renderEquippedEverywhere();
+  console.error('장착 서버 조회 실패:',e);
+  emblemServerError=friendly(e);
+  status('앰블럼 서버 설정 확인: '+emblemServerError);
  }
 }
 
@@ -145,7 +145,7 @@ function emblemArt(config,nickname,compact=false){
  const name=document.createElement('span');name.className='emblem-nickname fx-'+(config.namefx||'basic');name.textContent=nickname;
  el.append(badge,name);return el;
 }
-async function saveFreeEmblem(config){return rpc('equip_owned_free_emblem',{p_shape:config.shape,p_pattern:config.pattern,p_crown:config.crown,p_wings:config.wings,p_effect:config.effect,p_namefx:config.namefx});}
+async function saveFreeEmblem(config){return rpc('tw_equip_free_emblem_v3',{p_shape:config.shape,p_pattern:config.pattern,p_crown:config.crown,p_wings:config.wings,p_effect:config.effect,p_namefx:config.namefx});}
 const SHOP_GROUPS = [
  {key:'frames',label:'모양',field:'shape'},
  {key:'patterns',label:'문양',field:'pattern'},
@@ -200,16 +200,21 @@ async function loadShop(){
  // 상점이 닫힌 동안 응답이 온 경우 불필요한 렌더 방지
  if(!$('shopDialog').open)return;
  const groups=Object.fromEntries(SHOP_GROUPS.map(g=>[g.key,catalog.filter(it=>it.category===g.key)]));
- // Always initialize from verified equipment, never from an unsaved preview.
- let serverEquipment=null;
+ // 상점 미리보기는 서버 장착 상태에서만 시작합니다. 오류 시 장착 버튼을 잠급니다.
+ let equipmentReady=!user;
  if(user){
   try{
-   const {data,error}=await client.from('emblem_equipment').select('shape,pattern,wings,crown,effect,namefx').eq('user_id',user.id).maybeSingle();
-   if(error)throw error;
-   serverEquipment=data;
-   if(data){equippedEmblem=normalizeEquipped(data);writeEquippedCache(equippedEmblem);renderEquippedEverywhere();}
-   else if(!readEquippedCache()){equippedEmblem=normalizeEquipped();renderEquippedEverywhere();}
-  }catch(e){console.warn('상점 장착 조회 실패',e);status('장착 조회 실패: '+friendly(e));}
+   const verified=await rpc('tw_get_my_emblem_v3');
+   equippedEmblem=normalizeEquipped(verified);
+   writeEquippedCache(equippedEmblem);
+   renderEquippedEverywhere();
+   emblemServerError='';
+   equipmentReady=true;
+  }catch(e){
+   emblemServerError=friendly(e);
+   console.error('상점 장착 조회 실패:',e);
+   status('장착 서버 조회 실패: '+emblemServerError);
+  }
  }
  if(!$('shopDialog').open)return;
  const selected={};
@@ -229,7 +234,7 @@ async function loadShop(){
  const footer=document.createElement('div');footer.className='shop-footer';
  const total=document.createElement('span');total.className='shop-price';footer.append(total);
  const locked=document.createElement('button');locked.type='button';locked.disabled=true;locked.className='shop-locked';locked.textContent='🔒 구매 준비 중 (미리보기 전용)';footer.append(locked);
- const freeBtn=document.createElement('button');freeBtn.type='button';freeBtn.className='emblem-free';freeBtn.textContent='장착';freeBtn.disabled=!user;freeBtn.title='소유한 무료 아이템 조합을 계정과 랭킹에 저장합니다.';footer.append(freeBtn);
+ const freeBtn=document.createElement('button');freeBtn.type='button';freeBtn.className='emblem-free';freeBtn.textContent='장착';freeBtn.disabled=!user||!equipmentReady;freeBtn.title='소유한 무료 아이템 조합을 계정과 랭킹에 저장합니다.';footer.append(freeBtn);
  const nameRow=document.createElement('div');nameRow.className='shop-namefx-row';
  const nameTitle=document.createElement('span');nameTitle.textContent='닉네임 색상';nameRow.append(nameTitle);
  for(const [label,id] of SHOP_NAMEFX){const btn=document.createElement('button');btn.type='button';btn.textContent=label;btn.dataset.namefx=id;btn.addEventListener('click',()=>{selectedNamefx=id;updatePreview()});nameRow.append(btn);}
@@ -237,12 +242,13 @@ async function loadShop(){
  const nav={};
  for(const group of SHOP_GROUPS){const btn=document.createElement('button');btn.type='button';btn.textContent=group.label+' ('+groups[group.key].length+')';btn.setAttribute('role','tab');btn.addEventListener('click',()=>{activeCategory=group.key;activeTier='전체';renderGrid()});tabs.append(btn);nav[group.key]=btn;}
  function updatePreview(){
-  equipInfo.textContent='장착 중: '+(SHOP_CATALOG.find(it=>it.file===equippedEmblem.shape)?.name||'기본 방패')+' · 미리보기는 상점을 나가면 취소됩니다';
+  equipInfo.textContent=equipmentReady?'장착 중: '+(SHOP_CATALOG.find(it=>it.file===equippedEmblem.shape)?.name||'기본 방패')+' · 미리보기는 상점을 나가면 취소됩니다':'서버 장착 조회 실패 · Supabase 수정 SQL을 먼저 실행해주세요';
   saveShopPreview(selected,selectedNamefx,activeCategory,activeTier);
   preview.replaceChildren(shopPreviewArt(selected,currentProfile?.nickname||'내 닉네임',selectedNamefx));
-  const sum=Object.values(selected).reduce((total,it)=>total+(it?.price||0),0);
+  const namefxPrice=selectedNamefx==='aurora'?3000:selectedNamefx==='rainbow'?1200:selectedNamefx?300:0;
+  const sum=Object.values(selected).reduce((total,it)=>total+(it?.price||0),namefxPrice);
   total.textContent=sum===0?'소유한 무료 아이템 조합':'유료 아이템 포함: '+sum.toLocaleString('ko-KR')+'P (장착 불가)';
-  freeBtn.disabled=!user||sum!==0;
+  freeBtn.disabled=!user||!equipmentReady||sum!==0;
   freeBtn.textContent=sum===0?'장착':'유료 아이템 장착 불가';
   for(const btn of nameRow.querySelectorAll('button'))btn.setAttribute('aria-pressed',String(btn.dataset.namefx===selectedNamefx));
   for(const btn of grid.querySelectorAll('button[data-id]')){const curr=selected[activeCategory];btn.setAttribute('aria-pressed',String((curr?.id||'')===btn.dataset.id));}
@@ -274,16 +280,16 @@ async function loadShop(){
  }
  freeBtn.addEventListener('click',async()=>{
   if(!user){status('로그인이 필요합니다.');return;}
+  if(!equipmentReady){status('서버 장착 정보를 불러오지 못했습니다. Supabase 수정 SQL을 먼저 실행해주세요.');return;}
   freeBtn.disabled=true;
   const value=key=>selected[key]?.file||'';
   const requested=normalizeEquipped({shape:value('frames'),pattern:value('patterns'),crown:value('crowns'),wings:value('wings'),effect:value('effects'),namefx:''});
   try{
-   if(Object.values(selected).some(it=>it&&it.price!==0)){status('유료 아이템은 아직 장착할 수 없습니다.');return;}
+   if(selectedNamefx||Object.values(selected).some(it=>it&&it.price!==0)){status('유료 아이템은 아직 장착할 수 없습니다.');return;}
    await saveFreeEmblem(requested);
-   const {data:confirmed,error:verifyError}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',user.id).maybeSingle();
-   if(verifyError)throw verifyError;
+   const confirmed=await rpc('tw_get_my_emblem_v3');
    if(!confirmed||!sameEquipped(normalizeEquipped(confirmed),requested)){
-    status('장착 실패: 서버에 요청한 방패가 저장되지 않았습니다. Supabase 저장 함수 확인이 필요합니다.');
+    status('장착 실패: 서버에 요청한 방패가 저장되지 않았습니다. Supabase 수정 SQL이 적용됐는지 확인해주세요.');
     return;
    }
    equippedEmblem=normalizeEquipped(confirmed);
@@ -293,11 +299,11 @@ async function loadShop(){
    status('장착 완료 · 서버 저장 확인됨 · 새로고침 후에도 유지됩니다.');
    await loadRanks();
   }catch(e){status('장착 실패: '+friendly(e));console.error('장착 저장 오류',e);}
-  finally{freeBtn.disabled=!user||Object.values(selected).some(it=>it&&it.price!==0);}
+  finally{freeBtn.disabled=!user||!equipmentReady||!!selectedNamefx||Object.values(selected).some(it=>it&&it.price!==0);}
  });
  area.replaceChildren(wrap);renderGrid();
 }
-async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard',{p_period:period});if(error){$('ranks').textContent='랭킹 조회 실패: '+friendly(error);throw error;}const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.className='rank-identity';const rank=document.createElement('b');rank.textContent=(i+1)+'위';left.append(rank);left.append(emblemArt(user&&entry.nickname===currentProfile?.nickname?equippedEmblem:normalizeEquipped(entry),entry.nickname,true));const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
+async function loadRanks(){const {data,error}=await client.rpc('tw_get_leaderboard_v3',{p_period:period});if(error){$('ranks').textContent='랭킹 조회 실패: '+friendly(error);throw error;}const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.className='rank-identity';const rank=document.createElement('b');rank.textContent=(i+1)+'위';left.append(rank);left.append(emblemArt(user&&entry.nickname===currentProfile?.nickname?equippedEmblem:normalizeEquipped(entry),entry.nickname,true));const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
 async function refresh(){
  const {data:{user:current},error:authError}=await client.auth.getUser();
  if(authError)throw authError;
@@ -313,7 +319,7 @@ async function refresh(){
  // Unlock game immediately after authenticated user is confirmed, even if profile/rank APIs fail.
  window.dispatchEvent(new Event('todayword-auth-ready'));
  try{
-  if(user){await loadProfile();status('로그인됨 · 온라인 기록 연결 완료');}
+  if(user){await loadProfile();status(emblemServerError?'앰블럼 서버 연결 실패 · Supabase 수정 SQL 필요: '+emblemServerError:'로그인됨 · 온라인 기록 연결 완료');}
   else status('회원가입하거나 로그인하면 출석·포인트·랭킹을 이용할 수 있어요.');
   await loadRanks();
  }catch(e){status('로그인 상태는 확인됐지만 온라인 정보 불러오기 실패: '+friendly(e));}
@@ -416,7 +422,7 @@ $('profileDelete').addEventListener('click',async()=>{
 $('signout').onclick=async()=>{await client.auth.signOut();await refresh()};
 $('checkin').onclick=async()=>{try{const points=await rpc('daily_checkin');status(`출석 완료! 현재 ${points}P`);await loadProfile()}catch(e){status(friendly(e))}};
 document.querySelectorAll('[data-rank]').forEach(button=>button.onclick=async()=>{period=button.dataset.rank;document.querySelectorAll('[data-rank]').forEach(b=>(b.setAttribute('aria-pressed',String(b===button)),b.setAttribute('aria-selected',String(b===button))));try{await loadRanks()}catch(e){status(friendly(e))}});
-window.todaywordOnline={openShop:()=>loadShop().catch(e=>{$('shop').textContent='상점 조회 오류: '+friendly(e)}),recordPractice:async({puzzleId})=>{if(!user){status('무제한 정답 +1P는 로그인 후 적립됩니다.');return;}try{const points=await rpc('record_practice_win',{p_puzzle_id:puzzleId});status(`무제한 정답 +1P! 현재 ${Number(points).toLocaleString('ko-KR')}P`);await loadProfile();await loadRanks()}catch(e){status('무제한 점수 저장 실패: '+friendly(e))}},recordDaily:async({date,length,attempts,won,puzzleId})=>{if(!user)return;try{await rpc('record_daily_attempt',{p_day:date,p_length:length,p_attempts:attempts,p_won:won,p_puzzle_id:puzzleId});status('오늘의 도전 기록을 온라인에 저장했어요.');await loadProfile();await loadRanks()}catch(e){status('기록 저장 실패: '+friendly(e))}}};
+window.todaywordOnline={openShop:()=>loadShop().catch(e=>{$('shop').textContent='상점 조회 오류: '+friendly(e)}),recordPractice:async({puzzleId,length:passedLength})=>{const n=Number(passedLength||document.querySelector('[data-length][aria-pressed="true"]')?.dataset.length||document.querySelector('[data-length].active')?.dataset.length);const award=(n-4)*2;if(!user){status('무제한 정답 포인트는 로그인 후 적립됩니다.');return;}if(![5,6,7,8].includes(n)){status('무제한 점수 저장 실패: 문제 길이를 확인할 수 없습니다.');return;}try{const points=await rpc('tw_record_practice_win_v3',{p_puzzle_id:puzzleId,p_length:n});status(`무제한 ${n}자 정답 +${award}P! 현재 ${Number(points).toLocaleString('ko-KR')}P`);await loadProfile();await loadRanks()}catch(e){status('무제한 점수 저장 실패: '+friendly(e))}},recordDaily:async({date,length,attempts,won,puzzleId})=>{if(!user)return;try{await rpc('record_daily_attempt',{p_day:date,p_length:length,p_attempts:attempts,p_won:won,p_puzzle_id:puzzleId});status('오늘의 도전 기록을 온라인에 저장했어요.');await loadProfile();await loadRanks()}catch(e){status('기록 저장 실패: '+friendly(e))}}};
 client.auth.onAuthStateChange(()=>{setTimeout(()=>refresh().catch(e=>status(friendly(e))),0)});
 refresh().catch(e=>status('온라인 연결 실패: '+friendly(e)));
 

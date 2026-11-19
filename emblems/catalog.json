@@ -1,0 +1,1802 @@
+[
+  {
+    "id": "frames_frame_001",
+    "category": "frames",
+    "name": "기본 방패 I",
+    "price": 0,
+    "tier": "기본",
+    "source": "shield1",
+    "file": "frames/frame_001.png"
+  },
+  {
+    "id": "frames_frame_002",
+    "category": "frames",
+    "name": "기본 방패 II",
+    "price": 0,
+    "tier": "기본",
+    "source": "shield2",
+    "file": "frames/frame_002.png"
+  },
+  {
+    "id": "frames_frame_003",
+    "category": "frames",
+    "name": "기본 방패 III",
+    "price": 100,
+    "tier": "기본",
+    "source": "shield3",
+    "file": "frames/frame_003.png"
+  },
+  {
+    "id": "frames_frame_004",
+    "category": "frames",
+    "name": "기본 하트",
+    "price": 100,
+    "tier": "기본",
+    "source": "heart",
+    "file": "frames/frame_004.png"
+  },
+  {
+    "id": "frames_frame_005",
+    "category": "frames",
+    "name": "기본 원형",
+    "price": 100,
+    "tier": "기본",
+    "source": "circle",
+    "file": "frames/frame_005.png"
+  },
+  {
+    "id": "frames_frame_006",
+    "category": "frames",
+    "name": "기본 우주",
+    "price": 100,
+    "tier": "기본",
+    "source": "space",
+    "file": "frames/frame_006.png"
+  },
+  {
+    "id": "frames_frame_007",
+    "category": "frames",
+    "name": "기본 다이아",
+    "price": 100,
+    "tier": "기본",
+    "source": "diamond",
+    "file": "frames/frame_007.png"
+  },
+  {
+    "id": "frames_frame_008",
+    "category": "frames",
+    "name": "청동 방패 I",
+    "price": 100,
+    "tier": "기본",
+    "source": "shield1",
+    "file": "frames/frame_008.png"
+  },
+  {
+    "id": "frames_frame_009",
+    "category": "frames",
+    "name": "청동 방패 II",
+    "price": 150,
+    "tier": "일반",
+    "source": "shield2",
+    "file": "frames/frame_009.png"
+  },
+  {
+    "id": "frames_frame_010",
+    "category": "frames",
+    "name": "청동 방패 III",
+    "price": 150,
+    "tier": "일반",
+    "source": "shield3",
+    "file": "frames/frame_010.png"
+  },
+  {
+    "id": "frames_frame_011",
+    "category": "frames",
+    "name": "청동 하트",
+    "price": 150,
+    "tier": "일반",
+    "source": "heart",
+    "file": "frames/frame_011.png"
+  },
+  {
+    "id": "frames_frame_012",
+    "category": "frames",
+    "name": "청동 원형",
+    "price": 150,
+    "tier": "일반",
+    "source": "circle",
+    "file": "frames/frame_012.png"
+  },
+  {
+    "id": "frames_frame_013",
+    "category": "frames",
+    "name": "청동 우주",
+    "price": 150,
+    "tier": "일반",
+    "source": "space",
+    "file": "frames/frame_013.png"
+  },
+  {
+    "id": "frames_frame_014",
+    "category": "frames",
+    "name": "청동 다이아",
+    "price": 150,
+    "tier": "일반",
+    "source": "diamond",
+    "file": "frames/frame_014.png"
+  },
+  {
+    "id": "frames_frame_015",
+    "category": "frames",
+    "name": "초록 방패 I",
+    "price": 150,
+    "tier": "일반",
+    "source": "shield1",
+    "file": "frames/frame_015.png"
+  },
+  {
+    "id": "frames_frame_016",
+    "category": "frames",
+    "name": "초록 방패 II",
+    "price": 150,
+    "tier": "일반",
+    "source": "shield2",
+    "file": "frames/frame_016.png"
+  },
+  {
+    "id": "frames_frame_017",
+    "category": "frames",
+    "name": "초록 방패 III",
+    "price": 700,
+    "tier": "고급",
+    "source": "shield3",
+    "file": "frames/frame_017.png"
+  },
+  {
+    "id": "frames_frame_018",
+    "category": "frames",
+    "name": "초록 하트",
+    "price": 700,
+    "tier": "고급",
+    "source": "heart",
+    "file": "frames/frame_018.png"
+  },
+  {
+    "id": "frames_frame_019",
+    "category": "frames",
+    "name": "초록 원형",
+    "price": 700,
+    "tier": "고급",
+    "source": "circle",
+    "file": "frames/frame_019.png"
+  },
+  {
+    "id": "frames_frame_020",
+    "category": "frames",
+    "name": "초록 우주",
+    "price": 700,
+    "tier": "고급",
+    "source": "space",
+    "file": "frames/frame_020.png"
+  },
+  {
+    "id": "frames_frame_021",
+    "category": "frames",
+    "name": "초록 다이아",
+    "price": 700,
+    "tier": "고급",
+    "source": "diamond",
+    "file": "frames/frame_021.png"
+  },
+  {
+    "id": "frames_frame_022",
+    "category": "frames",
+    "name": "푸른 방패 I",
+    "price": 700,
+    "tier": "고급",
+    "source": "shield1",
+    "file": "frames/frame_022.png"
+  },
+  {
+    "id": "frames_frame_023",
+    "category": "frames",
+    "name": "푸른 방패 II",
+    "price": 700,
+    "tier": "고급",
+    "source": "shield2",
+    "file": "frames/frame_023.png"
+  },
+  {
+    "id": "frames_frame_024",
+    "category": "frames",
+    "name": "푸른 방패 III",
+    "price": 700,
+    "tier": "고급",
+    "source": "shield3",
+    "file": "frames/frame_024.png"
+  },
+  {
+    "id": "frames_frame_025",
+    "category": "frames",
+    "name": "푸른 하트",
+    "price": 1600,
+    "tier": "희귀",
+    "source": "heart",
+    "file": "frames/frame_025.png"
+  },
+  {
+    "id": "frames_frame_026",
+    "category": "frames",
+    "name": "푸른 원형",
+    "price": 1600,
+    "tier": "희귀",
+    "source": "circle",
+    "file": "frames/frame_026.png"
+  },
+  {
+    "id": "frames_frame_027",
+    "category": "frames",
+    "name": "푸른 우주",
+    "price": 1600,
+    "tier": "희귀",
+    "source": "space",
+    "file": "frames/frame_027.png"
+  },
+  {
+    "id": "frames_frame_028",
+    "category": "frames",
+    "name": "푸른 다이아",
+    "price": 1600,
+    "tier": "희귀",
+    "source": "diamond",
+    "file": "frames/frame_028.png"
+  },
+  {
+    "id": "frames_frame_029",
+    "category": "frames",
+    "name": "보라 방패 I",
+    "price": 1600,
+    "tier": "희귀",
+    "source": "shield1",
+    "file": "frames/frame_029.png"
+  },
+  {
+    "id": "frames_frame_030",
+    "category": "frames",
+    "name": "보라 방패 II",
+    "price": 1600,
+    "tier": "희귀",
+    "source": "shield2",
+    "file": "frames/frame_030.png"
+  },
+  {
+    "id": "frames_frame_031",
+    "category": "frames",
+    "name": "보라 방패 III",
+    "price": 1600,
+    "tier": "희귀",
+    "source": "shield3",
+    "file": "frames/frame_031.png"
+  },
+  {
+    "id": "frames_frame_032",
+    "category": "frames",
+    "name": "보라 하트",
+    "price": 1600,
+    "tier": "희귀",
+    "source": "heart",
+    "file": "frames/frame_032.png"
+  },
+  {
+    "id": "frames_frame_033",
+    "category": "frames",
+    "name": "보라 원형",
+    "price": 3800,
+    "tier": "전설",
+    "source": "circle",
+    "file": "frames/frame_033.png"
+  },
+  {
+    "id": "frames_frame_034",
+    "category": "frames",
+    "name": "보라 우주",
+    "price": 3800,
+    "tier": "전설",
+    "source": "space",
+    "file": "frames/frame_034.png"
+  },
+  {
+    "id": "frames_frame_035",
+    "category": "frames",
+    "name": "보라 다이아",
+    "price": 3800,
+    "tier": "전설",
+    "source": "diamond",
+    "file": "frames/frame_035.png"
+  },
+  {
+    "id": "frames_frame_036",
+    "category": "frames",
+    "name": "분홍 방패 I",
+    "price": 3800,
+    "tier": "전설",
+    "source": "shield1",
+    "file": "frames/frame_036.png"
+  },
+  {
+    "id": "frames_frame_037",
+    "category": "frames",
+    "name": "분홍 방패 II",
+    "price": 3800,
+    "tier": "전설",
+    "source": "shield2",
+    "file": "frames/frame_037.png"
+  },
+  {
+    "id": "frames_frame_038",
+    "category": "frames",
+    "name": "분홍 방패 III",
+    "price": 3800,
+    "tier": "전설",
+    "source": "shield3",
+    "file": "frames/frame_038.png"
+  },
+  {
+    "id": "frames_frame_039",
+    "category": "frames",
+    "name": "분홍 하트",
+    "price": 3800,
+    "tier": "전설",
+    "source": "heart",
+    "file": "frames/frame_039.png"
+  },
+  {
+    "id": "frames_frame_040",
+    "category": "frames",
+    "name": "분홍 원형",
+    "price": 3800,
+    "tier": "전설",
+    "source": "circle",
+    "file": "frames/frame_040.png"
+  },
+  {
+    "id": "patterns_pattern_001",
+    "category": "patterns",
+    "name": "기본 드래곤",
+    "price": 0,
+    "tier": "기본",
+    "source": "dragon",
+    "file": "patterns/pattern_001.png"
+  },
+  {
+    "id": "patterns_pattern_002",
+    "category": "patterns",
+    "name": "기본 호랑이",
+    "price": 0,
+    "tier": "기본",
+    "source": "tiger",
+    "file": "patterns/pattern_002.png"
+  },
+  {
+    "id": "patterns_pattern_003",
+    "category": "patterns",
+    "name": "기본 사자",
+    "price": 100,
+    "tier": "기본",
+    "source": "lion",
+    "file": "patterns/pattern_003.png"
+  },
+  {
+    "id": "patterns_pattern_004",
+    "category": "patterns",
+    "name": "기본 독수리",
+    "price": 100,
+    "tier": "기본",
+    "source": "eagle",
+    "file": "patterns/pattern_004.png"
+  },
+  {
+    "id": "patterns_pattern_005",
+    "category": "patterns",
+    "name": "기본 사슴",
+    "price": 100,
+    "tier": "기본",
+    "source": "deer",
+    "file": "patterns/pattern_005.png"
+  },
+  {
+    "id": "patterns_pattern_006",
+    "category": "patterns",
+    "name": "기본 토끼",
+    "price": 100,
+    "tier": "기본",
+    "source": "rabbit",
+    "file": "patterns/pattern_006.png"
+  },
+  {
+    "id": "patterns_pattern_007",
+    "category": "patterns",
+    "name": "기본 고양이",
+    "price": 100,
+    "tier": "기본",
+    "source": "cat",
+    "file": "patterns/pattern_007.png"
+  },
+  {
+    "id": "patterns_pattern_008",
+    "category": "patterns",
+    "name": "기본 강아지",
+    "price": 100,
+    "tier": "기본",
+    "source": "dog",
+    "file": "patterns/pattern_008.png"
+  },
+  {
+    "id": "patterns_pattern_009",
+    "category": "patterns",
+    "name": "청동 드래곤",
+    "price": 100,
+    "tier": "기본",
+    "source": "dragon",
+    "file": "patterns/pattern_009.png"
+  },
+  {
+    "id": "patterns_pattern_010",
+    "category": "patterns",
+    "name": "청동 호랑이",
+    "price": 100,
+    "tier": "기본",
+    "source": "tiger",
+    "file": "patterns/pattern_010.png"
+  },
+  {
+    "id": "patterns_pattern_011",
+    "category": "patterns",
+    "name": "청동 사자",
+    "price": 100,
+    "tier": "기본",
+    "source": "lion",
+    "file": "patterns/pattern_011.png"
+  },
+  {
+    "id": "patterns_pattern_012",
+    "category": "patterns",
+    "name": "청동 독수리",
+    "price": 100,
+    "tier": "기본",
+    "source": "eagle",
+    "file": "patterns/pattern_012.png"
+  },
+  {
+    "id": "patterns_pattern_013",
+    "category": "patterns",
+    "name": "청동 사슴",
+    "price": 100,
+    "tier": "기본",
+    "source": "deer",
+    "file": "patterns/pattern_013.png"
+  },
+  {
+    "id": "patterns_pattern_014",
+    "category": "patterns",
+    "name": "청동 토끼",
+    "price": 100,
+    "tier": "기본",
+    "source": "rabbit",
+    "file": "patterns/pattern_014.png"
+  },
+  {
+    "id": "patterns_pattern_015",
+    "category": "patterns",
+    "name": "청동 고양이",
+    "price": 200,
+    "tier": "일반",
+    "source": "cat",
+    "file": "patterns/pattern_015.png"
+  },
+  {
+    "id": "patterns_pattern_016",
+    "category": "patterns",
+    "name": "청동 강아지",
+    "price": 200,
+    "tier": "일반",
+    "source": "dog",
+    "file": "patterns/pattern_016.png"
+  },
+  {
+    "id": "patterns_pattern_017",
+    "category": "patterns",
+    "name": "초록 드래곤",
+    "price": 200,
+    "tier": "일반",
+    "source": "dragon",
+    "file": "patterns/pattern_017.png"
+  },
+  {
+    "id": "patterns_pattern_018",
+    "category": "patterns",
+    "name": "초록 호랑이",
+    "price": 200,
+    "tier": "일반",
+    "source": "tiger",
+    "file": "patterns/pattern_018.png"
+  },
+  {
+    "id": "patterns_pattern_019",
+    "category": "patterns",
+    "name": "초록 사자",
+    "price": 200,
+    "tier": "일반",
+    "source": "lion",
+    "file": "patterns/pattern_019.png"
+  },
+  {
+    "id": "patterns_pattern_020",
+    "category": "patterns",
+    "name": "초록 독수리",
+    "price": 200,
+    "tier": "일반",
+    "source": "eagle",
+    "file": "patterns/pattern_020.png"
+  },
+  {
+    "id": "patterns_pattern_021",
+    "category": "patterns",
+    "name": "초록 사슴",
+    "price": 200,
+    "tier": "일반",
+    "source": "deer",
+    "file": "patterns/pattern_021.png"
+  },
+  {
+    "id": "patterns_pattern_022",
+    "category": "patterns",
+    "name": "초록 토끼",
+    "price": 200,
+    "tier": "일반",
+    "source": "rabbit",
+    "file": "patterns/pattern_022.png"
+  },
+  {
+    "id": "patterns_pattern_023",
+    "category": "patterns",
+    "name": "초록 고양이",
+    "price": 200,
+    "tier": "일반",
+    "source": "cat",
+    "file": "patterns/pattern_023.png"
+  },
+  {
+    "id": "patterns_pattern_024",
+    "category": "patterns",
+    "name": "초록 강아지",
+    "price": 200,
+    "tier": "일반",
+    "source": "dog",
+    "file": "patterns/pattern_024.png"
+  },
+  {
+    "id": "patterns_pattern_025",
+    "category": "patterns",
+    "name": "푸른 드래곤",
+    "price": 200,
+    "tier": "일반",
+    "source": "dragon",
+    "file": "patterns/pattern_025.png"
+  },
+  {
+    "id": "patterns_pattern_026",
+    "category": "patterns",
+    "name": "푸른 호랑이",
+    "price": 200,
+    "tier": "일반",
+    "source": "tiger",
+    "file": "patterns/pattern_026.png"
+  },
+  {
+    "id": "patterns_pattern_027",
+    "category": "patterns",
+    "name": "푸른 사자",
+    "price": 200,
+    "tier": "일반",
+    "source": "lion",
+    "file": "patterns/pattern_027.png"
+  },
+  {
+    "id": "patterns_pattern_028",
+    "category": "patterns",
+    "name": "푸른 독수리",
+    "price": 200,
+    "tier": "일반",
+    "source": "eagle",
+    "file": "patterns/pattern_028.png"
+  },
+  {
+    "id": "patterns_pattern_029",
+    "category": "patterns",
+    "name": "푸른 사슴",
+    "price": 900,
+    "tier": "고급",
+    "source": "deer",
+    "file": "patterns/pattern_029.png"
+  },
+  {
+    "id": "patterns_pattern_030",
+    "category": "patterns",
+    "name": "푸른 토끼",
+    "price": 900,
+    "tier": "고급",
+    "source": "rabbit",
+    "file": "patterns/pattern_030.png"
+  },
+  {
+    "id": "patterns_pattern_031",
+    "category": "patterns",
+    "name": "푸른 고양이",
+    "price": 900,
+    "tier": "고급",
+    "source": "cat",
+    "file": "patterns/pattern_031.png"
+  },
+  {
+    "id": "patterns_pattern_032",
+    "category": "patterns",
+    "name": "푸른 강아지",
+    "price": 900,
+    "tier": "고급",
+    "source": "dog",
+    "file": "patterns/pattern_032.png"
+  },
+  {
+    "id": "patterns_pattern_033",
+    "category": "patterns",
+    "name": "보라 드래곤",
+    "price": 900,
+    "tier": "고급",
+    "source": "dragon",
+    "file": "patterns/pattern_033.png"
+  },
+  {
+    "id": "patterns_pattern_034",
+    "category": "patterns",
+    "name": "보라 호랑이",
+    "price": 900,
+    "tier": "고급",
+    "source": "tiger",
+    "file": "patterns/pattern_034.png"
+  },
+  {
+    "id": "patterns_pattern_035",
+    "category": "patterns",
+    "name": "보라 사자",
+    "price": 900,
+    "tier": "고급",
+    "source": "lion",
+    "file": "patterns/pattern_035.png"
+  },
+  {
+    "id": "patterns_pattern_036",
+    "category": "patterns",
+    "name": "보라 독수리",
+    "price": 900,
+    "tier": "고급",
+    "source": "eagle",
+    "file": "patterns/pattern_036.png"
+  },
+  {
+    "id": "patterns_pattern_037",
+    "category": "patterns",
+    "name": "보라 사슴",
+    "price": 900,
+    "tier": "고급",
+    "source": "deer",
+    "file": "patterns/pattern_037.png"
+  },
+  {
+    "id": "patterns_pattern_038",
+    "category": "patterns",
+    "name": "보라 토끼",
+    "price": 900,
+    "tier": "고급",
+    "source": "rabbit",
+    "file": "patterns/pattern_038.png"
+  },
+  {
+    "id": "patterns_pattern_039",
+    "category": "patterns",
+    "name": "보라 고양이",
+    "price": 900,
+    "tier": "고급",
+    "source": "cat",
+    "file": "patterns/pattern_039.png"
+  },
+  {
+    "id": "patterns_pattern_040",
+    "category": "patterns",
+    "name": "보라 강아지",
+    "price": 900,
+    "tier": "고급",
+    "source": "dog",
+    "file": "patterns/pattern_040.png"
+  },
+  {
+    "id": "patterns_pattern_041",
+    "category": "patterns",
+    "name": "분홍 드래곤",
+    "price": 900,
+    "tier": "고급",
+    "source": "dragon",
+    "file": "patterns/pattern_041.png"
+  },
+  {
+    "id": "patterns_pattern_042",
+    "category": "patterns",
+    "name": "분홍 호랑이",
+    "price": 900,
+    "tier": "고급",
+    "source": "tiger",
+    "file": "patterns/pattern_042.png"
+  },
+  {
+    "id": "patterns_pattern_043",
+    "category": "patterns",
+    "name": "분홍 사자",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "lion",
+    "file": "patterns/pattern_043.png"
+  },
+  {
+    "id": "patterns_pattern_044",
+    "category": "patterns",
+    "name": "분홍 독수리",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "eagle",
+    "file": "patterns/pattern_044.png"
+  },
+  {
+    "id": "patterns_pattern_045",
+    "category": "patterns",
+    "name": "분홍 사슴",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "deer",
+    "file": "patterns/pattern_045.png"
+  },
+  {
+    "id": "patterns_pattern_046",
+    "category": "patterns",
+    "name": "분홍 토끼",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "rabbit",
+    "file": "patterns/pattern_046.png"
+  },
+  {
+    "id": "patterns_pattern_047",
+    "category": "patterns",
+    "name": "분홍 고양이",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "cat",
+    "file": "patterns/pattern_047.png"
+  },
+  {
+    "id": "patterns_pattern_048",
+    "category": "patterns",
+    "name": "분홍 강아지",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "dog",
+    "file": "patterns/pattern_048.png"
+  },
+  {
+    "id": "patterns_pattern_049",
+    "category": "patterns",
+    "name": "홍염 드래곤",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "dragon",
+    "file": "patterns/pattern_049.png"
+  },
+  {
+    "id": "patterns_pattern_050",
+    "category": "patterns",
+    "name": "홍염 호랑이",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "tiger",
+    "file": "patterns/pattern_050.png"
+  },
+  {
+    "id": "patterns_pattern_051",
+    "category": "patterns",
+    "name": "홍염 사자",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "lion",
+    "file": "patterns/pattern_051.png"
+  },
+  {
+    "id": "patterns_pattern_052",
+    "category": "patterns",
+    "name": "홍염 독수리",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "eagle",
+    "file": "patterns/pattern_052.png"
+  },
+  {
+    "id": "patterns_pattern_053",
+    "category": "patterns",
+    "name": "홍염 사슴",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "deer",
+    "file": "patterns/pattern_053.png"
+  },
+  {
+    "id": "patterns_pattern_054",
+    "category": "patterns",
+    "name": "홍염 토끼",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "rabbit",
+    "file": "patterns/pattern_054.png"
+  },
+  {
+    "id": "patterns_pattern_055",
+    "category": "patterns",
+    "name": "홍염 고양이",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "cat",
+    "file": "patterns/pattern_055.png"
+  },
+  {
+    "id": "patterns_pattern_056",
+    "category": "patterns",
+    "name": "홍염 강아지",
+    "price": 2000,
+    "tier": "희귀",
+    "source": "dog",
+    "file": "patterns/pattern_056.png"
+  },
+  {
+    "id": "patterns_pattern_057",
+    "category": "patterns",
+    "name": "황금 드래곤",
+    "price": 4200,
+    "tier": "전설",
+    "source": "dragon",
+    "file": "patterns/pattern_057.png"
+  },
+  {
+    "id": "patterns_pattern_058",
+    "category": "patterns",
+    "name": "황금 호랑이",
+    "price": 4200,
+    "tier": "전설",
+    "source": "tiger",
+    "file": "patterns/pattern_058.png"
+  },
+  {
+    "id": "patterns_pattern_059",
+    "category": "patterns",
+    "name": "황금 사자",
+    "price": 4200,
+    "tier": "전설",
+    "source": "lion",
+    "file": "patterns/pattern_059.png"
+  },
+  {
+    "id": "patterns_pattern_060",
+    "category": "patterns",
+    "name": "황금 독수리",
+    "price": 4200,
+    "tier": "전설",
+    "source": "eagle",
+    "file": "patterns/pattern_060.png"
+  },
+  {
+    "id": "patterns_pattern_061",
+    "category": "patterns",
+    "name": "황금 사슴",
+    "price": 4200,
+    "tier": "전설",
+    "source": "deer",
+    "file": "patterns/pattern_061.png"
+  },
+  {
+    "id": "patterns_pattern_062",
+    "category": "patterns",
+    "name": "황금 토끼",
+    "price": 4200,
+    "tier": "전설",
+    "source": "rabbit",
+    "file": "patterns/pattern_062.png"
+  },
+  {
+    "id": "patterns_pattern_063",
+    "category": "patterns",
+    "name": "황금 고양이",
+    "price": 4200,
+    "tier": "전설",
+    "source": "cat",
+    "file": "patterns/pattern_063.png"
+  },
+  {
+    "id": "patterns_pattern_064",
+    "category": "patterns",
+    "name": "황금 강아지",
+    "price": 4200,
+    "tier": "전설",
+    "source": "dog",
+    "file": "patterns/pattern_064.png"
+  },
+  {
+    "id": "patterns_pattern_065",
+    "category": "patterns",
+    "name": "오로라 드래곤",
+    "price": 4200,
+    "tier": "전설",
+    "source": "dragon",
+    "file": "patterns/pattern_065.png"
+  },
+  {
+    "id": "patterns_pattern_066",
+    "category": "patterns",
+    "name": "오로라 호랑이",
+    "price": 4200,
+    "tier": "전설",
+    "source": "tiger",
+    "file": "patterns/pattern_066.png"
+  },
+  {
+    "id": "patterns_pattern_067",
+    "category": "patterns",
+    "name": "오로라 사자",
+    "price": 4200,
+    "tier": "전설",
+    "source": "lion",
+    "file": "patterns/pattern_067.png"
+  },
+  {
+    "id": "patterns_pattern_068",
+    "category": "patterns",
+    "name": "오로라 독수리",
+    "price": 4200,
+    "tier": "전설",
+    "source": "eagle",
+    "file": "patterns/pattern_068.png"
+  },
+  {
+    "id": "patterns_pattern_069",
+    "category": "patterns",
+    "name": "오로라 사슴",
+    "price": 4200,
+    "tier": "전설",
+    "source": "deer",
+    "file": "patterns/pattern_069.png"
+  },
+  {
+    "id": "patterns_pattern_070",
+    "category": "patterns",
+    "name": "오로라 토끼",
+    "price": 4200,
+    "tier": "전설",
+    "source": "rabbit",
+    "file": "patterns/pattern_070.png"
+  },
+  {
+    "id": "wings_wing_001",
+    "category": "wings",
+    "name": "기본 천사 소형",
+    "price": 0,
+    "tier": "기본",
+    "source": "wing_small_angel",
+    "file": "wings/wing_001.png"
+  },
+  {
+    "id": "wings_wing_002",
+    "category": "wings",
+    "name": "기본 악마 소형",
+    "price": 100,
+    "tier": "기본",
+    "source": "wing_small_demon",
+    "file": "wings/wing_002.png"
+  },
+  {
+    "id": "wings_wing_003",
+    "category": "wings",
+    "name": "기본 요정 소형",
+    "price": 100,
+    "tier": "기본",
+    "source": "wing_small_fairy",
+    "file": "wings/wing_003.png"
+  },
+  {
+    "id": "wings_wing_004",
+    "category": "wings",
+    "name": "기본 천사 중형",
+    "price": 100,
+    "tier": "기본",
+    "source": "wing_medium_angel",
+    "file": "wings/wing_004.png"
+  },
+  {
+    "id": "wings_wing_005",
+    "category": "wings",
+    "name": "기본 악마 중형",
+    "price": 100,
+    "tier": "기본",
+    "source": "wing_medium_demon",
+    "file": "wings/wing_005.png"
+  },
+  {
+    "id": "wings_wing_006",
+    "category": "wings",
+    "name": "기본 요정 중형",
+    "price": 100,
+    "tier": "기본",
+    "source": "wing_medium_fairy",
+    "file": "wings/wing_006.png"
+  },
+  {
+    "id": "wings_wing_007",
+    "category": "wings",
+    "name": "기본 천사 대형",
+    "price": 350,
+    "tier": "일반",
+    "source": "wing_large_angel",
+    "file": "wings/wing_007.png"
+  },
+  {
+    "id": "wings_wing_008",
+    "category": "wings",
+    "name": "기본 악마 대형",
+    "price": 350,
+    "tier": "일반",
+    "source": "wing_large_demon",
+    "file": "wings/wing_008.png"
+  },
+  {
+    "id": "wings_wing_009",
+    "category": "wings",
+    "name": "기본 요정 대형",
+    "price": 350,
+    "tier": "일반",
+    "source": "wing_large_fairy",
+    "file": "wings/wing_009.png"
+  },
+  {
+    "id": "wings_wing_010",
+    "category": "wings",
+    "name": "청동 천사 소형",
+    "price": 350,
+    "tier": "일반",
+    "source": "wing_small_angel",
+    "file": "wings/wing_010.png"
+  },
+  {
+    "id": "wings_wing_011",
+    "category": "wings",
+    "name": "청동 악마 소형",
+    "price": 350,
+    "tier": "일반",
+    "source": "wing_small_demon",
+    "file": "wings/wing_011.png"
+  },
+  {
+    "id": "wings_wing_012",
+    "category": "wings",
+    "name": "청동 요정 소형",
+    "price": 350,
+    "tier": "일반",
+    "source": "wing_small_fairy",
+    "file": "wings/wing_012.png"
+  },
+  {
+    "id": "wings_wing_013",
+    "category": "wings",
+    "name": "청동 천사 중형",
+    "price": 1100,
+    "tier": "고급",
+    "source": "wing_medium_angel",
+    "file": "wings/wing_013.png"
+  },
+  {
+    "id": "wings_wing_014",
+    "category": "wings",
+    "name": "청동 악마 중형",
+    "price": 1100,
+    "tier": "고급",
+    "source": "wing_medium_demon",
+    "file": "wings/wing_014.png"
+  },
+  {
+    "id": "wings_wing_015",
+    "category": "wings",
+    "name": "청동 요정 중형",
+    "price": 1100,
+    "tier": "고급",
+    "source": "wing_medium_fairy",
+    "file": "wings/wing_015.png"
+  },
+  {
+    "id": "wings_wing_016",
+    "category": "wings",
+    "name": "청동 천사 대형",
+    "price": 1100,
+    "tier": "고급",
+    "source": "wing_large_angel",
+    "file": "wings/wing_016.png"
+  },
+  {
+    "id": "wings_wing_017",
+    "category": "wings",
+    "name": "청동 악마 대형",
+    "price": 1100,
+    "tier": "고급",
+    "source": "wing_large_demon",
+    "file": "wings/wing_017.png"
+  },
+  {
+    "id": "wings_wing_018",
+    "category": "wings",
+    "name": "청동 요정 대형",
+    "price": 1100,
+    "tier": "고급",
+    "source": "wing_large_fairy",
+    "file": "wings/wing_018.png"
+  },
+  {
+    "id": "wings_wing_019",
+    "category": "wings",
+    "name": "초록 천사 소형",
+    "price": 2500,
+    "tier": "희귀",
+    "source": "wing_small_angel",
+    "file": "wings/wing_019.png"
+  },
+  {
+    "id": "wings_wing_020",
+    "category": "wings",
+    "name": "초록 악마 소형",
+    "price": 2500,
+    "tier": "희귀",
+    "source": "wing_small_demon",
+    "file": "wings/wing_020.png"
+  },
+  {
+    "id": "wings_wing_021",
+    "category": "wings",
+    "name": "초록 요정 소형",
+    "price": 2500,
+    "tier": "희귀",
+    "source": "wing_small_fairy",
+    "file": "wings/wing_021.png"
+  },
+  {
+    "id": "wings_wing_022",
+    "category": "wings",
+    "name": "초록 천사 중형",
+    "price": 2500,
+    "tier": "희귀",
+    "source": "wing_medium_angel",
+    "file": "wings/wing_022.png"
+  },
+  {
+    "id": "wings_wing_023",
+    "category": "wings",
+    "name": "초록 악마 중형",
+    "price": 2500,
+    "tier": "희귀",
+    "source": "wing_medium_demon",
+    "file": "wings/wing_023.png"
+  },
+  {
+    "id": "wings_wing_024",
+    "category": "wings",
+    "name": "초록 요정 중형",
+    "price": 2500,
+    "tier": "희귀",
+    "source": "wing_medium_fairy",
+    "file": "wings/wing_024.png"
+  },
+  {
+    "id": "wings_wing_025",
+    "category": "wings",
+    "name": "초록 천사 대형",
+    "price": 4500,
+    "tier": "전설",
+    "source": "wing_large_angel",
+    "file": "wings/wing_025.png"
+  },
+  {
+    "id": "wings_wing_026",
+    "category": "wings",
+    "name": "초록 악마 대형",
+    "price": 4500,
+    "tier": "전설",
+    "source": "wing_large_demon",
+    "file": "wings/wing_026.png"
+  },
+  {
+    "id": "wings_wing_027",
+    "category": "wings",
+    "name": "초록 요정 대형",
+    "price": 4500,
+    "tier": "전설",
+    "source": "wing_large_fairy",
+    "file": "wings/wing_027.png"
+  },
+  {
+    "id": "wings_wing_028",
+    "category": "wings",
+    "name": "푸른 천사 소형",
+    "price": 4500,
+    "tier": "전설",
+    "source": "wing_small_angel",
+    "file": "wings/wing_028.png"
+  },
+  {
+    "id": "wings_wing_029",
+    "category": "wings",
+    "name": "푸른 악마 소형",
+    "price": 4500,
+    "tier": "전설",
+    "source": "wing_small_demon",
+    "file": "wings/wing_029.png"
+  },
+  {
+    "id": "wings_wing_030",
+    "category": "wings",
+    "name": "푸른 요정 소형",
+    "price": 4500,
+    "tier": "전설",
+    "source": "wing_small_fairy",
+    "file": "wings/wing_030.png"
+  },
+  {
+    "id": "crowns_crown_001",
+    "category": "crowns",
+    "name": "기본 왕관 I",
+    "price": 0,
+    "tier": "기본",
+    "source": "crown1",
+    "file": "crowns/crown_001.png"
+  },
+  {
+    "id": "crowns_crown_002",
+    "category": "crowns",
+    "name": "기본 왕관 II",
+    "price": 100,
+    "tier": "기본",
+    "source": "crown2",
+    "file": "crowns/crown_002.png"
+  },
+  {
+    "id": "crowns_crown_003",
+    "category": "crowns",
+    "name": "기본 왕관 III",
+    "price": 100,
+    "tier": "기본",
+    "source": "crown3",
+    "file": "crowns/crown_003.png"
+  },
+  {
+    "id": "crowns_crown_004",
+    "category": "crowns",
+    "name": "청동 왕관 I",
+    "price": 100,
+    "tier": "기본",
+    "source": "crown1",
+    "file": "crowns/crown_004.png"
+  },
+  {
+    "id": "crowns_crown_005",
+    "category": "crowns",
+    "name": "청동 왕관 II",
+    "price": 600,
+    "tier": "일반",
+    "source": "crown2",
+    "file": "crowns/crown_005.png"
+  },
+  {
+    "id": "crowns_crown_006",
+    "category": "crowns",
+    "name": "청동 왕관 III",
+    "price": 600,
+    "tier": "일반",
+    "source": "crown3",
+    "file": "crowns/crown_006.png"
+  },
+  {
+    "id": "crowns_crown_007",
+    "category": "crowns",
+    "name": "초록 왕관 I",
+    "price": 600,
+    "tier": "일반",
+    "source": "crown1",
+    "file": "crowns/crown_007.png"
+  },
+  {
+    "id": "crowns_crown_008",
+    "category": "crowns",
+    "name": "초록 왕관 II",
+    "price": 600,
+    "tier": "일반",
+    "source": "crown2",
+    "file": "crowns/crown_008.png"
+  },
+  {
+    "id": "crowns_crown_009",
+    "category": "crowns",
+    "name": "초록 왕관 III",
+    "price": 1500,
+    "tier": "고급",
+    "source": "crown3",
+    "file": "crowns/crown_009.png"
+  },
+  {
+    "id": "crowns_crown_010",
+    "category": "crowns",
+    "name": "푸른 왕관 I",
+    "price": 1500,
+    "tier": "고급",
+    "source": "crown1",
+    "file": "crowns/crown_010.png"
+  },
+  {
+    "id": "crowns_crown_011",
+    "category": "crowns",
+    "name": "푸른 왕관 II",
+    "price": 1500,
+    "tier": "고급",
+    "source": "crown2",
+    "file": "crowns/crown_011.png"
+  },
+  {
+    "id": "crowns_crown_012",
+    "category": "crowns",
+    "name": "푸른 왕관 III",
+    "price": 1500,
+    "tier": "고급",
+    "source": "crown3",
+    "file": "crowns/crown_012.png"
+  },
+  {
+    "id": "crowns_crown_013",
+    "category": "crowns",
+    "name": "보라 왕관 I",
+    "price": 3500,
+    "tier": "희귀",
+    "source": "crown1",
+    "file": "crowns/crown_013.png"
+  },
+  {
+    "id": "crowns_crown_014",
+    "category": "crowns",
+    "name": "보라 왕관 II",
+    "price": 3500,
+    "tier": "희귀",
+    "source": "crown2",
+    "file": "crowns/crown_014.png"
+  },
+  {
+    "id": "crowns_crown_015",
+    "category": "crowns",
+    "name": "보라 왕관 III",
+    "price": 3500,
+    "tier": "희귀",
+    "source": "crown3",
+    "file": "crowns/crown_015.png"
+  },
+  {
+    "id": "crowns_crown_016",
+    "category": "crowns",
+    "name": "분홍 왕관 I",
+    "price": 3500,
+    "tier": "희귀",
+    "source": "crown1",
+    "file": "crowns/crown_016.png"
+  },
+  {
+    "id": "crowns_crown_017",
+    "category": "crowns",
+    "name": "분홍 왕관 II",
+    "price": 5000,
+    "tier": "전설",
+    "source": "crown2",
+    "file": "crowns/crown_017.png"
+  },
+  {
+    "id": "crowns_crown_018",
+    "category": "crowns",
+    "name": "분홍 왕관 III",
+    "price": 5000,
+    "tier": "전설",
+    "source": "crown3",
+    "file": "crowns/crown_018.png"
+  },
+  {
+    "id": "crowns_crown_019",
+    "category": "crowns",
+    "name": "홍염 왕관 I",
+    "price": 5000,
+    "tier": "전설",
+    "source": "crown1",
+    "file": "crowns/crown_019.png"
+  },
+  {
+    "id": "crowns_crown_020",
+    "category": "crowns",
+    "name": "홍염 왕관 II",
+    "price": 5000,
+    "tier": "전설",
+    "source": "crown2",
+    "file": "crowns/crown_020.png"
+  },
+  {
+    "id": "effects_effect_001",
+    "category": "effects",
+    "name": "기본 붉은 별빛",
+    "price": 0,
+    "tier": "기본",
+    "source": "effect_red",
+    "file": "effects/effect_001.png"
+  },
+  {
+    "id": "effects_effect_002",
+    "category": "effects",
+    "name": "기본 푸른 유성",
+    "price": 100,
+    "tier": "기본",
+    "source": "effect_blue",
+    "file": "effects/effect_002.png"
+  },
+  {
+    "id": "effects_effect_003",
+    "category": "effects",
+    "name": "기본 초록 빛무리",
+    "price": 100,
+    "tier": "기본",
+    "source": "effect_green",
+    "file": "effects/effect_003.png"
+  },
+  {
+    "id": "effects_effect_004",
+    "category": "effects",
+    "name": "기본 무지개",
+    "price": 100,
+    "tier": "기본",
+    "source": "effect_rainbow",
+    "file": "effects/effect_004.png"
+  },
+  {
+    "id": "effects_effect_005",
+    "category": "effects",
+    "name": "기본 오로라",
+    "price": 100,
+    "tier": "기본",
+    "source": "effect_aurora",
+    "file": "effects/effect_005.png"
+  },
+  {
+    "id": "effects_effect_006",
+    "category": "effects",
+    "name": "청동 붉은 별빛",
+    "price": 100,
+    "tier": "기본",
+    "source": "effect_red",
+    "file": "effects/effect_006.png"
+  },
+  {
+    "id": "effects_effect_007",
+    "category": "effects",
+    "name": "청동 푸른 유성",
+    "price": 100,
+    "tier": "기본",
+    "source": "effect_blue",
+    "file": "effects/effect_007.png"
+  },
+  {
+    "id": "effects_effect_008",
+    "category": "effects",
+    "name": "청동 초록 빛무리",
+    "price": 100,
+    "tier": "기본",
+    "source": "effect_green",
+    "file": "effects/effect_008.png"
+  },
+  {
+    "id": "effects_effect_009",
+    "category": "effects",
+    "name": "청동 무지개",
+    "price": 450,
+    "tier": "일반",
+    "source": "effect_rainbow",
+    "file": "effects/effect_009.png"
+  },
+  {
+    "id": "effects_effect_010",
+    "category": "effects",
+    "name": "청동 오로라",
+    "price": 450,
+    "tier": "일반",
+    "source": "effect_aurora",
+    "file": "effects/effect_010.png"
+  },
+  {
+    "id": "effects_effect_011",
+    "category": "effects",
+    "name": "초록 붉은 별빛",
+    "price": 450,
+    "tier": "일반",
+    "source": "effect_red",
+    "file": "effects/effect_011.png"
+  },
+  {
+    "id": "effects_effect_012",
+    "category": "effects",
+    "name": "초록 푸른 유성",
+    "price": 450,
+    "tier": "일반",
+    "source": "effect_blue",
+    "file": "effects/effect_012.png"
+  },
+  {
+    "id": "effects_effect_013",
+    "category": "effects",
+    "name": "초록 초록 빛무리",
+    "price": 450,
+    "tier": "일반",
+    "source": "effect_green",
+    "file": "effects/effect_013.png"
+  },
+  {
+    "id": "effects_effect_014",
+    "category": "effects",
+    "name": "초록 무지개",
+    "price": 450,
+    "tier": "일반",
+    "source": "effect_rainbow",
+    "file": "effects/effect_014.png"
+  },
+  {
+    "id": "effects_effect_015",
+    "category": "effects",
+    "name": "초록 오로라",
+    "price": 450,
+    "tier": "일반",
+    "source": "effect_aurora",
+    "file": "effects/effect_015.png"
+  },
+  {
+    "id": "effects_effect_016",
+    "category": "effects",
+    "name": "푸른 붉은 별빛",
+    "price": 450,
+    "tier": "일반",
+    "source": "effect_red",
+    "file": "effects/effect_016.png"
+  },
+  {
+    "id": "effects_effect_017",
+    "category": "effects",
+    "name": "푸른 푸른 유성",
+    "price": 1300,
+    "tier": "고급",
+    "source": "effect_blue",
+    "file": "effects/effect_017.png"
+  },
+  {
+    "id": "effects_effect_018",
+    "category": "effects",
+    "name": "푸른 초록 빛무리",
+    "price": 1300,
+    "tier": "고급",
+    "source": "effect_green",
+    "file": "effects/effect_018.png"
+  },
+  {
+    "id": "effects_effect_019",
+    "category": "effects",
+    "name": "푸른 무지개",
+    "price": 1300,
+    "tier": "고급",
+    "source": "effect_rainbow",
+    "file": "effects/effect_019.png"
+  },
+  {
+    "id": "effects_effect_020",
+    "category": "effects",
+    "name": "푸른 오로라",
+    "price": 1300,
+    "tier": "고급",
+    "source": "effect_aurora",
+    "file": "effects/effect_020.png"
+  },
+  {
+    "id": "effects_effect_021",
+    "category": "effects",
+    "name": "보라 붉은 별빛",
+    "price": 1300,
+    "tier": "고급",
+    "source": "effect_red",
+    "file": "effects/effect_021.png"
+  },
+  {
+    "id": "effects_effect_022",
+    "category": "effects",
+    "name": "보라 푸른 유성",
+    "price": 1300,
+    "tier": "고급",
+    "source": "effect_blue",
+    "file": "effects/effect_022.png"
+  },
+  {
+    "id": "effects_effect_023",
+    "category": "effects",
+    "name": "보라 초록 빛무리",
+    "price": 1300,
+    "tier": "고급",
+    "source": "effect_green",
+    "file": "effects/effect_023.png"
+  },
+  {
+    "id": "effects_effect_024",
+    "category": "effects",
+    "name": "보라 무지개",
+    "price": 1300,
+    "tier": "고급",
+    "source": "effect_rainbow",
+    "file": "effects/effect_024.png"
+  },
+  {
+    "id": "effects_effect_025",
+    "category": "effects",
+    "name": "보라 오로라",
+    "price": 3000,
+    "tier": "희귀",
+    "source": "effect_aurora",
+    "file": "effects/effect_025.png"
+  },
+  {
+    "id": "effects_effect_026",
+    "category": "effects",
+    "name": "분홍 붉은 별빛",
+    "price": 3000,
+    "tier": "희귀",
+    "source": "effect_red",
+    "file": "effects/effect_026.png"
+  },
+  {
+    "id": "effects_effect_027",
+    "category": "effects",
+    "name": "분홍 푸른 유성",
+    "price": 3000,
+    "tier": "희귀",
+    "source": "effect_blue",
+    "file": "effects/effect_027.png"
+  },
+  {
+    "id": "effects_effect_028",
+    "category": "effects",
+    "name": "분홍 초록 빛무리",
+    "price": 3000,
+    "tier": "희귀",
+    "source": "effect_green",
+    "file": "effects/effect_028.png"
+  },
+  {
+    "id": "effects_effect_029",
+    "category": "effects",
+    "name": "분홍 무지개",
+    "price": 3000,
+    "tier": "희귀",
+    "source": "effect_rainbow",
+    "file": "effects/effect_029.png"
+  },
+  {
+    "id": "effects_effect_030",
+    "category": "effects",
+    "name": "분홍 오로라",
+    "price": 3000,
+    "tier": "희귀",
+    "source": "effect_aurora",
+    "file": "effects/effect_030.png"
+  },
+  {
+    "id": "effects_effect_031",
+    "category": "effects",
+    "name": "홍염 붉은 별빛",
+    "price": 3000,
+    "tier": "희귀",
+    "source": "effect_red",
+    "file": "effects/effect_031.png"
+  },
+  {
+    "id": "effects_effect_032",
+    "category": "effects",
+    "name": "홍염 푸른 유성",
+    "price": 3000,
+    "tier": "희귀",
+    "source": "effect_blue",
+    "file": "effects/effect_032.png"
+  },
+  {
+    "id": "effects_effect_033",
+    "category": "effects",
+    "name": "홍염 초록 빛무리",
+    "price": 4800,
+    "tier": "전설",
+    "source": "effect_green",
+    "file": "effects/effect_033.png"
+  },
+  {
+    "id": "effects_effect_034",
+    "category": "effects",
+    "name": "홍염 무지개",
+    "price": 4800,
+    "tier": "전설",
+    "source": "effect_rainbow",
+    "file": "effects/effect_034.png"
+  },
+  {
+    "id": "effects_effect_035",
+    "category": "effects",
+    "name": "홍염 오로라",
+    "price": 4800,
+    "tier": "전설",
+    "source": "effect_aurora",
+    "file": "effects/effect_035.png"
+  },
+  {
+    "id": "effects_effect_036",
+    "category": "effects",
+    "name": "황금 붉은 별빛",
+    "price": 4800,
+    "tier": "전설",
+    "source": "effect_red",
+    "file": "effects/effect_036.png"
+  },
+  {
+    "id": "effects_effect_037",
+    "category": "effects",
+    "name": "황금 푸른 유성",
+    "price": 4800,
+    "tier": "전설",
+    "source": "effect_blue",
+    "file": "effects/effect_037.png"
+  },
+  {
+    "id": "effects_effect_038",
+    "category": "effects",
+    "name": "황금 초록 빛무리",
+    "price": 4800,
+    "tier": "전설",
+    "source": "effect_green",
+    "file": "effects/effect_038.png"
+  },
+  {
+    "id": "effects_effect_039",
+    "category": "effects",
+    "name": "황금 무지개",
+    "price": 4800,
+    "tier": "전설",
+    "source": "effect_rainbow",
+    "file": "effects/effect_039.png"
+  },
+  {
+    "id": "effects_effect_040",
+    "category": "effects",
+    "name": "황금 오로라",
+    "price": 4800,
+    "tier": "전설",
+    "source": "effect_aurora",
+    "file": "effects/effect_040.png"
+  }
+]

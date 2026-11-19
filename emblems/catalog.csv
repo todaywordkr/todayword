@@ -1,0 +1,201 @@
+﻿id,category,name,price,tier,source,file
+frames_frame_001,frames,기본 방패 I,0,기본,shield1,frames/frame_001.png
+frames_frame_002,frames,기본 방패 II,0,기본,shield2,frames/frame_002.png
+frames_frame_003,frames,기본 방패 III,100,기본,shield3,frames/frame_003.png
+frames_frame_004,frames,기본 하트,100,기본,heart,frames/frame_004.png
+frames_frame_005,frames,기본 원형,100,기본,circle,frames/frame_005.png
+frames_frame_006,frames,기본 우주,100,기본,space,frames/frame_006.png
+frames_frame_007,frames,기본 다이아,100,기본,diamond,frames/frame_007.png
+frames_frame_008,frames,청동 방패 I,100,기본,shield1,frames/frame_008.png
+frames_frame_009,frames,청동 방패 II,150,일반,shield2,frames/frame_009.png
+frames_frame_010,frames,청동 방패 III,150,일반,shield3,frames/frame_010.png
+frames_frame_011,frames,청동 하트,150,일반,heart,frames/frame_011.png
+frames_frame_012,frames,청동 원형,150,일반,circle,frames/frame_012.png
+frames_frame_013,frames,청동 우주,150,일반,space,frames/frame_013.png
+frames_frame_014,frames,청동 다이아,150,일반,diamond,frames/frame_014.png
+frames_frame_015,frames,초록 방패 I,150,일반,shield1,frames/frame_015.png
+frames_frame_016,frames,초록 방패 II,150,일반,shield2,frames/frame_016.png
+frames_frame_017,frames,초록 방패 III,700,고급,shield3,frames/frame_017.png
+frames_frame_018,frames,초록 하트,700,고급,heart,frames/frame_018.png
+frames_frame_019,frames,초록 원형,700,고급,circle,frames/frame_019.png
+frames_frame_020,frames,초록 우주,700,고급,space,frames/frame_020.png
+frames_frame_021,frames,초록 다이아,700,고급,diamond,frames/frame_021.png
+frames_frame_022,frames,푸른 방패 I,700,고급,shield1,frames/frame_022.png
+frames_frame_023,frames,푸른 방패 II,700,고급,shield2,frames/frame_023.png
+frames_frame_024,frames,푸른 방패 III,700,고급,shield3,frames/frame_024.png
+frames_frame_025,frames,푸른 하트,1600,희귀,heart,frames/frame_025.png
+frames_frame_026,frames,푸른 원형,1600,희귀,circle,frames/frame_026.png
+frames_frame_027,frames,푸른 우주,1600,희귀,space,frames/frame_027.png
+frames_frame_028,frames,푸른 다이아,1600,희귀,diamond,frames/frame_028.png
+frames_frame_029,frames,보라 방패 I,1600,희귀,shield1,frames/frame_029.png
+frames_frame_030,frames,보라 방패 II,1600,희귀,shield2,frames/frame_030.png
+frames_frame_031,frames,보라 방패 III,1600,희귀,shield3,frames/frame_031.png
+frames_frame_032,frames,보라 하트,1600,희귀,heart,frames/frame_032.png
+frames_frame_033,frames,보라 원형,3800,전설,circle,frames/frame_033.png
+frames_frame_034,frames,보라 우주,3800,전설,space,frames/frame_034.png
+frames_frame_035,frames,보라 다이아,3800,전설,diamond,frames/frame_035.png
+frames_frame_036,frames,분홍 방패 I,3800,전설,shield1,frames/frame_036.png
+frames_frame_037,frames,분홍 방패 II,3800,전설,shield2,frames/frame_037.png
+frames_frame_038,frames,분홍 방패 III,3800,전설,shield3,frames/frame_038.png
+frames_frame_039,frames,분홍 하트,3800,전설,heart,frames/frame_039.png
+frames_frame_040,frames,분홍 원형,3800,전설,circle,frames/frame_040.png
+patterns_pattern_001,patterns,기본 드래곤,0,기본,dragon,patterns/pattern_001.png
+patterns_pattern_002,patterns,기본 호랑이,0,기본,tiger,patterns/pattern_002.png
+patterns_pattern_003,patterns,기본 사자,100,기본,lion,patterns/pattern_003.png
+patterns_pattern_004,patterns,기본 독수리,100,기본,eagle,patterns/pattern_004.png
+patterns_pattern_005,patterns,기본 사슴,100,기본,deer,patterns/pattern_005.png
+patterns_pattern_006,patterns,기본 토끼,100,기본,rabbit,patterns/pattern_006.png
+patterns_pattern_007,patterns,기본 고양이,100,기본,cat,patterns/pattern_007.png
+patterns_pattern_008,patterns,기본 강아지,100,기본,dog,patterns/pattern_008.png
+patterns_pattern_009,patterns,청동 드래곤,100,기본,dragon,patterns/pattern_009.png
+patterns_pattern_010,patterns,청동 호랑이,100,기본,tiger,patterns/pattern_010.png
+patterns_pattern_011,patterns,청동 사자,100,기본,lion,patterns/pattern_011.png
+patterns_pattern_012,patterns,청동 독수리,100,기본,eagle,patterns/pattern_012.png
+patterns_pattern_013,patterns,청동 사슴,100,기본,deer,patterns/pattern_013.png
+patterns_pattern_014,patterns,청동 토끼,100,기본,rabbit,patterns/pattern_014.png
+patterns_pattern_015,patterns,청동 고양이,200,일반,cat,patterns/pattern_015.png
+patterns_pattern_016,patterns,청동 강아지,200,일반,dog,patterns/pattern_016.png
+patterns_pattern_017,patterns,초록 드래곤,200,일반,dragon,patterns/pattern_017.png
+patterns_pattern_018,patterns,초록 호랑이,200,일반,tiger,patterns/pattern_018.png
+patterns_pattern_019,patterns,초록 사자,200,일반,lion,patterns/pattern_019.png
+patterns_pattern_020,patterns,초록 독수리,200,일반,eagle,patterns/pattern_020.png
+patterns_pattern_021,patterns,초록 사슴,200,일반,deer,patterns/pattern_021.png
+patterns_pattern_022,patterns,초록 토끼,200,일반,rabbit,patterns/pattern_022.png
+patterns_pattern_023,patterns,초록 고양이,200,일반,cat,patterns/pattern_023.png
+patterns_pattern_024,patterns,초록 강아지,200,일반,dog,patterns/pattern_024.png
+patterns_pattern_025,patterns,푸른 드래곤,200,일반,dragon,patterns/pattern_025.png
+patterns_pattern_026,patterns,푸른 호랑이,200,일반,tiger,patterns/pattern_026.png
+patterns_pattern_027,patterns,푸른 사자,200,일반,lion,patterns/pattern_027.png
+patterns_pattern_028,patterns,푸른 독수리,200,일반,eagle,patterns/pattern_028.png
+patterns_pattern_029,patterns,푸른 사슴,900,고급,deer,patterns/pattern_029.png
+patterns_pattern_030,patterns,푸른 토끼,900,고급,rabbit,patterns/pattern_030.png
+patterns_pattern_031,patterns,푸른 고양이,900,고급,cat,patterns/pattern_031.png
+patterns_pattern_032,patterns,푸른 강아지,900,고급,dog,patterns/pattern_032.png
+patterns_pattern_033,patterns,보라 드래곤,900,고급,dragon,patterns/pattern_033.png
+patterns_pattern_034,patterns,보라 호랑이,900,고급,tiger,patterns/pattern_034.png
+patterns_pattern_035,patterns,보라 사자,900,고급,lion,patterns/pattern_035.png
+patterns_pattern_036,patterns,보라 독수리,900,고급,eagle,patterns/pattern_036.png
+patterns_pattern_037,patterns,보라 사슴,900,고급,deer,patterns/pattern_037.png
+patterns_pattern_038,patterns,보라 토끼,900,고급,rabbit,patterns/pattern_038.png
+patterns_pattern_039,patterns,보라 고양이,900,고급,cat,patterns/pattern_039.png
+patterns_pattern_040,patterns,보라 강아지,900,고급,dog,patterns/pattern_040.png
+patterns_pattern_041,patterns,분홍 드래곤,900,고급,dragon,patterns/pattern_041.png
+patterns_pattern_042,patterns,분홍 호랑이,900,고급,tiger,patterns/pattern_042.png
+patterns_pattern_043,patterns,분홍 사자,2000,희귀,lion,patterns/pattern_043.png
+patterns_pattern_044,patterns,분홍 독수리,2000,희귀,eagle,patterns/pattern_044.png
+patterns_pattern_045,patterns,분홍 사슴,2000,희귀,deer,patterns/pattern_045.png
+patterns_pattern_046,patterns,분홍 토끼,2000,희귀,rabbit,patterns/pattern_046.png
+patterns_pattern_047,patterns,분홍 고양이,2000,희귀,cat,patterns/pattern_047.png
+patterns_pattern_048,patterns,분홍 강아지,2000,희귀,dog,patterns/pattern_048.png
+patterns_pattern_049,patterns,홍염 드래곤,2000,희귀,dragon,patterns/pattern_049.png
+patterns_pattern_050,patterns,홍염 호랑이,2000,희귀,tiger,patterns/pattern_050.png
+patterns_pattern_051,patterns,홍염 사자,2000,희귀,lion,patterns/pattern_051.png
+patterns_pattern_052,patterns,홍염 독수리,2000,희귀,eagle,patterns/pattern_052.png
+patterns_pattern_053,patterns,홍염 사슴,2000,희귀,deer,patterns/pattern_053.png
+patterns_pattern_054,patterns,홍염 토끼,2000,희귀,rabbit,patterns/pattern_054.png
+patterns_pattern_055,patterns,홍염 고양이,2000,희귀,cat,patterns/pattern_055.png
+patterns_pattern_056,patterns,홍염 강아지,2000,희귀,dog,patterns/pattern_056.png
+patterns_pattern_057,patterns,황금 드래곤,4200,전설,dragon,patterns/pattern_057.png
+patterns_pattern_058,patterns,황금 호랑이,4200,전설,tiger,patterns/pattern_058.png
+patterns_pattern_059,patterns,황금 사자,4200,전설,lion,patterns/pattern_059.png
+patterns_pattern_060,patterns,황금 독수리,4200,전설,eagle,patterns/pattern_060.png
+patterns_pattern_061,patterns,황금 사슴,4200,전설,deer,patterns/pattern_061.png
+patterns_pattern_062,patterns,황금 토끼,4200,전설,rabbit,patterns/pattern_062.png
+patterns_pattern_063,patterns,황금 고양이,4200,전설,cat,patterns/pattern_063.png
+patterns_pattern_064,patterns,황금 강아지,4200,전설,dog,patterns/pattern_064.png
+patterns_pattern_065,patterns,오로라 드래곤,4200,전설,dragon,patterns/pattern_065.png
+patterns_pattern_066,patterns,오로라 호랑이,4200,전설,tiger,patterns/pattern_066.png
+patterns_pattern_067,patterns,오로라 사자,4200,전설,lion,patterns/pattern_067.png
+patterns_pattern_068,patterns,오로라 독수리,4200,전설,eagle,patterns/pattern_068.png
+patterns_pattern_069,patterns,오로라 사슴,4200,전설,deer,patterns/pattern_069.png
+patterns_pattern_070,patterns,오로라 토끼,4200,전설,rabbit,patterns/pattern_070.png
+wings_wing_001,wings,기본 천사 소형,0,기본,wing_small_angel,wings/wing_001.png
+wings_wing_002,wings,기본 악마 소형,100,기본,wing_small_demon,wings/wing_002.png
+wings_wing_003,wings,기본 요정 소형,100,기본,wing_small_fairy,wings/wing_003.png
+wings_wing_004,wings,기본 천사 중형,100,기본,wing_medium_angel,wings/wing_004.png
+wings_wing_005,wings,기본 악마 중형,100,기본,wing_medium_demon,wings/wing_005.png
+wings_wing_006,wings,기본 요정 중형,100,기본,wing_medium_fairy,wings/wing_006.png
+wings_wing_007,wings,기본 천사 대형,350,일반,wing_large_angel,wings/wing_007.png
+wings_wing_008,wings,기본 악마 대형,350,일반,wing_large_demon,wings/wing_008.png
+wings_wing_009,wings,기본 요정 대형,350,일반,wing_large_fairy,wings/wing_009.png
+wings_wing_010,wings,청동 천사 소형,350,일반,wing_small_angel,wings/wing_010.png
+wings_wing_011,wings,청동 악마 소형,350,일반,wing_small_demon,wings/wing_011.png
+wings_wing_012,wings,청동 요정 소형,350,일반,wing_small_fairy,wings/wing_012.png
+wings_wing_013,wings,청동 천사 중형,1100,고급,wing_medium_angel,wings/wing_013.png
+wings_wing_014,wings,청동 악마 중형,1100,고급,wing_medium_demon,wings/wing_014.png
+wings_wing_015,wings,청동 요정 중형,1100,고급,wing_medium_fairy,wings/wing_015.png
+wings_wing_016,wings,청동 천사 대형,1100,고급,wing_large_angel,wings/wing_016.png
+wings_wing_017,wings,청동 악마 대형,1100,고급,wing_large_demon,wings/wing_017.png
+wings_wing_018,wings,청동 요정 대형,1100,고급,wing_large_fairy,wings/wing_018.png
+wings_wing_019,wings,초록 천사 소형,2500,희귀,wing_small_angel,wings/wing_019.png
+wings_wing_020,wings,초록 악마 소형,2500,희귀,wing_small_demon,wings/wing_020.png
+wings_wing_021,wings,초록 요정 소형,2500,희귀,wing_small_fairy,wings/wing_021.png
+wings_wing_022,wings,초록 천사 중형,2500,희귀,wing_medium_angel,wings/wing_022.png
+wings_wing_023,wings,초록 악마 중형,2500,희귀,wing_medium_demon,wings/wing_023.png
+wings_wing_024,wings,초록 요정 중형,2500,희귀,wing_medium_fairy,wings/wing_024.png
+wings_wing_025,wings,초록 천사 대형,4500,전설,wing_large_angel,wings/wing_025.png
+wings_wing_026,wings,초록 악마 대형,4500,전설,wing_large_demon,wings/wing_026.png
+wings_wing_027,wings,초록 요정 대형,4500,전설,wing_large_fairy,wings/wing_027.png
+wings_wing_028,wings,푸른 천사 소형,4500,전설,wing_small_angel,wings/wing_028.png
+wings_wing_029,wings,푸른 악마 소형,4500,전설,wing_small_demon,wings/wing_029.png
+wings_wing_030,wings,푸른 요정 소형,4500,전설,wing_small_fairy,wings/wing_030.png
+crowns_crown_001,crowns,기본 왕관 I,0,기본,crown1,crowns/crown_001.png
+crowns_crown_002,crowns,기본 왕관 II,100,기본,crown2,crowns/crown_002.png
+crowns_crown_003,crowns,기본 왕관 III,100,기본,crown3,crowns/crown_003.png
+crowns_crown_004,crowns,청동 왕관 I,100,기본,crown1,crowns/crown_004.png
+crowns_crown_005,crowns,청동 왕관 II,600,일반,crown2,crowns/crown_005.png
+crowns_crown_006,crowns,청동 왕관 III,600,일반,crown3,crowns/crown_006.png
+crowns_crown_007,crowns,초록 왕관 I,600,일반,crown1,crowns/crown_007.png
+crowns_crown_008,crowns,초록 왕관 II,600,일반,crown2,crowns/crown_008.png
+crowns_crown_009,crowns,초록 왕관 III,1500,고급,crown3,crowns/crown_009.png
+crowns_crown_010,crowns,푸른 왕관 I,1500,고급,crown1,crowns/crown_010.png
+crowns_crown_011,crowns,푸른 왕관 II,1500,고급,crown2,crowns/crown_011.png
+crowns_crown_012,crowns,푸른 왕관 III,1500,고급,crown3,crowns/crown_012.png
+crowns_crown_013,crowns,보라 왕관 I,3500,희귀,crown1,crowns/crown_013.png
+crowns_crown_014,crowns,보라 왕관 II,3500,희귀,crown2,crowns/crown_014.png
+crowns_crown_015,crowns,보라 왕관 III,3500,희귀,crown3,crowns/crown_015.png
+crowns_crown_016,crowns,분홍 왕관 I,3500,희귀,crown1,crowns/crown_016.png
+crowns_crown_017,crowns,분홍 왕관 II,5000,전설,crown2,crowns/crown_017.png
+crowns_crown_018,crowns,분홍 왕관 III,5000,전설,crown3,crowns/crown_018.png
+crowns_crown_019,crowns,홍염 왕관 I,5000,전설,crown1,crowns/crown_019.png
+crowns_crown_020,crowns,홍염 왕관 II,5000,전설,crown2,crowns/crown_020.png
+effects_effect_001,effects,기본 붉은 별빛,0,기본,effect_red,effects/effect_001.png
+effects_effect_002,effects,기본 푸른 유성,100,기본,effect_blue,effects/effect_002.png
+effects_effect_003,effects,기본 초록 빛무리,100,기본,effect_green,effects/effect_003.png
+effects_effect_004,effects,기본 무지개,100,기본,effect_rainbow,effects/effect_004.png
+effects_effect_005,effects,기본 오로라,100,기본,effect_aurora,effects/effect_005.png
+effects_effect_006,effects,청동 붉은 별빛,100,기본,effect_red,effects/effect_006.png
+effects_effect_007,effects,청동 푸른 유성,100,기본,effect_blue,effects/effect_007.png
+effects_effect_008,effects,청동 초록 빛무리,100,기본,effect_green,effects/effect_008.png
+effects_effect_009,effects,청동 무지개,450,일반,effect_rainbow,effects/effect_009.png
+effects_effect_010,effects,청동 오로라,450,일반,effect_aurora,effects/effect_010.png
+effects_effect_011,effects,초록 붉은 별빛,450,일반,effect_red,effects/effect_011.png
+effects_effect_012,effects,초록 푸른 유성,450,일반,effect_blue,effects/effect_012.png
+effects_effect_013,effects,초록 초록 빛무리,450,일반,effect_green,effects/effect_013.png
+effects_effect_014,effects,초록 무지개,450,일반,effect_rainbow,effects/effect_014.png
+effects_effect_015,effects,초록 오로라,450,일반,effect_aurora,effects/effect_015.png
+effects_effect_016,effects,푸른 붉은 별빛,450,일반,effect_red,effects/effect_016.png
+effects_effect_017,effects,푸른 푸른 유성,1300,고급,effect_blue,effects/effect_017.png
+effects_effect_018,effects,푸른 초록 빛무리,1300,고급,effect_green,effects/effect_018.png
+effects_effect_019,effects,푸른 무지개,1300,고급,effect_rainbow,effects/effect_019.png
+effects_effect_020,effects,푸른 오로라,1300,고급,effect_aurora,effects/effect_020.png
+effects_effect_021,effects,보라 붉은 별빛,1300,고급,effect_red,effects/effect_021.png
+effects_effect_022,effects,보라 푸른 유성,1300,고급,effect_blue,effects/effect_022.png
+effects_effect_023,effects,보라 초록 빛무리,1300,고급,effect_green,effects/effect_023.png
+effects_effect_024,effects,보라 무지개,1300,고급,effect_rainbow,effects/effect_024.png
+effects_effect_025,effects,보라 오로라,3000,희귀,effect_aurora,effects/effect_025.png
+effects_effect_026,effects,분홍 붉은 별빛,3000,희귀,effect_red,effects/effect_026.png
+effects_effect_027,effects,분홍 푸른 유성,3000,희귀,effect_blue,effects/effect_027.png
+effects_effect_028,effects,분홍 초록 빛무리,3000,희귀,effect_green,effects/effect_028.png
+effects_effect_029,effects,분홍 무지개,3000,희귀,effect_rainbow,effects/effect_029.png
+effects_effect_030,effects,분홍 오로라,3000,희귀,effect_aurora,effects/effect_030.png
+effects_effect_031,effects,홍염 붉은 별빛,3000,희귀,effect_red,effects/effect_031.png
+effects_effect_032,effects,홍염 푸른 유성,3000,희귀,effect_blue,effects/effect_032.png
+effects_effect_033,effects,홍염 초록 빛무리,4800,전설,effect_green,effects/effect_033.png
+effects_effect_034,effects,홍염 무지개,4800,전설,effect_rainbow,effects/effect_034.png
+effects_effect_035,effects,홍염 오로라,4800,전설,effect_aurora,effects/effect_035.png
+effects_effect_036,effects,황금 붉은 별빛,4800,전설,effect_red,effects/effect_036.png
+effects_effect_037,effects,황금 푸른 유성,4800,전설,effect_blue,effects/effect_037.png
+effects_effect_038,effects,황금 초록 빛무리,4800,전설,effect_green,effects/effect_038.png
+effects_effect_039,effects,황금 무지개,4800,전설,effect_rainbow,effects/effect_039.png
+effects_effect_040,effects,황금 오로라,4800,전설,effect_aurora,effects/effect_040.png

@@ -211,6 +211,37 @@ html[data-theme="light"] .emblem-shop{color:#fff}
 .shop-dialog .emblem-group{margin:0 0 12px}.shop-dialog .emblem-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}.shop-dialog .emblem-option.rough .emblem-option-img{filter:grayscale(.75) sepia(.45) brightness(.7);opacity:.8}.shop-dialog .emblem-option.rough{background:#302b40;border-color:#6a6175}.shop-dialog .emblem-option.rough small{color:#c7b6a4}
 .shop-dialog .shop-footer{position:sticky;bottom:-12px;background:#261e42;padding:12px;border-radius:14px;border:1px solid #7765a4}
 @media(max-width:520px){.shop-dialog{max-height:94dvh;padding:10px}.shop-dialog .emblem-shop{padding:10px}.shop-dialog .emblem-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.shop-dialog .emblem-option{padding:5px 2px;font-size:12px}.shop-dialog .emblem-option-img{width:54px;height:47px}}
+
+/* Desktop and laptop responsive layout: keep game centered, give navigation room. */
+@media (min-width: 960px) {
+  .shell { width:min(calc(100% - 64px), 1040px); padding-top:30px; }
+  .brandline { display:flex; flex-wrap:nowrap; align-items:center; gap:22px; margin-bottom:30px; }
+  .header-left { flex:0 0 auto; gap:14px; }
+  .header-actions { flex:1 1 auto; min-width:0; flex-wrap:nowrap; gap:10px; justify-content:flex-end; }
+  .header-actions > * { flex-shrink:0; }
+  .header-profile { max-width:340px; }
+  .header-profile #headerNickname { max-width:190px; }
+  #homePage { width:min(100%, 570px); margin-inline:auto; }
+  .board { width:min(100%, 490px); }
+  .tile { width:50px; height:55px; font-size:24px; }
+  .board-row { gap:6px; }
+  .ranking-page { width:min(100%, 860px); margin-inline:auto; }
+  .ranking-page .rankrow { display:grid; grid-template-columns:minmax(0,1fr) minmax(185px,auto); }
+  .ranking-page .rankrow>span:last-child { white-space:nowrap; }
+}
+/* Tablet/small desktop: place navigation on two orderly lines instead of squeezing. */
+@media (min-width: 531px) and (max-width: 959px) {
+  .brandline { flex-wrap:wrap; align-items:center; gap:12px; }
+  .header-left { flex-wrap:wrap; gap:10px; }
+  .header-actions { width:100%; justify-content:flex-end; gap:8px; }
+  .board { width:min(100%, 490px); }
+  .tile { width:min(50px, 7vw); height:54px; }
+}
+/* Prevent large layered icons or long nicknames from widening rows. */
+.ranking-page .rankrow { min-width:0; }
+.ranking-page .rank-identity { min-width:0; overflow:hidden; }
+.ranking-page .rankrow>span:last-child { max-width:48%; }
+@media (min-width:960px) { .ranking-page .rankrow>span:last-child { max-width:none; } }
 </style>
 <style id="onlineStyles">.online{margin:16px 0;padding:18px;border:1px solid #9aa6ba66;border-radius:16px;background:var(--panel,#ffffff0a)}.online h2{font-size:19px}.online input,.online button{font:inherit;padding:10px;border-radius:9px;border:1px solid #a5aec0}.online input{width:100%;background:transparent;color:inherit}.online button{cursor:pointer;background:#405bd7;color:white}.online .fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}.online .muted{font-size:12px;opacity:.8}.online .hidden{display:none}.online .rankrow{display:flex;justify-content:space-between;border-bottom:1px solid #9995;padding:8px 0;gap:8px}@media(max-width:420px){.online .fields{grid-template-columns:1fr}}</style><style id="accountPopupStyle">
 .account-open{white-space:nowrap;border:1px solid var(--border,#aaa);border-radius:10px;padding:8px 11px;background:var(--panel,#fff);color:var(--ink,#222);font:inherit;font-size:13px;font-weight:700;cursor:pointer}

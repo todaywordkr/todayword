@@ -12,9 +12,10 @@ async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard'
 async function refresh(){const {data:{user:current}}=await client.auth.getUser();user=current;$('authArea').classList.toggle('hidden',!!user);$('openAccount').textContent=user?'내 계정':'회원가입';$('openLogin').classList.toggle('hidden',!!user);if(user&&window.todaywordAccountDialog?.open)window.todaywordAccountDialog.close();$('memberArea').classList.toggle('hidden',!user);if(user){await loadProfile();await loadShop();status('로그인됨 · 온라인 기록 연결 완료')}else status('회원가입하거나 로그인하면 출석·포인트·랭킹을 이용할 수 있어요.');await loadRanks()}
 // Supabase Auth requires an email internally. Use a deterministic, non-deliverable
 // address derived from the private username; no real email is requested or sent.
-const usernameEmail=name=>`${name.toLowerCase()}@login.todayword.invalid`;
+const usernameEmail=name=>`${name.toLowerCase()}@pynscyjkjiwjmaanbeie.supabase.co`;
 window.todaywordAuthMode=mode=>{
  const signup=mode==='signup';
+ $('signupSuccess').classList.add('hidden');$('authArea').classList.remove('hidden');$('authStatus').textContent='';
  $('accountTitle').textContent=signup?'회원가입':'로그인';
  $('nickname').classList.toggle('hidden',!signup);
  $('signup').classList.toggle('hidden',!signup);
@@ -29,6 +30,7 @@ const authError=e=>{
  const msg=friendly(e);
  if(/duplicate|unique|already registered|already exists|already been registered/i.test(msg))return '이미 사용 중인 아이디 또는 닉네임입니다.';
  if(/invalid login credentials/i.test(msg))return '아이디 또는 비밀번호가 틀렸습니다.';
+ if(/invalid email|email address.*invalid|email.*not valid/i.test(msg))return '인증 이메일 설정 오류입니다. 새 버전으로 업데이트하고 다시 시도하세요.';
  if(/email.*confirm|confirmation/i.test(msg))return 'Supabase에서 이메일 확인 기능을 꺼주세요.';
  return msg;
 };
@@ -44,8 +46,16 @@ $('signup').onclick=async()=>{
   if(check.nickname_taken){status('이미 사용 중인 닉네임입니다.');return;}
   const {data,error}=await client.auth.signUp({email:usernameEmail(username),password,options:{data:{username,nickname}}});
   if(error)throw error;
-  if(!data.session){status('가입 확인이 필요합니다. Supabase 이메일 확인 설정을 꺼주세요.');return;}
-  await refresh();status('회원가입 및 로그인 완료!');
+  if(!data.user){status('회원가입을 완료하지 못했습니다. 다시 시도해주세요.');return;}
+  if(!data.session){status('이메일 확인이 켜져 있습니다. Supabase에서 Confirm email을 꺼주세요.');return;}
+  // Keep signup separate from login, and show a dedicated success screen.
+  await client.auth.signOut();
+  user=null;
+  $('memberArea').classList.add('hidden');
+  $('authArea').classList.add('hidden');
+  $('signupSuccess').classList.remove('hidden');
+  $('accountTitle').textContent='회원가입 완료';
+  $('authStatus').textContent='';
  }catch(e){status(authError(e))}
 };
 $('signin').onclick=async()=>{

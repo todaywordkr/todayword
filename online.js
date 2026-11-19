@@ -10,8 +10,53 @@ async function loadProfile(){if(!user)return;const {data,error}=await client.fro
 async function loadShop(){const {data,error}=await client.from('shop_items').select('id,title,cost,description').eq('active',true).order('cost');if(error)throw error;const area=$('shop');area.replaceChildren();for(const item of data){const row=document.createElement('div');row.className='rankrow';const info=document.createElement('span');info.textContent=`${item.title} · ${item.cost}P (${item.description||''})`;const btn=document.createElement('button');btn.type='button';btn.textContent='구매';btn.onclick=async()=>{try{await rpc('buy_item',{p_item_id:item.id});status('아이템 구매 완료');await loadProfile()}catch(e){status(friendly(e))}};row.append(info,btn);area.append(row)}}
 async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard',{p_period:period});if(error)throw error;const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.textContent=`${i+1}위 ${entry.nickname}`;const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
 async function refresh(){const {data:{user:current}}=await client.auth.getUser();user=current;$('authArea').classList.toggle('hidden',!!user);$('openAccount').textContent=user?'내 계정':'회원가입';$('openLogin').classList.toggle('hidden',!!user);if(user&&window.todaywordAccountDialog?.open)window.todaywordAccountDialog.close();$('memberArea').classList.toggle('hidden',!user);if(user){await loadProfile();await loadShop();status('로그인됨 · 온라인 기록 연결 완료')}else status('회원가입하거나 로그인하면 출석·포인트·랭킹을 이용할 수 있어요.');await loadRanks()}
-$('signup').onclick=async()=>{const email=$('email').value.trim(),password=$('password').value,username=$('username').value.trim(),nickname=$('nickname').value.trim();if(!/^[a-zA-Z0-9]{4,24}$/.test(username)){status('아이디는 영문·숫자 4~24자여야 합니다.');return;}if(!nickname||nickname.length>24){status('닉네임은 1~24자로 입력하세요.');return;}if(password.length<8){status('비밀번호는 8자 이상 입력하세요.');return;}try{const {data,error}=await client.auth.signUp({email,password,options:{data:{username,nickname}}});if(error)throw error;await refresh();status(data.session?'가입 및 로그인 완료':'가입 신청 완료! 이메일 인증을 마친 뒤 로그인하세요.')}catch(e){status(friendly(e))}};
-$('signin').onclick=async()=>{try{const {error}=await client.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;await refresh()}catch(e){status(friendly(e))}};
+// Supabase Auth requires an email internally. Use a deterministic, non-deliverable
+// address derived from the private username; no real email is requested or sent.
+const usernameEmail=name=>`${name.toLowerCase()}@login.todayword.invalid`;
+window.todaywordAuthMode=mode=>{
+ const signup=mode==='signup';
+ $('accountTitle').textContent=signup?'회원가입':'로그인';
+ $('nickname').classList.toggle('hidden',!signup);
+ $('signup').classList.toggle('hidden',!signup);
+ $('signin').classList.toggle('hidden',signup);
+ $('authHint').textContent=signup?'아이디·닉네임은 중복 불가. 이메일은 필요하지 않습니다.':'가입한 아이디와 비밀번호로 로그인하세요.';
+ $('password').setAttribute('autocomplete',signup?'new-password':'current-password');
+ $('password').value='';
+ $('username').focus();
+};
+const normalizeUsername=value=>value.trim().toLowerCase();
+const authError=e=>{
+ const msg=friendly(e);
+ if(/duplicate|unique|already registered|already exists|already been registered/i.test(msg))return '이미 사용 중인 아이디 또는 닉네임입니다.';
+ if(/invalid login credentials/i.test(msg))return '아이디 또는 비밀번호가 틀렸습니다.';
+ if(/email.*confirm|confirmation/i.test(msg))return 'Supabase에서 이메일 확인 기능을 꺼주세요.';
+ return msg;
+};
+$('signup').onclick=async()=>{
+ const username=normalizeUsername($('username').value),nickname=$('nickname').value.trim(),password=$('password').value;
+ if(!/^[a-z0-9]{4,24}$/.test(username)){status('아이디는 영문·숫자 4~24자로 입력하세요.');return;}
+ if(!nickname||nickname.length>24){status('닉네임은 1~24자로 입력하세요.');return;}
+ if(password.length<8){status('비밀번호는 8자 이상 입력하세요.');return;}
+ try{
+  const {data:check,error:checkError}=await client.rpc('check_signup_names',{p_username:username,p_nickname:nickname});
+  if(checkError)throw checkError;
+  if(check.username_taken){status('이미 사용 중인 아이디입니다.');return;}
+  if(check.nickname_taken){status('이미 사용 중인 닉네임입니다.');return;}
+  const {data,error}=await client.auth.signUp({email:usernameEmail(username),password,options:{data:{username,nickname}}});
+  if(error)throw error;
+  if(!data.session){status('가입 확인이 필요합니다. Supabase 이메일 확인 설정을 꺼주세요.');return;}
+  await refresh();status('회원가입 및 로그인 완료!');
+ }catch(e){status(authError(e))}
+};
+$('signin').onclick=async()=>{
+ const username=normalizeUsername($('username').value),password=$('password').value;
+ if(!/^[a-z0-9]{4,24}$/.test(username)){status('아이디를 확인하세요.');return;}
+ try{
+  const {error}=await client.auth.signInWithPassword({email:usernameEmail(username),password});
+  if(error)throw error;
+  await refresh();
+ }catch(e){status(authError(e))}
+};
 $('signout').onclick=async()=>{await client.auth.signOut();await refresh()};
 $('checkin').onclick=async()=>{try{const points=await rpc('daily_checkin');status(`출석 완료! 현재 ${points}P`);await loadProfile()}catch(e){status(friendly(e))}};
 document.querySelectorAll('[data-rank]').forEach(button=>button.onclick=async()=>{period=button.dataset.rank;document.querySelectorAll('[data-rank]').forEach(b=>(b.setAttribute('aria-pressed',String(b===button)),b.setAttribute('aria-selected',String(b===button))));try{await loadRanks()}catch(e){status(friendly(e))}});

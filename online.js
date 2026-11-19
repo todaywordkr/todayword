@@ -38,19 +38,22 @@ function ensureEmblemStyles(){
  if(document.getElementById('todayword-identity-sync-css'))return;
  const style=document.createElement('style');style.id='todayword-identity-sync-css';
  style.textContent=`
- #headerNickname{display:inline-flex!important;align-items:center!important;gap:6px;max-width:none!important;overflow:visible!important;white-space:nowrap!important}
- #headerProfile,#profileOpen{overflow:visible!important;max-width:none!important}
- #headerNickname .emblem-identity{display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;gap:3px!important;width:max-content!important;max-width:none!important;min-width:0!important;margin:0!important;padding:0!important}
- #headerNickname .emblem-identity.compact .png-emblem.compact{position:relative!important;display:inline-block!important;flex:0 0 32px!important;width:32px!important;min-width:32px!important;max-width:32px!important;height:34px!important;margin:0!important;padding:0!important;transform:none!important}
- #headerNickname .emblem-identity.compact .png-emblem.compact img{left:50%!important;top:50%!important;width:100%!important;height:100%!important;max-width:100%!important;object-fit:contain!important;transform:translate(-50%,-50%)!important}
- #headerNickname .emblem-identity.compact .emblem-nickname{display:inline-block!important;flex:0 0 auto!important;margin:0!important;padding:0!important;max-width:none!important;line-height:1.2!important}
- #profileOpen.profile-trigger{display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;gap:0!important;width:auto!important;padding-left:0!important;padding-right:0!important}
- #headerNickname .png-emblem,#profileEmblemView .png-emblem{position:relative!important;display:inline-block!important;flex:none!important;width:36px!important;min-width:36px!important;height:36px!important;overflow:visible!important;vertical-align:middle!important}
- #headerNickname .png-emblem img,#profileEmblemView .png-emblem img{position:absolute!important;left:0!important;top:0!important;width:100%!important;height:100%!important;object-fit:contain!important;image-rendering:pixelated!important}
- #headerNickname .emblem-nickname,#profileEmblemView .emblem-nickname{display:inline-block!important;white-space:nowrap!important}
+ #profileOpen,#headerProfile,#headerNickname{min-width:0!important;max-width:none!important;overflow:visible!important}
+ #profileOpen{display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;width:max-content!important;padding:0!important;margin:0!important}
+ #headerNickname{display:inline-block!important;width:max-content!important;white-space:nowrap!important;line-height:1!important}
+ #headerNickname .emblem-identity{display:inline-flex!important;align-items:center!important;justify-content:flex-start!important;gap:2px!important;width:max-content!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;white-space:nowrap!important}
+ #headerNickname .emblem-identity .png-emblem{display:inline-block!important;position:relative!important;flex:0 0 30px!important;width:30px!important;min-width:30px!important;max-width:30px!important;height:36px!important;margin:0!important;padding:0!important;transform:none!important;overflow:visible!important}
+ #headerNickname .emblem-identity .png-emblem img{position:absolute!important;left:50%!important;transform:translateX(-50%)!important;object-fit:contain!important;image-rendering:pixelated!important}
+ #headerNickname .emblem-identity .png-shape{width:28px!important;height:28px!important;top:4px!important}
+ #headerNickname .emblem-identity .png-pattern{width:17px!important;height:17px!important;top:9px!important}
+ #headerNickname .emblem-identity .png-wings{width:39px!important;height:30px!important;top:2px!important}
+ #headerNickname .emblem-identity .png-crown{width:20px!important;height:15px!important;top:-5px!important}
+ #headerNickname .emblem-identity .png-effect{width:40px!important;height:38px!important;top:-2px!important}
+ #headerNickname .emblem-identity .emblem-nickname{display:inline!important;flex:0 0 auto!important;width:auto!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;line-height:1.1!important;white-space:nowrap!important}
  #profileEmblemView{display:flex;justify-content:center;align-items:center;padding:12px 6px;margin:6px 0 12px;border-radius:12px;background:rgba(128,128,128,.10)}
- #profileEmblemView .emblem-identity{display:inline-flex;align-items:center;gap:10px}
- #profileEmblemView .png-emblem{width:52px!important;min-width:52px!important;height:52px!important}
+ #profileEmblemView .emblem-identity{display:inline-flex;align-items:center;gap:5px}
+ #profileEmblemView .png-emblem{position:relative;display:inline-block;width:52px;min-width:52px;height:52px}
+ #profileEmblemView .png-emblem img{position:absolute;left:50%;transform:translateX(-50%);object-fit:contain;image-rendering:pixelated}
  `;
  document.head.appendChild(style);
 }
@@ -71,19 +74,32 @@ function renderEquippedEverywhere(){
   view.replaceChildren(emblemArt(equippedEmblem,name,true));
  }
 }
+function equippedCacheKey(){return user?.id?'todayword_equipped_v2_'+user.id:null;}
+function readEquippedCache(){try{const key=equippedCacheKey();return key?JSON.parse(localStorage.getItem(key)||'null'):null;}catch(e){return null;}}
+function writeEquippedCache(value){try{const key=equippedCacheKey();if(key)localStorage.setItem(key,JSON.stringify(normalizeEquipped(value)));}catch(e){console.warn('장착 캐시 저장 실패',e);}}
+function sameEquipped(a,b){return ['shape','pattern','crown','wings','effect','namefx'].every(k=>(a?.[k]||'')===(b?.[k]||''));}
 async function renderHeaderEmblem(nickname){
  if(!user)return;
- // Render the current cached value immediately, then reconcile with the server.
+ const accountId=user.id;
+ const cached=readEquippedCache();
+ if(cached)equippedEmblem=normalizeEquipped(cached);
  renderEquippedEverywhere();
  try{
-  const {data,error}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',user.id).maybeSingle();
+  const {data,error}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',accountId).maybeSingle();
   if(error)throw error;
-  if(user&&currentProfile?.nickname===nickname){
-   equippedEmblem=normalizeEquipped(data||{});
-   renderEquippedEverywhere();
-  }
+  if(!user||user.id!==accountId||currentProfile?.nickname!==nickname)return;
+  if(data){
+   equippedEmblem=normalizeEquipped(data);
+   writeEquippedCache(equippedEmblem);
+  }else if(cached){
+   // Do not erase the last confirmed equip merely because the server returned no row.
+   equippedEmblem=normalizeEquipped(cached);
+   console.warn('서버에 장착 행이 없습니다. 기존 장착 표시를 유지합니다.');
+  }else equippedEmblem=normalizeEquipped();
+  renderEquippedEverywhere();
  }catch(e){console.warn('장착 앰블럼 조회 실패:',e);renderEquippedEverywhere();}
 }
+
 async function loadPointLogs(){
  const area=$('pointLogItems');area.textContent='내역을 불러오는 중…';
  const {data,error}=await client.from('point_logs').select('delta,reason,balance_after,created_at').order('created_at',{ascending:false}).limit(100);
@@ -270,10 +286,15 @@ async function loadShop(){
    const value=(key)=>selected[key]?.file||'';
    await saveFreeEmblem({shape:value('frames'),pattern:value('patterns'),crown:value('crowns'),wings:value('wings'),effect:value('effects'),namefx:''});
    equippedEmblem=normalizeEquipped({shape:value('frames'),pattern:value('patterns'),crown:value('crowns'),wings:value('wings'),effect:value('effects'),namefx:''});
+   writeEquippedCache(equippedEmblem);
    renderEquippedEverywhere();
    saveShopPreview(selected,selectedNamefx,activeCategory,activeTier);
-   status('장착 완료 · 계정에 저장되어 다시 로그인해도 유지됩니다.');
-   await renderHeaderEmblem(currentProfile?.nickname||'');await loadRanks();
+   const {data:confirmed,error:verifyError}=await client.from('emblem_equipment').select('shape,pattern,crown,wings,effect,namefx').eq('user_id',user.id).maybeSingle();
+   if(verifyError||!confirmed||!sameEquipped(normalizeEquipped(confirmed),equippedEmblem)){
+    status('화면에는 장착됐지만 서버 저장 확인 실패 · Supabase 장착 테이블/RLS 확인 필요');
+   }else status('장착 완료 · 서버에 저장 확인됨');
+   if(confirmed&&!verifyError&&sameEquipped(normalizeEquipped(confirmed),equippedEmblem))await renderHeaderEmblem(currentProfile?.nickname||'');
+   await loadRanks();
   }catch(e){status('무료 앰블럼 장착 실패: '+friendly(e));}finally{freeBtn.disabled=!user||Object.values(selected).some(it=>it&&it.price!==0);}
  });
  area.replaceChildren(wrap);renderGrid();
@@ -282,6 +303,7 @@ async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard'
 async function refresh(){
  const {data:{user:current},error:authError}=await client.auth.getUser();
  if(authError)throw authError;
+ if(current?.id!==user?.id)equippedEmblem=normalizeEquipped();
  user=current;
  $('authArea').classList.toggle('hidden',!!user);
  $('openAccount').classList.toggle('hidden',!!user);

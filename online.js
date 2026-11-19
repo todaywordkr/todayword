@@ -84,7 +84,7 @@ function shopPreviewArt(selected,nickname,namefx){
  container.append(layer,label);return container;
 }
 async function loadShop(){
- const area=$('shop');area.replaceChildren();
+ const area=$('shop');area.textContent='';
  const loading=document.createElement('p');loading.className='shop-note';loading.textContent='200종 앰블럼 불러오는 중…';area.append(loading);
  let catalog;
  try{catalog=await fetchShopCatalog()}catch(e){loading.textContent='앰블럼 불러오기 실패: '+friendly(e)+' · GitHub에 emblems 폴더 전체와 catalog.json을 올렸는지 확인하세요.';return;}
@@ -110,7 +110,7 @@ async function loadShop(){
  const nav={};
  for(const group of SHOP_GROUPS){const btn=document.createElement('button');btn.type='button';btn.textContent=group.label+' ('+groups[group.key].length+')';btn.setAttribute('role','tab');btn.addEventListener('click',()=>{activeCategory=group.key;activeTier='전체';renderGrid()});tabs.append(btn);nav[group.key]=btn;}
  function updatePreview(){
-  preview.replaceChildren(shopPreviewArt(selected,currentProfile?.nickname||'내 닉네임',selectedNamefx));
+  preview.textContent='';preview.appendChild(shopPreviewArt(selected,currentProfile?.nickname||'내 닉네임',selectedNamefx));
   const sum=Object.values(selected).reduce((total,it)=>total+(it?.price||0),0);
   total.textContent='조합 예상 가격: '+sum.toLocaleString('ko-KR')+'P (구매 불가)';
   for(const btn of nameRow.querySelectorAll('button'))btn.setAttribute('aria-pressed',String(btn.dataset.namefx===selectedNamefx));
@@ -118,11 +118,11 @@ async function loadShop(){
  }
  function renderGrid(){
   for(const group of SHOP_GROUPS)nav[group.key].setAttribute('aria-selected',String(group.key===activeCategory));
-  filter.replaceChildren();
+  filter.textContent='';
   for(const tier of ['전체','기본','일반','고급','희귀','전설']){
    const btn=document.createElement('button');btn.type='button';btn.textContent=tier;btn.setAttribute('aria-pressed',String(activeTier===tier));btn.addEventListener('click',()=>{activeTier=tier;renderGrid()});filter.append(btn);
   }
-  grid.replaceChildren();
+  grid.textContent='';
   // 종류별 빈 슬롯: 앞/뒤 장식 없이 조합해 볼 수 있음.
   if(activeCategory!=='frames'){
    const blank=document.createElement('button');blank.type='button';blank.className='emblem-option';blank.dataset.id='';
@@ -150,7 +150,7 @@ async function loadShop(){
    await renderHeaderEmblem(currentProfile?.nickname||'');await loadRanks();
   }catch(e){status('무료 앰블럼 장착 실패: '+friendly(e));}finally{freeBtn.disabled=!user;}
  });
- area.replaceChildren(wrap);renderGrid();
+ area.textContent='';area.appendChild(wrap);renderGrid();
 }
 async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard',{p_period:period});if(error)throw error;const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.className='rank-identity';const rank=document.createElement('b');rank.textContent=(i+1)+'위';left.append(rank);left.append(emblemArt({shape:entry.emblem_shape||'shield1',pattern:entry.emblem_pattern||'',crown:entry.emblem_crown||'',wings:entry.emblem_wings||'',effect:entry.emblem_effect||'',namefx:entry.emblem_namefx||''},entry.nickname,true));const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
 async function refresh(){

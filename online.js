@@ -116,6 +116,7 @@ async function loadPointLogs(){
 $('shopNav').addEventListener('click',()=>{$('shopDialog').showModal();loadShop().catch(e=>{console.error('상점 표시 오류',e);$('shop').textContent='상점 표시 오류: '+friendly(e)})});
 $('shopClose').addEventListener('click',()=>$('shopDialog').close());
 $('shopDialog').addEventListener('click',e=>{if(e.target===$('shopDialog'))e.target.close()});
+$('shopDialog').addEventListener('close',()=>{clearShopPreview();const area=$('shop');if(area)area.replaceChildren();});
 $('headerPoints').addEventListener('click',async()=>{if(!user)return;$('pointLogDialog').showModal();try{await loadPointLogs()}catch(e){$('pointLogItems').textContent='포인트 내역 조회 실패: '+friendly(e)}});
 $('pointLogClose').addEventListener('click',()=>$('pointLogDialog').close());
 $('pointLogDialog').addEventListener('click',e=>{if(e.target===$('pointLogDialog'))e.target.close()});
@@ -170,15 +171,11 @@ function shopPreviewArt(selected,nickname,namefx){
  const label=document.createElement('strong');label.className='emblem-nickname fx-'+(namefx||'basic');label.textContent=nickname||'내 닉네임';
  container.append(layer,label);return container;
 }
-let shopPreviewCache=null;
-function shopPreviewKey(){return user?.id||'guest';}
-function saveShopPreview(selected,namefx,category,tier){
- shopPreviewCache={owner:shopPreviewKey(),files:Object.fromEntries(SHOP_GROUPS.map(g=>[g.key,selected[g.key]?.file||''])),namefx,category,tier};
- try{sessionStorage.setItem('todayword_shop_preview_'+shopPreviewKey(),JSON.stringify(shopPreviewCache));}catch(e){}
-}
-function getShopPreview(){
- if(shopPreviewCache?.owner===shopPreviewKey())return shopPreviewCache;
- try{return JSON.parse(sessionStorage.getItem('todayword_shop_preview_'+shopPreviewKey())||'null');}catch(e){return null;}
+// Preview is intentionally temporary. Only verified equipment is persistent.
+function saveShopPreview(){ /* no-op: unsaved previews must not persist */ }
+function getShopPreview(){return null;}
+function clearShopPreview(){
+ try{sessionStorage.removeItem('todayword_shop_preview_'+(user?.id||'guest'));}catch(e){}
 }
 function installShopLayerStyle(){
  if(document.getElementById('todayword-shop-layerfix'))return;
@@ -203,32 +200,27 @@ async function loadShop(){
  // 상점이 닫힌 동안 응답이 온 경우 불필요한 렌더 방지
  if(!$('shopDialog').open)return;
  const groups=Object.fromEntries(SHOP_GROUPS.map(g=>[g.key,catalog.filter(it=>it.category===g.key)]));
- const selected={frames:groups.frames[0],patterns:null,wings:null,crowns:null,effects:null};
- try {
-  if(user){
-   const {data:owned}=await client.from('emblem_equipment').select('shape,pattern,wings,crown,effect,namefx').eq('user_id',user.id).maybeSingle();
-   if(owned){
-    for(const group of SHOP_GROUPS){
-     const saved=owned[group.field];
-     selected[group.key]=groups[group.key].find(it=>it.file===saved||it.source===saved)|| (group.key==='frames'?groups.frames[0]:null);
-    }
-   }
-  }
- }catch(e){console.warn('기존 장착 아이템 확인 실패',e)}
- let selectedNamefx='',activeCategory='frames',activeTier='전체';
- const cached=getShopPreview();
- if(cached){
-  for(const group of SHOP_GROUPS){
-   const f=cached.files?.[group.key];
-   selected[group.key]=f?groups[group.key].find(it=>it.file===f)||null:null;
-  }
-  selected.frames ||=groups.frames[0];
-  selectedNamefx=cached.namefx||'';
-  activeCategory=SHOP_GROUPS.some(g=>g.key===cached.category)?cached.category:'frames';
-  activeTier=['전체','기본','일반','고급','희귀','전설'].includes(cached.tier)?cached.tier:'전체';
+ // Always initialize from verified equipment, never from an unsaved preview.
+ let serverEquipment=null;
+ if(user){
+  try{
+   const {data,error}=await client.from('emblem_equipment').select('shape,pattern,wings,crown,effect,namefx').eq('user_id',user.id).maybeSingle();
+   if(error)throw error;
+   serverEquipment=data;
+   if(data){equippedEmblem=normalizeEquipped(data);writeEquippedCache(equippedEmblem);renderEquippedEverywhere();}
+   else if(!readEquippedCache()){equippedEmblem=normalizeEquipped();renderEquippedEverywhere();}
+  }catch(e){console.warn('상점 장착 조회 실패',e);status('장착 조회 실패: '+friendly(e));}
  }
+ if(!$('shopDialog').open)return;
+ const selected={};
+ for(const group of SHOP_GROUPS){
+  const value=equippedEmblem[group.field]||'';
+  selected[group.key]=groups[group.key].find(it=>it.file===value||it.source===value)||null;
+ }
+ selected.frames ||=groups.frames[0];
+ let selectedNamefx=equippedEmblem.namefx||'',activeCategory='frames',activeTier='전체';
  const wrap=document.createElement('section');wrap.className='emblem-shop shop-200';
- const note=document.createElement('p');note.className='shop-note';note.textContent='무료 방패 2개만 소유 · 나머지는 300P부터 · 유료 구매/장착 잠금 · 미리보기는 나갔다 와도 유지';wrap.append(note);
+ const note=document.createElement('p');note.className='shop-note';note.textContent='무료 방패 2개만 소유 · 나머지는 300P부터 · 미리보기는 상점을 나가면 취소 · 유료 장착 잠금';wrap.append(note);
  const equipInfo=document.createElement('p');equipInfo.className='shop-note';equipInfo.id='shopEquippedInfo';equipInfo.textContent='현재 장착: 서버 확인 중…';wrap.append(equipInfo);
  const preview=document.createElement('div');preview.className='emblem-preview shop-preview-200';preview.setAttribute('aria-live','polite');wrap.append(preview);
  const tabs=document.createElement('div');tabs.className='shop-categories';tabs.setAttribute('role','tablist');tabs.setAttribute('aria-label','아이템 종류');wrap.append(tabs);
@@ -245,7 +237,7 @@ async function loadShop(){
  const nav={};
  for(const group of SHOP_GROUPS){const btn=document.createElement('button');btn.type='button';btn.textContent=group.label+' ('+groups[group.key].length+')';btn.setAttribute('role','tab');btn.addEventListener('click',()=>{activeCategory=group.key;activeTier='전체';renderGrid()});tabs.append(btn);nav[group.key]=btn;}
  function updatePreview(){
-  equipInfo.textContent='현재 장착: '+(SHOP_CATALOG.find(it=>it.file===equippedEmblem.shape)?.name||'기본 방패')+' · 아래는 미리보기 (장착 버튼을 눌러야 적용)';
+  equipInfo.textContent='장착 중: '+(SHOP_CATALOG.find(it=>it.file===equippedEmblem.shape)?.name||'기본 방패')+' · 미리보기는 상점을 나가면 취소됩니다';
   saveShopPreview(selected,selectedNamefx,activeCategory,activeTier);
   preview.replaceChildren(shopPreviewArt(selected,currentProfile?.nickname||'내 닉네임',selectedNamefx));
   const sum=Object.values(selected).reduce((total,it)=>total+(it?.price||0),0);
@@ -297,7 +289,6 @@ async function loadShop(){
    equippedEmblem=normalizeEquipped(confirmed);
    writeEquippedCache(equippedEmblem);
    renderEquippedEverywhere();
-   saveShopPreview(selected,selectedNamefx,activeCategory,activeTier);
    updatePreview();
    status('장착 완료 · 서버 저장 확인됨 · 새로고침 후에도 유지됩니다.');
    await loadRanks();

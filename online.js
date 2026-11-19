@@ -7,6 +7,22 @@ let user=null,period='day',currentProfile=null;
 const friendly=e=>e?.message||String(e);
 async function rpc(name,args={}){const {data,error}=await client.rpc(name,args);if(error)throw error;return data;}
 async function loadProfile(){if(!user)return;const {data,error}=await client.from('profiles').select('nickname,points,username').eq('id',user.id).single();if(error)throw error;currentProfile=data;$('profileUsername').textContent=data.username;$('profilePoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberSummary').textContent=`${data.nickname} · ${data.points}P`;$('headerNickname').textContent=data.nickname;$('headerPoints').textContent=`${Number(data.points).toLocaleString('ko-KR')}P`;$('memberStats').textContent='아이디는 다른 사용자에게 공개되지 않습니다.';}
+async function loadPointLogs(){
+ const area=$('pointLogItems');area.textContent='내역을 불러오는 중…';
+ const {data,error}=await client.from('point_logs').select('delta,reason,balance_after,created_at').order('created_at',{ascending:false}).limit(100);
+ if(error)throw error;
+ area.replaceChildren();
+ if(!data?.length){area.textContent='기록된 포인트 내역이 없습니다. (기존 기록은 소급 생성되지 않습니다.)';return;}
+ for(const item of data){const row=document.createElement('div');row.className='point-log-row';
+  const date=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(item.created_at)).replaceAll('-','/');
+  const left=document.createElement('span');left.textContent=`${date} ${item.reason}`;
+  const right=document.createElement('strong');right.textContent=`${item.delta>0?'+':''}${item.delta.toLocaleString('ko-KR')}P`;
+  right.className=item.delta>0?'point-positive':'point-negative';row.append(left,right);area.append(row);
+ }
+}
+$('headerPoints').addEventListener('click',async()=>{if(!user)return;$('pointLogDialog').showModal();try{await loadPointLogs()}catch(e){$('pointLogItems').textContent='포인트 내역 조회 실패: '+friendly(e)}});
+$('pointLogClose').addEventListener('click',()=>$('pointLogDialog').close());
+$('pointLogDialog').addEventListener('click',e=>{if(e.target===$('pointLogDialog'))e.target.close()});
 async function loadShop(){const {data,error}=await client.from('shop_items').select('id,title,cost,description').eq('active',true).order('cost');if(error)throw error;const area=$('shop');area.replaceChildren();for(const item of data){const row=document.createElement('div');row.className='rankrow';const info=document.createElement('span');info.textContent=`${item.title} · ${item.cost}P (${item.description||''})`;const btn=document.createElement('button');btn.type='button';btn.textContent='구매';btn.onclick=async()=>{try{await rpc('buy_item',{p_item_id:item.id});status('아이템 구매 완료');await loadProfile()}catch(e){status(friendly(e))}};row.append(info,btn);area.append(row)}}
 async function loadRanks(){const {data,error}=await client.rpc('get_leaderboard',{p_period:period});if(error)throw error;const el=$('ranks');el.replaceChildren();if(!data?.length){el.textContent='아직 기록이 없습니다.';return;}data.forEach((entry,i)=>{const row=document.createElement('div');row.className='rankrow';const left=document.createElement('span');left.textContent=`${i+1}위 ${entry.nickname}`;const right=document.createElement('span');right.textContent=`${entry.score}점 · ${entry.wins}/${entry.plays}승 · ${entry.win_rate}%`;row.append(left,right);el.append(row)})}
 async function refresh(){
